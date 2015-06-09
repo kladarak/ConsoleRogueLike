@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp" />
+    <ClCompile Include="src\EntityComponent\Systems\CollisionSystem.cpp" />
+    <ClCompile Include="src\EntityComponent\Systems\InputHandlerSystem.cpp" />
+    <ClCompile Include="src\EntityComponent\Systems\ProgramSystem.cpp" />
+    <ClCompile Include="src\EntityComponent\Systems\RenderSystem.cpp" />
+    <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\GameEntities\PlayerEntity.cpp" />
+    <ClCompile Include="src\GameEntities\RoomEntity.cpp" />
+    <ClCompile Include="src\GameEntities\SpinnerEntity.cpp" />
+    <ClCompile Include="src\Input\InputBuffer.cpp" />
+    <ClCompile Include="src\Input\InputMonitor.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Renderer\RenderTarget.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\EntityComponent\Components\CollisionComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\InputHandlerComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\PositionComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\ProgramComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\RenderableComponent.h" />
+    <ClInclude Include="src\EntityComponent\Systems\CollisionSystem.h" />
+    <ClInclude Include="src\EntityComponent\Systems\InputHandlerSystem.h" />
+    <ClInclude Include="src\EntityComponent\Systems\ProgramSystem.h" />
+    <ClInclude Include="src\EntityComponent\Systems\RenderSystem.h" />
+    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\GameEntities\PlayerEntity.h" />
+    <ClInclude Include="src\GameEntities\RoomEntity.h" />
+    <ClInclude Include="src\GameEntities\SpinnerEntity.h" />
+    <ClInclude Include="src\Input\InputBuffer.h" />
+    <ClInclude Include="src\Input\InputMonitor.h" />
+    <ClInclude Include="src\Maths\IVec2.h" />
+    <ClInclude Include="src\Renderer\AsciiMesh.h" />
+    <ClInclude Include="src\Renderer\RenderTarget.h" />
+    <ClInclude Include="src\ScreenConstants.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5E0F6BF6-0B60-46EB-87BD-FD1037141483}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ConsoleGame</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)src\;$(ProjectDir)..\..\HighGarden\Engine\Core\src\;$(ProjectDir)..\..\HighGarden\Engine\EntityComponentSystem\src\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Debug\;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)src\;$(ProjectDir)..\..\HighGarden\Engine\Core\src\;$(ProjectDir)..\..\HighGarden\Engine\EntityComponentSystem\src\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Release\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Core.lib;EntityComponentSystem.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>Core.lib;EntityComponentSystem.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
