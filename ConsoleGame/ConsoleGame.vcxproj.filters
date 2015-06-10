@@ -112,6 +112,9 @@
     <ClCompile Include="src\GameEntities\Monsters\MonsterEntityFactory.cpp">
       <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\PlayerInputHandler.cpp">
+      <Filter>Source Files\GameEntities\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -218,6 +221,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Monsters\MonsterEntityFactory.h">
       <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\PlayerInputHandler.h">
+      <Filter>Source Files\GameEntities\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

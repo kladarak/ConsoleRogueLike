@@ -10,68 +10,13 @@
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
 
-#include <EntityComponent/Systems/CollisionSystem.h>
-
-#include <Input/InputBuffer.h>
-
-#include "PlayerUpdater.h"
 #include "PlayerUpdateState.h"
+#include "PlayerInputHandler.h"
+#include "PlayerUpdater.h"
 #include "PlayerMeshes.h"
 
 namespace PlayerEntity
 {
-
-static void HandleInput(const Entity& inThis, const InputBuffer& inBuffer)
-{
-	auto	positionComp	= inThis.GetComponent<PositionComponent>();
-	auto	playerComp		= inThis.GetComponent<PlayerComponent>();
-	
-	IVec2	currentPos		= positionComp->GetPosition();
-	auto	facingDirection	= playerComp->GetFacingDirection();
-	auto	state			= playerComp->GetState();
-
-	if ( inBuffer.IsPressed('a') )
-	{
-		currentPos.mX -= 1;
-		facingDirection = Player::EFacingDirection_Left;
-	}
-	else if ( inBuffer.IsPressed('d') )
-	{
-		currentPos.mX += 1;
-		facingDirection = Player::EFacingDirection_Right;
-	}
-	
-	if ( inBuffer.IsPressed('w') )
-	{
-		currentPos.mY -= 1;
-		facingDirection = Player::EFacingDirection_Up;
-	}
-	else if ( inBuffer.IsPressed('s') )
-	{
-		currentPos.mY += 1;
-		facingDirection = Player::EFacingDirection_Down;
-	}
-	
-	if (inBuffer.IsPressed(' '))
-	{
-		state = Player::EState_Attacking;
-	}
-	else if (inBuffer.IsPressed('e'))
-	{
-		state = Player::EState_Defending;
-	}
-	
-	playerComp->SetFacingDirection(facingDirection);
-	playerComp->SetState(state);
-	
-	if (currentPos != positionComp->GetPosition())
-	{
-		if ( !CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, currentPos) )
-		{
-			positionComp->SetPosition(currentPos);
-		}
-	}
-}
 
 void Create(World& inWorld)
 {
@@ -87,8 +32,8 @@ void Create(World& inWorld)
 	auto collisionComp		= entity.AddComponent<CollisionComponent>();
 	auto programComp		= entity.AddComponent<ProgramComponent>();
 
-	inputHandlerComp->RegisterHandler( &HandleInput );
 	collisionComp->SetCollidableAt( IVec2(0, 0) );
+	inputHandlerComp->RegisterHandler( &Player::HandleInput );
 	programComp->RegisterProgram( &Player::UpdatePlayer );
 }
 
