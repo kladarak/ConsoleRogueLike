@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <cstring>
 
 class RenderTarget
 {
@@ -14,7 +15,7 @@ public:
 	bool operator!=(const RenderTarget& inRHS) { return !(*this == inRHS); }
 
 private:
-	std::vector< std::vector<char> >	mChars;
-	int									mCols;
-	int									mRows;
+	std::vector< std::string >	mChars;
+	int							mCols;
+	int							mRows;
 };

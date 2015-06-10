@@ -5,6 +5,8 @@
 #include <chrono>
 #include <cstring>
 
+#include "Windows.h"
+
 #include "ScreenConstants.h"
 
 #include <GameEntities/RoomEntity.h>
@@ -36,8 +38,10 @@ int Game::Run()
 	
 	mHUD.Init(mMessageBroadcaster);
 
-	auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
-	mDungeonMap.Init(rooms);
+	{
+		auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
+		mDungeonMap.Init(rooms);
+	}
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
 
@@ -86,7 +90,10 @@ void Game::Render()
 
 	if (mLastRenderedTarget != renderTarget || mHUD.NeedsRefreshing())
 	{
-		system("cls");
+		COORD pos = { 0, 0 };
+		HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleCursorPosition(output, pos);
+
 		renderTarget.Render();
 		mLastRenderedTarget = renderTarget;
 

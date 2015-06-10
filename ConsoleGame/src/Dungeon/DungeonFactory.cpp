@@ -1,6 +1,7 @@
 #include "DungeonFactory.h"
 
 #include <string>
+
 #include <EntityComponentSystem/World/World.h>
 
 #include <EntityComponent/Components/CollisionComponent.h>
@@ -8,8 +9,12 @@
 #include <EntityComponent/Components/RenderableComponent.h>
 #include <EntityComponent/Components/TriggerBoxComponent.h>
 
-#include "ScreenConstants.h"
+#include <EntityComponent/Systems/CollisionSystem.h>
+
 #include <GameEntities/CoinEntity.h>
+#include <GameEntities/Monsters/MonsterEntityFactory.h>
+
+#include "ScreenConstants.h"
 
 namespace DungeonFactory
 {
@@ -117,7 +122,7 @@ AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 	return outMesh;
 }
 
-Entity CreateRoom(World& inWorld, MessageBroadcaster& inMessageBroadcaster, EDoorMask inDoorMask, const IVec2& inPosition)
+Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
 {
 	Entity entity = inWorld.CreateEntity();
 
@@ -139,19 +144,48 @@ Entity CreateRoom(World& inWorld, MessageBroadcaster& inMessageBroadcaster, EDoo
 		}
 	}
 
+	return entity;
+}
+
+void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
+{
+	auto position = inRoom.GetComponent<PositionComponent>()->GetPosition();
 
 	// Spawn random money
-	for (int i = 0; i < 10; ++i)
 	{
-		int x = rand() % (ROOM_WIDTH - 2);
-		int y = rand() % (ROOM_HEIGHT - 2);
-		IVec2 coinPos(x+1, y+1);
-		coinPos += inPosition;
+		int moneyCount = rand() % 5;
 
-		CoinEntity::Create(inWorld, inMessageBroadcaster, coinPos);
+		for (int i = 0; i < moneyCount; ++i)
+		{
+			int x = rand() % ROOM_WIDTH;
+			int y = rand() % ROOM_HEIGHT;
+			IVec2 coinPos(x, y);
+			coinPos += position;
+
+			if ( !CollisionSystem::CollidesWith(inRoom, coinPos) )
+			{
+				CoinEntity::Create(*inRoom.GetWorld(), inMessageBroadcaster, coinPos);
+			}
+		}
 	}
 
-	return entity;
+	// Spawn monsters
+	{
+		bool addedMonster = false;
+		while (!addedMonster)
+		{
+			int x = rand() % ROOM_WIDTH;
+			int y = rand() % ROOM_HEIGHT;
+			IVec2 monsterPos(x, y);
+			monsterPos += position;
+
+			if ( !CollisionSystem::CollidesWith(inRoom, monsterPos) )
+			{
+				MonsterEntityFactory::Create(*inRoom.GetWorld(), monsterPos);
+				addedMonster = true;
+			}
+		}
+	}
 }
 
 std::vector<Entity> Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
@@ -170,7 +204,9 @@ std::vector<Entity> Generate(World& inWorld, MessageBroadcaster& inMessageBroadc
 			doorMask |= (col != (ROOM_COL_COUNT-1)) ? EDoorMask_Right	: EDoorMask_None;
 			doorMask |= (row != (ROOM_ROW_COUNT-1)) ? EDoorMask_Bottom	: EDoorMask_None;
 
-			auto room = CreateRoom(inWorld, inMessageBroadcaster, (EDoorMask) doorMask, pos);
+			auto room = CreateRoom(inWorld, (EDoorMask) doorMask, pos);
+			FillRoom(room, inMessageBroadcaster);
+
 			rooms.push_back(room);
 		}
 	}

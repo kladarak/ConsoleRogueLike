@@ -10,7 +10,7 @@
 namespace SpinnerEntity
 {
 
-static const char*	kSpinnerStates = "|/-\\";
+static const char	kSpinnerStates[] = "|/-\\";
 static const float	kStateChangeRate = 0.5f; // seconds
 
 class SpinnerState
@@ -36,7 +36,7 @@ static void Update(const Entity& inThis, float inFrameTime)
 		spinnerState.mElapsedTime -= kStateChangeRate;
 
 		int currentState			= spinnerState.mCurrentState;
-		currentState				= (currentState + 1) % sizeof(kSpinnerStates);
+		currentState				= (currentState + 1) % (sizeof(kSpinnerStates) - 1);
 		spinnerState.mCurrentState	= currentState;
 
 		AsciiMesh mesh;

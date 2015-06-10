@@ -41,6 +41,9 @@
     <Filter Include="Source Files\GameEntities\Player">
       <UniqueIdentifier>{e518a317-536e-41f1-af26-d552fd0e88ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameEntities\Monsters">
+      <UniqueIdentifier>{160c4f79-f520-4d6a-abbf-76d7c684730c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -105,6 +108,9 @@
     </ClCompile>
     <ClCompile Include="src\GameEntities\Player\PlayerUpdater.cpp">
       <Filter>Source Files\GameEntities\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEntities\Monsters\MonsterEntityFactory.cpp">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +215,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Player\PlayerMeshes.h">
       <Filter>Source Files\GameEntities\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Monsters\MonsterEntityFactory.h">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #include "RenderTarget.h"
 
 RenderTarget::RenderTarget(int inColumns, int inRows)
-	: mChars(inRows, std::vector<char>(inColumns, ' ') )
+	: mChars(inRows, std::string(inColumns, ' ') )
 	, mCols(inColumns)
 	, mRows(inRows)
 {
@@ -37,13 +37,14 @@ bool RenderTarget::operator==(const RenderTarget& inRHS)
 void RenderTarget::Render()
 {
 	// TODO: Test whether doing one character at a time is slower than building a big buffer and flushing at once.
+
+	std::string buffer;
+
 	for (auto& row : mChars)
 	{
-		for (auto& col : row)
-		{
-			printf("%c", col);
-		}
-		
-		printf("%\n");
+		buffer += row;
+		buffer += "\n";
 	}
+	
+	printf("%s\n", buffer.c_str());
 }
