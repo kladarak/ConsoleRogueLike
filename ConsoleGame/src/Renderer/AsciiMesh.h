@@ -8,7 +8,8 @@ class AsciiMesh
 public:
 	struct Fragment
 	{
-		IVec2	mPosition;
+		int		mX;
+		int		mY;
 		char	mCharacter;
 	};
 
@@ -17,8 +18,8 @@ public:
 	AsciiMesh(const AsciiMesh& inRHS)					: mFragments( inRHS.mFragments )			{ }
 	AsciiMesh(const std::vector<Fragment>& inFragments) : mFragments( inFragments )					{ }
 
-	void							SetCharAtPosition(const IVec2& inPosition, char inChar)	{ Fragment frag = { inPosition, inChar }; mFragments.push_back(frag); }
-	const std::vector<Fragment>&	GetFragments() const									{ return mFragments; }
+	void							SetCharAtPosition(int inX, int inY, char inChar)	{ mFragments.push_back( { inX, inY, inChar } ); }
+	const std::vector<Fragment>&	GetFragments() const								{ return mFragments; }
 
 private:
 	std::vector<Fragment>			mFragments;

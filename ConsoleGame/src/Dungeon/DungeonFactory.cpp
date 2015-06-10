@@ -110,7 +110,7 @@ AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 	{
 		for (int x = 0; x < ROOM_WIDTH; ++x)
 		{
-			outMesh.SetCharAtPosition( IVec2(x, y), scratchRoom[y][x] );
+			outMesh.SetCharAtPosition( x, y, scratchRoom[y][x] );
 		}
 	}
 
@@ -135,7 +135,7 @@ Entity CreateRoom(World& inWorld, MessageBroadcaster& inMessageBroadcaster, EDoo
 	{
 		if ( kWhiteSpace.find( fragment.mCharacter ) == std::string::npos )
 		{
-			collisionComp->SetCollidableAt( fragment.mPosition );
+			collisionComp->SetCollidableAt( fragment.mX, fragment.mY );
 		}
 	}
 

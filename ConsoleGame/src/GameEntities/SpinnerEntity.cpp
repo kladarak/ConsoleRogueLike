@@ -40,7 +40,7 @@ static void Update(const Entity& inThis, float inFrameTime)
 		spinnerState.mCurrentState	= currentState;
 
 		AsciiMesh mesh;
-		mesh.SetCharAtPosition(IVec2(0, 0), kSpinnerStates[currentState]);
+		mesh.SetCharAtPosition(0, 0, kSpinnerStates[currentState]);
 		inThis.GetComponent<RenderableComponent>()->SetMesh(mesh);
 	}
 }
@@ -60,7 +60,7 @@ void Create(World& inWorld, const IVec2& inPos)
 	collisionComp->SetCollidableAt( IVec2(0, 0) );
 	
 	AsciiMesh mesh;
-	mesh.SetCharAtPosition(IVec2(0, 0), kSpinnerStates[0]);
+	mesh.SetCharAtPosition(0, 0, kSpinnerStates[0]);
 	renderableComp->SetMesh(mesh);
 }
 

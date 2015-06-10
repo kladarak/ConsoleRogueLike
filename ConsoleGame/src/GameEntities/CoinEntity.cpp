@@ -42,9 +42,8 @@ void Create(World& inWorld, MessageBroadcaster& inMessageBroadcaster, const IVec
 	});
 
 	AsciiMesh mesh;
-	mesh.SetCharAtPosition(IVec2(0, 0), kCoinSprite);
-	auto renderableComp	= entity.AddComponent<RenderableComponent>();
-	renderableComp->SetMesh(mesh);
+	mesh.SetCharAtPosition(0, 0, kCoinSprite);
+	entity.AddComponent<RenderableComponent>(mesh);
 }
 
 }

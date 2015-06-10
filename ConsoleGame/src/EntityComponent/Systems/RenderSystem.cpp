@@ -24,8 +24,9 @@ static void RenderEntityToTarget(const Entity& inEntity, const IVec2& inCameraPo
 
 	for (auto& frag : fragments)
 	{
-		auto fragPos = frag.mPosition + position;
-		inTarget.Set(fragPos.mX, fragPos.mY, frag.mCharacter);
+		int x = frag.mX + position.mX;
+		int y = frag.mY + position.mY;
+		inTarget.Set(x, y, frag.mCharacter);
 	}
 }
 

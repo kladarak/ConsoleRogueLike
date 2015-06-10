@@ -49,9 +49,8 @@ void Create(World& inWorld)
 			char c = kRoomMesh[row][col];
 			if (c != ' ')
 			{
-				auto pos = IVec2(col, row);
-				mesh.SetCharAtPosition( pos, c );
-				collisionComp->SetCollidableAt( pos );
+				mesh.SetCharAtPosition( col, row, c );
+				collisionComp->SetCollidableAt( col, row );
 			}
 		}
 	}
