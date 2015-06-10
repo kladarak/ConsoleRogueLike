@@ -13,7 +13,7 @@ namespace RoomEntity
 
 static const char kRoomMesh[ScreenConstants::EMapRows][ScreenConstants::EMapCols] =
 {
-	"________________      ______________ ",
+	" _______________      ______________ ",
 	"|               |    |              |",
 	"|                                   |",
 	"|                                   |",

@@ -5,9 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Source Files\EntityComponent">
-      <UniqueIdentifier>{b4cff2f0-3c0a-4e7e-93da-8f463ccb9a75}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GameEntities">
       <UniqueIdentifier>{4239f2a7-e229-4f6a-ab1b-eb7fee14d041}</UniqueIdentifier>
     </Filter>
@@ -20,11 +17,17 @@
     <Filter Include="Source Files\Renderer">
       <UniqueIdentifier>{d8c9d476-15c5-4c4c-b1bc-6e87b6149b28}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\EntityComponent\Components">
+    <Filter Include="Source Files\ComponentsSystems">
+      <UniqueIdentifier>{b4cff2f0-3c0a-4e7e-93da-8f463ccb9a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentsSystems\Components">
       <UniqueIdentifier>{63579a79-328b-41b8-9b3e-e9a2e4fb08d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\EntityComponent\Systems">
+    <Filter Include="Source Files\ComponentsSystems\Systems">
       <UniqueIdentifier>{d6cb0e97-b32f-49a8-ba1b-5923a6e7ad40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Dungeon">
+      <UniqueIdentifier>{2bdbb4f5-1a13-473d-a799-99bd20c8d610}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -53,19 +56,22 @@
       <Filter>Source Files\GameEntities</Filter>
     </ClCompile>
     <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp">
-      <Filter>Source Files\EntityComponent\Components</Filter>
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClCompile>
     <ClCompile Include="src\EntityComponent\Systems\CollisionSystem.cpp">
-      <Filter>Source Files\EntityComponent\Systems</Filter>
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\EntityComponent\Systems\InputHandlerSystem.cpp">
-      <Filter>Source Files\EntityComponent\Systems</Filter>
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\EntityComponent\Systems\ProgramSystem.cpp">
-      <Filter>Source Files\EntityComponent\Systems</Filter>
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\EntityComponent\Systems\RenderSystem.cpp">
-      <Filter>Source Files\EntityComponent\Systems</Filter>
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dungeon\DungeonFactory.cpp">
+      <Filter>Source Files\Dungeon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,31 +106,34 @@
       <Filter>Source Files\GameEntities</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Components\CollisionComponent.h">
-      <Filter>Source Files\EntityComponent\Components</Filter>
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Components\InputHandlerComponent.h">
-      <Filter>Source Files\EntityComponent\Components</Filter>
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Components\PositionComponent.h">
-      <Filter>Source Files\EntityComponent\Components</Filter>
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Components\ProgramComponent.h">
-      <Filter>Source Files\EntityComponent\Components</Filter>
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Components\RenderableComponent.h">
-      <Filter>Source Files\EntityComponent\Components</Filter>
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Systems\CollisionSystem.h">
-      <Filter>Source Files\EntityComponent\Systems</Filter>
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Systems\InputHandlerSystem.h">
-      <Filter>Source Files\EntityComponent\Systems</Filter>
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Systems\ProgramSystem.h">
-      <Filter>Source Files\EntityComponent\Systems</Filter>
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Systems\RenderSystem.h">
-      <Filter>Source Files\EntityComponent\Systems</Filter>
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dungeon\DungeonFactory.h">
+      <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

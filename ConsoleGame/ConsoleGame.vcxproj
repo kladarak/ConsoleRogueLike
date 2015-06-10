@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Dungeon\DungeonFactory.cpp" />
     <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\InputHandlerSystem.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="src\Renderer\RenderTarget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Dungeon\DungeonFactory.h" />
     <ClInclude Include="src\EntityComponent\Components\CollisionComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\InputHandlerComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\PositionComponent.h" />

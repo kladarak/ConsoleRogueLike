@@ -10,6 +10,7 @@
 #include <GameEntities/RoomEntity.h>
 #include <GameEntities/PlayerEntity.h>
 #include <GameEntities/SpinnerEntity.h>
+#include <Dungeon/DungeonFactory.h>
 
 #include <EntityComponent/Systems/InputHandlerSystem.h>
 #include <EntityComponent/Systems/ProgramSystem.h>
@@ -28,7 +29,7 @@ int Game::Run()
 	mLastClockTime = std::chrono::system_clock::now();
 	mInputMonitor.StartMonitoring();
 
-	RoomEntity::Create(mWorld);
+	DungeonFactory::Generate(mWorld);
 	PlayerEntity::Create(mWorld);
 	SpinnerEntity::Create(mWorld, IVec2(20, 10));
 	SpinnerEntity::Create(mWorld, IVec2(20, 5));
