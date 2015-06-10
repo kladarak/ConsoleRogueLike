@@ -61,7 +61,7 @@ void Create(World& inWorld)
 	collisionComp->SetCollidableAt( IVec2(0, 0) );
 	
 	AsciiMesh mesh;
-	mesh.SetCharAtPosition(IVec2(0, 0), 'O');
+	mesh.SetCharAtPosition(IVec2(0, 0), 2); //2 is a smiley face on my console...
 	renderableComp->SetMesh(mesh);
 }
 

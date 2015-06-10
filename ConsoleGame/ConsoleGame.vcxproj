@@ -21,6 +21,7 @@
     <ClCompile Include="src\EntityComponent\Systems\RenderSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\TriggerSystem.cpp" />
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\GameEntities\CoinEntity.cpp" />
     <ClCompile Include="src\GameEntities\PlayerEntity.cpp" />
     <ClCompile Include="src\GameEntities\RoomEntity.cpp" />
     <ClCompile Include="src\GameEntities\SpinnerEntity.cpp" />
@@ -47,6 +48,7 @@
     <ClInclude Include="src\EntityComponent\Systems\RenderSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\TriggerSystem.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\GameEntities\CoinEntity.h" />
     <ClInclude Include="src\GameEntities\PlayerEntity.h" />
     <ClInclude Include="src\GameEntities\RoomEntity.h" />
     <ClInclude Include="src\GameEntities\SpinnerEntity.h" />

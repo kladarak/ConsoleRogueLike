@@ -17,6 +17,7 @@ public:
 
 	typedef std::function<void (const Entity& inTriggerBox, const Entity& inTriggerer)> TriggerCallback;
 
+	// TODO: Handle unregistering.
 	void							RegisterOnEnterCallback(const TriggerCallback& inOnEnter)				{ mOnEnterCallbacks.push_back(inOnEnter);	}
 	void							RegisterOnExitCallback(const TriggerCallback& inOnExit)					{ mOnExitCallbacks.push_back(inOnExit);		}
 	

@@ -88,6 +88,9 @@
     <ClCompile Include="src\Dungeon\DungeonMap.cpp">
       <Filter>Source Files\Dungeon</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\CoinEntity.cpp">
+      <Filter>Source Files\GameEntities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -173,6 +176,9 @@
     </ClInclude>
     <ClInclude Include="src\Dungeon\DungeonMap.h">
       <Filter>Source Files\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\CoinEntity.h">
+      <Filter>Source Files\GameEntities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #include "Game.h"
 
 #include <cstdio>
-#include <stdlib.h>
+#include <cstdlib>
 #include <chrono>
 #include <cstring>
 
@@ -27,6 +27,8 @@ Game::Game()
 
 int Game::Run()
 {
+	srand( (uint32_t) time(NULL) );
+
 	mLastClockTime = std::chrono::system_clock::now();
 	mInputMonitor.StartMonitoring();
 	
@@ -58,6 +60,8 @@ void Game::Update()
 	mLastClockTime	= now;
 	mFrameTime		= elapsedSec.count();
 	mTimeElapsed	+= mFrameTime;
+
+	mWorld.FlushDestroyedEntities();
 
 	InputBuffer inputBuffer = mInputMonitor.ConsumeBuffer();
 	InputHandlerSystem::Update(mWorld, inputBuffer);

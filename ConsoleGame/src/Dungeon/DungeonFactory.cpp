@@ -9,6 +9,7 @@
 #include <EntityComponent/Components/TriggerBoxComponent.h>
 
 #include "ScreenConstants.h"
+#include <GameEntities/CoinEntity.h>
 
 namespace DungeonFactory
 {
@@ -73,11 +74,13 @@ AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 	char scratchRoom[ROOM_HEIGHT][ROOM_WIDTH];
 	memset(scratchRoom, ' ', ROOM_HEIGHT*ROOM_WIDTH);
 	
+	// Walls
 	for (int i = 0; i < ROOM_WIDTH; ++i)	{ scratchRoom[0][i]				= kRoomWallHoriz[i]; }
 	for (int i = 0; i < ROOM_WIDTH; ++i)	{ scratchRoom[ROOM_HEIGHT-1][i]	= kRoomWallHoriz[i]; }
 	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ scratchRoom[i][0]				= kRoomWallVerti[i]; }
 	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ scratchRoom[i][ROOM_WIDTH-1]	= kRoomWallVerti[i]; }
 
+	// Doors
 	if ( (inDoorMask & EDoorMask_Top) > 0 )
 	{
 		for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[0][DOOR_HORIZ_OFFSET + i]	= ' '; } // remove wall
@@ -118,14 +121,14 @@ Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
 {
 	Entity entity = inWorld.CreateEntity();
 
-	auto positionComp	= entity.AddComponent<PositionComponent>();
-	auto collisionComp	= entity.AddComponent<CollisionComponent>();
-	auto renderableComp	= entity.AddComponent<RenderableComponent>();
+	entity.AddComponent<PositionComponent>( inPosition );
 	entity.AddComponent<TriggerBoxComponent>( IRect(0, 0, ROOM_WIDTH, ROOM_HEIGHT) );
 
-	positionComp->SetPosition( inPosition );
+	auto collisionComp	= entity.AddComponent<CollisionComponent>();
+	auto renderableComp	= entity.AddComponent<RenderableComponent>();
 	
 	AsciiMesh mesh = gGenerateRoom(inDoorMask);
+	renderableComp->SetMesh(mesh);
 
 	auto& fragments = mesh.GetFragments();
 	for (auto& fragment : fragments)
@@ -136,7 +139,17 @@ Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
 		}
 	}
 
-	renderableComp->SetMesh(mesh);
+
+	// Spawn random money
+	for (int i = 0; i < 10; ++i)
+	{
+		int x = rand() % (ROOM_WIDTH - 2);
+		int y = rand() % (ROOM_HEIGHT - 2);
+		IVec2 coinPos(x+1, y+1);
+		coinPos += inPosition;
+
+		CoinEntity::Create(inWorld, coinPos);
+	}
 
 	return entity;
 }
