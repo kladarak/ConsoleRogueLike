@@ -17,6 +17,7 @@
     <ClCompile Include="src\EntityComponent\Components\TriggerBoxComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\InputHandlerSystem.cpp" />
+    <ClCompile Include="src\EntityComponent\Systems\PositionSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\ProgramSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\RenderSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\TriggerSystem.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="src\EntityComponent\Components\TriggerBoxComponent.h" />
     <ClInclude Include="src\EntityComponent\Systems\CollisionSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\InputHandlerSystem.h" />
+    <ClInclude Include="src\EntityComponent\Systems\PositionSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\ProgramSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\RenderSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\TriggerSystem.h" />

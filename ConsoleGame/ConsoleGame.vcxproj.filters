@@ -115,6 +115,9 @@
     <ClCompile Include="src\GameEntities\Player\PlayerInputHandler.cpp">
       <Filter>Source Files\GameEntities\Player</Filter>
     </ClCompile>
+    <ClCompile Include="src\EntityComponent\Systems\PositionSystem.cpp">
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -224,6 +227,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Player\PlayerInputHandler.h">
       <Filter>Source Files\GameEntities\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Systems\PositionSystem.h">
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

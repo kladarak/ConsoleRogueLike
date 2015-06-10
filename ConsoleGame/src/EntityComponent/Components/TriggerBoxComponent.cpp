@@ -8,7 +8,6 @@ TriggerBoxComponent::TriggerBoxComponent(TriggerBoxComponent&& inRHS)
 	: mBounds						( inRHS.mBounds )
 	, mOnEnterCallbacks				( std::move(inRHS.mOnEnterCallbacks) )
 	, mOnExitCallbacks				( std::move(inRHS.mOnExitCallbacks) )
-	, mEntitiesInBoundsLastFrame	( std::move(inRHS.mEntitiesInBoundsLastFrame) )
 {
 }
 

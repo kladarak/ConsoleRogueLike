@@ -23,9 +23,6 @@ public:
 	
 	bool							IsInBounds(const Entity& inThis, const IVec2& inPosition) const;
 	
-	const std::vector<Entity>&		GetEntitiesInBoundsLastFrame() const									{ return mEntitiesInBoundsLastFrame; }
-	void							SetEntitiesInBoundsLastFrame(const std::vector<Entity>& inEntities) 	{ mEntitiesInBoundsLastFrame = inEntities; }
-
 	void							OnEntered(const Entity& inThis, const Entity& inTriggerer);
 	void							OnExited(const Entity& inThis, const Entity& inTriggerer);
 	
@@ -34,7 +31,6 @@ private:
 
 	std::vector<TriggerCallback>	mOnEnterCallbacks;
 	std::vector<TriggerCallback>	mOnExitCallbacks;
-	std::vector<Entity>				mEntitiesInBoundsLastFrame; // TODO: Fix cache problem when entities die.
 };
 
 class TriggererComponent

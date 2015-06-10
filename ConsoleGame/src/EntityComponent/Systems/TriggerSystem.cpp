@@ -22,61 +22,23 @@ void Update(World& inWorld)
 	for (auto& triggerBox : triggerBoxes)
 	{
 		auto triggerBoxComp = triggerBox.GetComponent<TriggerBoxComponent>();
-
-		std::vector<Entity> entitiesInBounds;
 		
 		for (auto& triggerer : triggerers)
 		{
-			auto posComp = triggerer.GetComponent<PositionComponent>();
+			auto posComp		= triggerer.GetComponent<PositionComponent>();
+			auto newPos			= posComp->GetPosition();
+			auto oldPos			= posComp->GetPreviousPosition();
 
-			if (triggerBoxComp->IsInBounds(triggerBox, posComp->GetPosition()))
-			{
-				entitiesInBounds.push_back(triggerer);
-			}
-		}
-		
-		// Swap vectors
-		auto entitiesInBoundsLastFrame = triggerBoxComp->GetEntitiesInBoundsLastFrame();
-		triggerBoxComp->SetEntitiesInBoundsLastFrame(entitiesInBounds);
-		
-		// Now do callbacks.
-		// Entity IDs should be in order, so walk over both lists, incrementing as we go.
-		auto thisFrameBegin = entitiesInBounds.begin();
-		auto thisFrameEnd	= entitiesInBounds.end();
-		auto lastFrameBegin = entitiesInBoundsLastFrame.begin();
-		auto lastFrameEnd	= entitiesInBoundsLastFrame.end();
+			bool wasInTrigger	= triggerBoxComp->IsInBounds(triggerBox, oldPos);
+			bool isInTrigger	= triggerBoxComp->IsInBounds(triggerBox, newPos);
 
-		while (thisFrameBegin != thisFrameEnd || lastFrameBegin != lastFrameEnd)
-		{
-			if (thisFrameBegin != thisFrameEnd && lastFrameBegin != lastFrameEnd)
+			if (isInTrigger && !wasInTrigger)
 			{
-				auto& entityThis = *thisFrameBegin;
-				auto& entityLast = *lastFrameBegin;
-				if (entityThis == entityLast)
-				{
-					++thisFrameBegin;
-					++lastFrameBegin;
-				}
-				else if (entityThis.GetID() < entityLast.GetID())
-				{
-					triggerBoxComp->OnEntered(triggerBox, entityThis);
-					++thisFrameBegin;
-				}
-				else // if (entityThis.GetID() > entityLast.GetID())
-				{
-					triggerBoxComp->OnExited(triggerBox, entityLast);
-					++lastFrameBegin;
-				}
+				triggerBoxComp->OnEntered(triggerBox, triggerer);
 			}
-			else if (thisFrameBegin != thisFrameEnd)
+			else if (!isInTrigger && wasInTrigger)
 			{
-				triggerBoxComp->OnEntered(triggerBox, *thisFrameBegin);
-				++thisFrameBegin;
-			}
-			else //if (lastFrameBegin != lastFrameEnd)
-			{
-				triggerBoxComp->OnExited(triggerBox, *lastFrameBegin);
-				++lastFrameBegin;
+				triggerBoxComp->OnExited(triggerBox, triggerer);
 			}
 		}
 	}

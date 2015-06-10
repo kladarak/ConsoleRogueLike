@@ -15,6 +15,7 @@
 #include <Dungeon/DungeonFactory.h>
 
 #include <EntityComponent/Systems/InputHandlerSystem.h>
+#include <EntityComponent/Systems/PositionSystem.h>
 #include <EntityComponent/Systems/ProgramSystem.h>
 #include <EntityComponent/Systems/RenderSystem.h>
 #include <EntityComponent/Systems/TriggerSystem.h>
@@ -71,6 +72,8 @@ void Game::Update()
 	mTimeElapsed	+= mFrameTime;
 
 	mWorld.FlushDestroyedEntities();
+
+	PositionSystem::SwapPositionBuffers(mWorld);
 
 	InputBuffer inputBuffer = mInputMonitor.ConsumeBuffer();
 	InputHandlerSystem::Update(mWorld, inputBuffer);
