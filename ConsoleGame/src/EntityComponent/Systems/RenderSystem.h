@@ -2,10 +2,9 @@
 
 class World;
 class RenderTarget;
+struct IVec2;
 
 namespace RenderSystem
 {
-
-	void Render(World* inWorld, RenderTarget& inTarget);
-
+	void Render(World& inWorld, const IVec2& inCameraPosition, RenderTarget& inTarget);
 }

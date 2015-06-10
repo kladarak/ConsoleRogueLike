@@ -6,6 +6,7 @@
 #include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
+#include <EntityComponent/Components/TriggerBoxComponent.h>
 
 #include "ScreenConstants.h"
 
@@ -26,7 +27,7 @@ enum
 };
 
 static const std::string kWhiteSpace = " \n\r\t\0";
-static const char kRoomWallHoriz[ROOM_WIDTH] = " ____________________________________ ";
+static const char kRoomWallHoriz[ROOM_WIDTH+1] = " _____________________________________ "; //+1 for terminating character...
 static const char kRoomWallVerti[ROOM_HEIGHT] =
 {
 	' ',
@@ -75,7 +76,7 @@ AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 	for (int i = 0; i < ROOM_WIDTH; ++i)	{ scratchRoom[0][i]				= kRoomWallHoriz[i]; }
 	for (int i = 0; i < ROOM_WIDTH; ++i)	{ scratchRoom[ROOM_HEIGHT-1][i]	= kRoomWallHoriz[i]; }
 	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ scratchRoom[i][0]				= kRoomWallVerti[i]; }
-	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ scratchRoom[i][ROOM_WIDTH-2]	= kRoomWallVerti[i]; }
+	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ scratchRoom[i][ROOM_WIDTH-1]	= kRoomWallVerti[i]; }
 
 	if ( (inDoorMask & EDoorMask_Top) > 0 )
 	{
@@ -96,8 +97,8 @@ AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 	
 	if ( (inDoorMask & EDoorMask_Right) > 0 )
 	{
-		for (int i = 1; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][ROOM_WIDTH-2]	= ' '; } // remove wall, but not the first bit.
-		for (int i = 0; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][ROOM_WIDTH-3]	= kRoomDoorVerti[i]; }
+		for (int i = 1; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][ROOM_WIDTH-1]	= ' '; } // remove wall, but not the first bit.
+		for (int i = 0; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][ROOM_WIDTH-2]	= kRoomDoorVerti[i]; }
 	}
 
 	AsciiMesh outMesh;
@@ -113,13 +114,14 @@ AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 	return outMesh;
 }
 
-void CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
+Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
 {
 	Entity entity = inWorld.CreateEntity();
 
 	auto positionComp	= entity.AddComponent<PositionComponent>();
 	auto collisionComp	= entity.AddComponent<CollisionComponent>();
 	auto renderableComp	= entity.AddComponent<RenderableComponent>();
+	entity.AddComponent<TriggerBoxComponent>( IRect(0, 0, ROOM_WIDTH, ROOM_HEIGHT) );
 
 	positionComp->SetPosition( inPosition );
 	
@@ -135,10 +137,14 @@ void CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
 	}
 
 	renderableComp->SetMesh(mesh);
+
+	return entity;
 }
 
-void Generate(World& inWorld)
+std::vector<Entity> Generate(World& inWorld)
 {
+	std::vector<Entity> rooms;
+
 	for (int col = 0; col < ROOM_COL_COUNT; ++col)
 	{
 		for (int row = 0; row < ROOM_ROW_COUNT; ++row)
@@ -151,9 +157,12 @@ void Generate(World& inWorld)
 			doorMask |= (col != (ROOM_COL_COUNT-1)) ? EDoorMask_Right	: EDoorMask_None;
 			doorMask |= (row != (ROOM_ROW_COUNT-1)) ? EDoorMask_Bottom	: EDoorMask_None;
 
-			CreateRoom(inWorld, (EDoorMask) doorMask, pos);
+			auto room = CreateRoom(inWorld, (EDoorMask) doorMask, pos);
+			rooms.push_back(room);
 		}
 	}
+
+	return rooms;
 }
 
 }

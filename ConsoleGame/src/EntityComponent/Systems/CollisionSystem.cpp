@@ -1,6 +1,7 @@
 #include "CollisionSystem.h"
 
 #include <EntityComponentSystem/World/World.h>
+#include <EntityComponentSystem/World/EntityFilter.h>
 
 #include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
@@ -8,37 +9,29 @@
 namespace CollisionSystem
 {
 
-bool CollidesWithAnyEntity(World* inWorld, const Entity& inExceptThis, const IVec2& inPosition)
+bool CollidesWithAnyEntity(World& inWorld, const Entity& inExceptThis, const IVec2& inPosition)
 {
-	bool collides = false;
-	
-	inWorld->ForEachEntity( [&] (Entity inEntity)
+	auto collidableEntities = inWorld.GetEntities( EntityFilter().MustHave<PositionComponent>().MustHave<CollisionComponent>() );
+
+	for (auto& entity : collidableEntities)
 	{
-		if (inEntity == inExceptThis)
+		if (entity != inExceptThis)
 		{
-			return;
+			if (CollidesWith(entity, inPosition))
+			{
+				return true;
+			}
 		}
+	}
 
-		if (CollidesWith(inEntity, inPosition))
-		{
-			collides = true;
-		}
-	} );
-
-	return collides;
+	return false;
 }
 
 bool CollidesWith(const Entity& inCollidableEntity, const IVec2& inPosition)
 {
 	auto positionComp	= inCollidableEntity.GetComponent<PositionComponent>();
 	auto collisionComp	= inCollidableEntity.GetComponent<CollisionComponent>();
-
-	if (nullptr == positionComp || nullptr == collisionComp)
-	{
-		return false;
-	}
-
-	auto relativePos = inPosition - positionComp->GetPosition();
+	auto relativePos	= inPosition - positionComp->GetPosition();
 
 	auto& collidablePositions = collisionComp->GetCollidablePositions();
 	for (auto& pos : collidablePositions)

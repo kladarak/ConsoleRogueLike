@@ -1,6 +1,5 @@
 #include "SpinnerEntity.h"
 
-
 #include <EntityComponentSystem/World/World.h>
 
 #include <EntityComponent/Components/CollisionComponent.h>

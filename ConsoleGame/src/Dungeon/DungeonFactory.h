@@ -1,8 +1,8 @@
 #pragma once
 
-class World;
+#include <EntityComponentSystem/World/World.h>
 
 namespace DungeonFactory
 {
-	void Generate(World& inWorld);
+	std::vector<Entity> Generate(World& inGlobalSystems);
 }

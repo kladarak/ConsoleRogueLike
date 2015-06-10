@@ -15,12 +15,13 @@
 #include <EntityComponent/Systems/InputHandlerSystem.h>
 #include <EntityComponent/Systems/ProgramSystem.h>
 #include <EntityComponent/Systems/RenderSystem.h>
+#include <EntityComponent/Systems/TriggerSystem.h>
 
 Game::Game()
 	: mLastClockTime		( std::chrono::system_clock::now() )
 	, mFrameTime			( 0.0 )
 	, mTimeElapsed			( 0.0 )
-	, mLastRenderedTarget	( ScreenConstants::EMapCols, ScreenConstants::EMapRows )
+	, mLastRenderedTarget	( ScreenConstants::EMapCols+1, ScreenConstants::EMapRows )
 {
 }
 
@@ -28,8 +29,12 @@ int Game::Run()
 {
 	mLastClockTime = std::chrono::system_clock::now();
 	mInputMonitor.StartMonitoring();
+	
+	auto rooms = DungeonFactory::Generate(mWorld);
+	mDungeonMap.Init(rooms);
+	
+	mCameraSystem.Init(mWorld, mDungeonMap);
 
-	DungeonFactory::Generate(mWorld);
 	PlayerEntity::Create(mWorld);
 	SpinnerEntity::Create(mWorld, IVec2(20, 10));
 	SpinnerEntity::Create(mWorld, IVec2(20, 5));
@@ -55,17 +60,20 @@ void Game::Update()
 	mTimeElapsed	+= mFrameTime;
 
 	InputBuffer inputBuffer = mInputMonitor.ConsumeBuffer();
-	InputHandlerSystem::Update(&mWorld, inputBuffer);
+	InputHandlerSystem::Update(mWorld, inputBuffer);
 
-	ProgramSystem::Update(&mWorld, (float) mFrameTime);
+	TriggerSystem::Update(mWorld);
+
+	ProgramSystem::Update(mWorld, (float) mFrameTime);
 }
 
 void Game::Render()
 {
 	using namespace ScreenConstants;
 
-	RenderTarget renderTarget(EMapCols, EMapRows);
-	RenderSystem::Render(&mWorld, renderTarget);
+	RenderTarget renderTarget(EMapCols+1, EMapRows);
+	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
+	RenderSystem::Render(mWorld, cameraPosition, renderTarget);
 
 	if (mLastRenderedTarget != renderTarget)
 	{

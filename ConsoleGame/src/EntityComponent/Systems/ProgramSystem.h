@@ -4,5 +4,5 @@ class World;
 
 namespace ProgramSystem
 {
-	void Update(World* inWorld, float inFrameTime);
+	void Update(World& inWorld, float inFrameTime);
 }

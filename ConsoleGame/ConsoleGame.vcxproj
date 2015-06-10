@@ -12,15 +12,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Dungeon\DungeonFactory.cpp" />
+    <ClCompile Include="src\Dungeon\DungeonMap.cpp" />
     <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp" />
+    <ClCompile Include="src\EntityComponent\Components\TriggerBoxComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\InputHandlerSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\ProgramSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\RenderSystem.cpp" />
+    <ClCompile Include="src\EntityComponent\Systems\TriggerSystem.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameEntities\PlayerEntity.cpp" />
     <ClCompile Include="src\GameEntities\RoomEntity.cpp" />
     <ClCompile Include="src\GameEntities\SpinnerEntity.cpp" />
+    <ClCompile Include="src\GameSystems\CameraSystem.cpp" />
     <ClCompile Include="src\Input\InputBuffer.cpp" />
     <ClCompile Include="src\Input\InputMonitor.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -28,22 +32,30 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dungeon\DungeonFactory.h" />
+    <ClInclude Include="src\Dungeon\DungeonMap.h" />
+    <ClInclude Include="src\EntityComponent\Components\CameraComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\CollisionComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\InputHandlerComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\PlayerComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\PositionComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\ProgramComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\RenderableComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\TriggerBoxComponent.h" />
     <ClInclude Include="src\EntityComponent\Systems\CollisionSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\InputHandlerSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\ProgramSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\RenderSystem.h" />
+    <ClInclude Include="src\EntityComponent\Systems\TriggerSystem.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GameEntities\PlayerEntity.h" />
     <ClInclude Include="src\GameEntities\RoomEntity.h" />
     <ClInclude Include="src\GameEntities\SpinnerEntity.h" />
+    <ClInclude Include="src\GameSystems\CameraSystem.h" />
     <ClInclude Include="src\Input\InputBuffer.h" />
     <ClInclude Include="src\Input\InputMonitor.h" />
+    <ClInclude Include="src\Maths\IRect.h" />
     <ClInclude Include="src\Maths\IVec2.h" />
+    <ClInclude Include="src\Messages.h" />
     <ClInclude Include="src\Renderer\AsciiMesh.h" />
     <ClInclude Include="src\Renderer\RenderTarget.h" />
     <ClInclude Include="src\ScreenConstants.h" />

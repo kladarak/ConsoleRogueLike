@@ -29,6 +29,9 @@
     <Filter Include="Source Files\Dungeon">
       <UniqueIdentifier>{2bdbb4f5-1a13-473d-a799-99bd20c8d610}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameSystems">
+      <UniqueIdentifier>{50710e28-606e-44f4-b213-047f920fc61f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -71,6 +74,18 @@
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\Dungeon\DungeonFactory.cpp">
+      <Filter>Source Files\Dungeon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EntityComponent\Components\TriggerBoxComponent.cpp">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EntityComponent\Systems\TriggerSystem.cpp">
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameSystems\CameraSystem.cpp">
+      <Filter>Source Files\GameSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dungeon\DungeonMap.cpp">
       <Filter>Source Files\Dungeon</Filter>
     </ClCompile>
   </ItemGroup>
@@ -133,6 +148,30 @@
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\Dungeon\DungeonFactory.h">
+      <Filter>Source Files\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Components\TriggerBoxComponent.h">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Maths\IRect.h">
+      <Filter>Source Files\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Systems\TriggerSystem.h">
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Components\CameraComponent.h">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameSystems\CameraSystem.h">
+      <Filter>Source Files\GameSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Components\PlayerComponent.h">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Messages.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dungeon\DungeonMap.h">
       <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
   </ItemGroup>

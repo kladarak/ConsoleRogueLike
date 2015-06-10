@@ -5,6 +5,8 @@
 #include <EntityComponentSystem/World/World.h>
 
 #include <Input/InputMonitor.h>
+#include <GameSystems/CameraSystem.h>
+#include <Dungeon/DungeonMap.h>
 #include <Renderer/RenderTarget.h>
 
 class Game
@@ -22,7 +24,9 @@ private:
 	double			mFrameTime;
 	double			mTimeElapsed;
 	
-	InputMonitor	mInputMonitor;
 	World			mWorld;
+	InputMonitor	mInputMonitor;
+	DungeonMap		mDungeonMap;
+	CameraSystem	mCameraSystem;
 	RenderTarget	mLastRenderedTarget;
 };

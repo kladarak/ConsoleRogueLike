@@ -5,5 +5,5 @@ class InputBuffer;
 
 namespace InputHandlerSystem
 {
-	void Update(World* inWorld, const InputBuffer& inInputBuffer);
+	void Update(World& inWorld, const InputBuffer& inInputBuffer);
 }

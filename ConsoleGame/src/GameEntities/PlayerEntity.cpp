@@ -6,6 +6,8 @@
 #include <EntityComponent/Components/InputHandlerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
+#include <EntityComponent/Components/TriggerBoxComponent.h>
+#include <EntityComponent/Components/PlayerComponent.h>
 
 #include <EntityComponent/Systems/CollisionSystem.h>
 
@@ -37,7 +39,7 @@ static void HandleInput(const Entity& inThis, const InputBuffer& inBuffer)
 		currentPos.mY += 1;
 	}
 
-	if ( !CollisionSystem::CollidesWithAnyEntity(inThis.GetWorld(), inThis, currentPos) )
+	if ( !CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, currentPos) )
 	{
 		positionComp->SetPosition(currentPos);
 	}
@@ -51,6 +53,8 @@ void Create(World& inWorld)
 	auto inputHandlerComp	= entity.AddComponent<InputHandlerComponent>();
 	auto collisionComp		= entity.AddComponent<CollisionComponent>();
 	auto renderableComp		= entity.AddComponent<RenderableComponent>();
+	entity.AddComponent<TriggererComponent>();
+	entity.AddComponent<PlayerComponent>();
 
 	positionComp->SetPosition( IVec2(10, 10) );
 	inputHandlerComp->RegisterHandler( &HandleInput );
