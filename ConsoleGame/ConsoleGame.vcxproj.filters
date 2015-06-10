@@ -35,6 +35,9 @@
     <Filter Include="Source Files\UI">
       <UniqueIdentifier>{32a070be-d57e-4e8a-8187-b31f7908aaea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Messages">
+      <UniqueIdentifier>{0415bbb2-2bf9-46af-9dff-44c049098452}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -187,7 +190,7 @@
       <Filter>Source Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="src\Messages\Messages.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Messages</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
