@@ -30,6 +30,7 @@
     <ClCompile Include="src\Input\InputMonitor.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer\RenderTarget.cpp" />
+    <ClCompile Include="src\UI\HUD.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dungeon\DungeonFactory.h" />
@@ -57,10 +58,11 @@
     <ClInclude Include="src\Input\InputMonitor.h" />
     <ClInclude Include="src\Maths\IRect.h" />
     <ClInclude Include="src\Maths\IVec2.h" />
-    <ClInclude Include="src\Messages.h" />
+    <ClInclude Include="src\Messages\Messages.h" />
     <ClInclude Include="src\Renderer\AsciiMesh.h" />
     <ClInclude Include="src\Renderer\RenderTarget.h" />
     <ClInclude Include="src\ScreenConstants.h" />
+    <ClInclude Include="src\UI\HUD.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5E0F6BF6-0B60-46EB-87BD-FD1037141483}</ProjectGuid>

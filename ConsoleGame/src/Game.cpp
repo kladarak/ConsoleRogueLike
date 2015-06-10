@@ -22,6 +22,7 @@ Game::Game()
 	, mFrameTime			( 0.0 )
 	, mTimeElapsed			( 0.0 )
 	, mLastRenderedTarget	( ScreenConstants::EMapCols+1, ScreenConstants::EMapRows )
+	, mIsRunning(false)
 {
 }
 
@@ -30,9 +31,12 @@ int Game::Run()
 	srand( (uint32_t) time(NULL) );
 
 	mLastClockTime = std::chrono::system_clock::now();
+
 	mInputMonitor.StartMonitoring();
 	
-	auto rooms = DungeonFactory::Generate(mWorld);
+	mHUD.Init(mMessageBroadcaster);
+
+	auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
 	mDungeonMap.Init(rooms);
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
@@ -42,7 +46,8 @@ int Game::Run()
 	SpinnerEntity::Create(mWorld, IVec2(20, 5));
 	SpinnerEntity::Create(mWorld, IVec2(10, 5));
 
-	while (true)
+	mIsRunning = true;
+	while (mIsRunning)
 	{
 		Update();
 		Render();
@@ -79,10 +84,12 @@ void Game::Render()
 	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
 	RenderSystem::Render(mWorld, cameraPosition, renderTarget);
 
-	if (mLastRenderedTarget != renderTarget)
+	if (mLastRenderedTarget != renderTarget || mHUD.NeedsRefreshing())
 	{
 		system("cls");
 		renderTarget.Render();
 		mLastRenderedTarget = renderTarget;
+
+		mHUD.Render();
 	}
 }

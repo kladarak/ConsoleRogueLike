@@ -117,7 +117,7 @@ AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 	return outMesh;
 }
 
-Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
+Entity CreateRoom(World& inWorld, MessageBroadcaster& inMessageBroadcaster, EDoorMask inDoorMask, const IVec2& inPosition)
 {
 	Entity entity = inWorld.CreateEntity();
 
@@ -148,13 +148,13 @@ Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
 		IVec2 coinPos(x+1, y+1);
 		coinPos += inPosition;
 
-		CoinEntity::Create(inWorld, coinPos);
+		CoinEntity::Create(inWorld, inMessageBroadcaster, coinPos);
 	}
 
 	return entity;
 }
 
-std::vector<Entity> Generate(World& inWorld)
+std::vector<Entity> Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 {
 	std::vector<Entity> rooms;
 
@@ -170,7 +170,7 @@ std::vector<Entity> Generate(World& inWorld)
 			doorMask |= (col != (ROOM_COL_COUNT-1)) ? EDoorMask_Right	: EDoorMask_None;
 			doorMask |= (row != (ROOM_ROW_COUNT-1)) ? EDoorMask_Bottom	: EDoorMask_None;
 
-			auto room = CreateRoom(inWorld, (EDoorMask) doorMask, pos);
+			auto room = CreateRoom(inWorld, inMessageBroadcaster, (EDoorMask) doorMask, pos);
 			rooms.push_back(room);
 		}
 	}

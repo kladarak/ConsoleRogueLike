@@ -32,6 +32,9 @@
     <Filter Include="Source Files\GameSystems">
       <UniqueIdentifier>{50710e28-606e-44f4-b213-047f920fc61f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{32a070be-d57e-4e8a-8187-b31f7908aaea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -90,6 +93,9 @@
     </ClCompile>
     <ClCompile Include="src\GameEntities\CoinEntity.cpp">
       <Filter>Source Files\GameEntities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\HUD.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,14 +177,17 @@
     <ClInclude Include="src\EntityComponent\Components\PlayerComponent.h">
       <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClInclude>
-    <ClInclude Include="src\Messages.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Dungeon\DungeonMap.h">
       <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEntities\CoinEntity.h">
       <Filter>Source Files\GameEntities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\HUD.h">
+      <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Messages\Messages.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
