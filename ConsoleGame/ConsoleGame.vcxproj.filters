@@ -38,6 +38,9 @@
     <Filter Include="Source Files\Messages">
       <UniqueIdentifier>{0415bbb2-2bf9-46af-9dff-44c049098452}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameEntities\Player">
+      <UniqueIdentifier>{e518a317-536e-41f1-af26-d552fd0e88ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -54,9 +57,6 @@
     </ClCompile>
     <ClCompile Include="src\Input\InputMonitor.cpp">
       <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GameEntities\PlayerEntity.cpp">
-      <Filter>Source Files\GameEntities</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEntities\RoomEntity.cpp">
       <Filter>Source Files\GameEntities</Filter>
@@ -100,6 +100,12 @@
     <ClCompile Include="src\UI\HUD.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\PlayerEntity.cpp">
+      <Filter>Source Files\GameEntities\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\PlayerUpdater.cpp">
+      <Filter>Source Files\GameEntities\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -122,9 +128,6 @@
     </ClInclude>
     <ClInclude Include="src\Input\InputMonitor.h">
       <Filter>Source Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameEntities\PlayerEntity.h">
-      <Filter>Source Files\GameEntities</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEntities\RoomEntity.h">
       <Filter>Source Files\GameEntities</Filter>
@@ -191,6 +194,21 @@
     </ClInclude>
     <ClInclude Include="src\Messages\Messages.h">
       <Filter>Source Files\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\PlayerEntity.h">
+      <Filter>Source Files\GameEntities\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\PlayerUpdater.h">
+      <Filter>Source Files\GameEntities\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\PlayerUpdateState.h">
+      <Filter>Source Files\GameEntities\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\PlayerEnums.h">
+      <Filter>Source Files\GameEntities\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\PlayerMeshes.h">
+      <Filter>Source Files\GameEntities\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

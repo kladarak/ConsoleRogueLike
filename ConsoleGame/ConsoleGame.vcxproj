@@ -22,7 +22,8 @@
     <ClCompile Include="src\EntityComponent\Systems\TriggerSystem.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameEntities\CoinEntity.cpp" />
-    <ClCompile Include="src\GameEntities\PlayerEntity.cpp" />
+    <ClCompile Include="src\GameEntities\Player\PlayerEntity.cpp" />
+    <ClCompile Include="src\GameEntities\Player\PlayerUpdater.cpp" />
     <ClCompile Include="src\GameEntities\RoomEntity.cpp" />
     <ClCompile Include="src\GameEntities\SpinnerEntity.cpp" />
     <ClCompile Include="src\GameSystems\CameraSystem.cpp" />
@@ -50,7 +51,11 @@
     <ClInclude Include="src\EntityComponent\Systems\TriggerSystem.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GameEntities\CoinEntity.h" />
-    <ClInclude Include="src\GameEntities\PlayerEntity.h" />
+    <ClInclude Include="src\GameEntities\Player\PlayerEntity.h" />
+    <ClInclude Include="src\GameEntities\Player\PlayerEnums.h" />
+    <ClInclude Include="src\GameEntities\Player\PlayerMeshes.h" />
+    <ClInclude Include="src\GameEntities\Player\PlayerUpdater.h" />
+    <ClInclude Include="src\GameEntities\Player\PlayerUpdateState.h" />
     <ClInclude Include="src\GameEntities\RoomEntity.h" />
     <ClInclude Include="src\GameEntities\SpinnerEntity.h" />
     <ClInclude Include="src\GameSystems\CameraSystem.h" />
