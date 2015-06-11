@@ -119,6 +119,7 @@ AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 		}
 	}
 
+	//return std::move(outMesh);
 	return outMesh;
 }
 
@@ -135,14 +136,13 @@ Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
 	AsciiMesh mesh = gGenerateRoom(inDoorMask);
 	renderableComp->SetMesh(mesh);
 
-	auto& fragments = mesh.GetFragments();
-	for (auto& fragment : fragments)
+	mesh.ForEachFrag( [&] (int inX, int inY, char inChar)
 	{
-		if ( kWhiteSpace.find( fragment.mCharacter ) == std::string::npos )
+		if ( kWhiteSpace.find( inChar ) == std::string::npos )
 		{
-			collisionComp->SetCollidableAt( fragment.mX, fragment.mY );
+			collisionComp->SetCollidableAt( inX, inY );
 		}
-	}
+	} );
 
 	return entity;
 }

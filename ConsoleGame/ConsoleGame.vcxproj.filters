@@ -44,6 +44,9 @@
     <Filter Include="Source Files\GameEntities\Monsters">
       <UniqueIdentifier>{160c4f79-f520-4d6a-abbf-76d7c684730c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Containers">
+      <UniqueIdentifier>{bc0e45d7-0f76-4061-9c17-b488a1ac254e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -117,6 +120,9 @@
     </ClCompile>
     <ClCompile Include="src\EntityComponent\Systems\PositionSystem.cpp">
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\AsciiMesh.cpp">
+      <Filter>Source Files\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -230,6 +236,9 @@
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Systems\PositionSystem.h">
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Containers\Dynamic2DVector.h">
+      <Filter>Source Files\Containers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

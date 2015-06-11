@@ -33,10 +33,12 @@
     <ClCompile Include="src\Input\InputBuffer.cpp" />
     <ClCompile Include="src\Input\InputMonitor.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Renderer\AsciiMesh.cpp" />
     <ClCompile Include="src\Renderer\RenderTarget.cpp" />
     <ClCompile Include="src\UI\HUD.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Containers\Dynamic2DVector.h" />
     <ClInclude Include="src\Dungeon\DungeonFactory.h" />
     <ClInclude Include="src\Dungeon\DungeonMap.h" />
     <ClInclude Include="src\EntityComponent\Components\CameraComponent.h" />

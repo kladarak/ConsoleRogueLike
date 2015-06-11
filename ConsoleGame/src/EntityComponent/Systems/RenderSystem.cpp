@@ -24,14 +24,13 @@ static void RenderEntityToTarget(const Entity& inEntity, const IVec2& inCameraPo
 	position		-= inCameraPosition;
 
 	auto& mesh		= renderableComp->GetMesh();
-	auto& fragments = mesh.GetFragments();
 
-	for (auto& frag : fragments)
+	mesh.ForEachFrag( [&] (int inX, int inY, char inChar)
 	{
-		int x = frag.mX + position.mX;
-		int y = frag.mY + position.mY;
-		inTarget.Set(x, y, frag.mCharacter);
-	}
+		int x = inX + position.mX;
+		int y = inY + position.mY;
+		inTarget.Set(x, y, inChar);
+	} );
 }
 
 void Render(World& inWorld, const IVec2& inCameraPosition, RenderTarget& inTarget)
