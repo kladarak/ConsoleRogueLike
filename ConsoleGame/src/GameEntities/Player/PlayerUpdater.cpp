@@ -1,10 +1,14 @@
 #include "PlayerUpdater.h"
 
+#include <Core/Messaging/MessageBroadcaster.h>
+
 #include <EntityComponentSystem/World/World.h>
 
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
+
+#include <Messages/Messages.h>
 
 #include "PlayerUpdateState.h"
 #include "PlayerMeshes.h"
@@ -13,8 +17,9 @@ namespace Player
 {
 
 static const float kStateHoldTime = 0.5f;
+static const float kDamagedFlashDuration = 2.0f;
 
-void UpdatePlayer(const Entity& inPlayer, float inFrameTime)
+void UpdatePlayer(const Entity& inPlayer, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
 {
 	auto playerComp			= inPlayer.GetComponent<PlayerComponent>();
 	auto renderableComp		= inPlayer.GetComponent<RenderableComponent>();
@@ -36,6 +41,20 @@ void UpdatePlayer(const Entity& inPlayer, float inFrameTime)
 		updateState->mTimeInState = 0.0f;
 	}
 
+	if (state == EState_Attacking)
+	{
+		auto position = inPlayer.GetComponent<PositionComponent>()->GetPosition();
+		switch (facingDirection)
+		{
+			case EFacingDirection_Left:		position.mX -= 1; break;
+			case EFacingDirection_Right:	position.mX += 1; break;
+			case EFacingDirection_Up:		position.mY -= 1; break;
+			case EFacingDirection_Down:		position.mY += 1; break;
+		}
+
+		inMsgBroadcaster.Broadcast( PlayerAttackMsg(inPlayer, position) );
+	}
+
 	if (state != updateState->mLastState || facingDirection != updateState->mLastFacingDirection)
 	{
 		updateState->mLastState				= state;
@@ -54,6 +73,33 @@ void UpdatePlayer(const Entity& inPlayer, float inFrameTime)
 
 		renderableComp->SetMesh( meshes[facingDirection] );
 	}
+
+	if (updateState->mDamagedFlashTimeRemaining > 0.0f)
+	{
+		updateState->mDamagedFlashTimeRemaining -= inFrameTime;
+		
+		float timeRemaining = updateState->mDamagedFlashTimeRemaining;
+		
+		int anim = (int) (timeRemaining * 4.0f);
+		bool visible = (anim % 2) == 0;
+		renderableComp->SetVisible(visible);
+	}
+	else
+	{
+		renderableComp->SetVisible(true);
+	}
+}
+
+void OnTouchedMonster(const TouchedMonsterMsg& inMsg)
+{
+	auto updateState = inMsg.mPlayer.GetComponent<PlayerUpdateState>();
+	updateState->mDamagedFlashTimeRemaining = kDamagedFlashDuration;
+
+	// Go back to previous position
+	auto posComp	= inMsg.mPlayer.GetComponent<PositionComponent>();
+	auto oldPos		= posComp->GetPreviousPosition();
+	//posComp->SwapPositionBuffers(); // Doing this might fix trigger box problems, but it seems a bit hacky...
+	posComp->SetPosition(oldPos);
 }
 
 }

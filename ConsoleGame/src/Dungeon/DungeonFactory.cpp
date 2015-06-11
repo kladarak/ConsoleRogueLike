@@ -181,7 +181,7 @@ void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
 
 			if ( !CollisionSystem::CollidesWith(inRoom, monsterPos) )
 			{
-				MonsterEntityFactory::Create(*inRoom.GetWorld(), monsterPos);
+				MonsterEntityFactory::Create(*inRoom.GetWorld(), inMessageBroadcaster, monsterPos);
 				addedMonster = true;
 			}
 		}

@@ -1,5 +1,7 @@
 #include "PlayerEntity.h"
 
+#include <Core/Messaging/MessageBroadcaster.h>
+
 #include <EntityComponentSystem/World/World.h>
 
 #include <EntityComponent/Components/CollisionComponent.h>
@@ -10,6 +12,8 @@
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
 
+#include <Messages/Messages.h>
+
 #include "PlayerUpdateState.h"
 #include "PlayerInputHandler.h"
 #include "PlayerUpdater.h"
@@ -18,7 +22,7 @@
 namespace PlayerEntity
 {
 
-void Create(World& inWorld)
+void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster)
 {
 	Entity entity = inWorld.CreateEntity();
 
@@ -34,7 +38,13 @@ void Create(World& inWorld)
 
 	collisionComp->SetCollidableAt( IVec2(0, 0) );
 	inputHandlerComp->RegisterHandler( &Player::HandleInput );
-	programComp->RegisterProgram( &Player::UpdatePlayer );
+
+	programComp->RegisterProgram( [&] (const Entity& inPlayer, float inFrameTime)
+	{
+		Player::UpdatePlayer(inPlayer, inFrameTime, inMsgBroadcaster);
+	} );
+
+	inMsgBroadcaster.Register<TouchedMonsterMsg>( &Player::OnTouchedMonster );
 }
 
 }

@@ -13,9 +13,13 @@ namespace RenderSystem
 	
 static void RenderEntityToTarget(const Entity& inEntity, const IVec2& inCameraPosition, RenderTarget& inTarget)
 {
-	auto positionComp	= inEntity.GetComponent<PositionComponent>();
 	auto renderableComp = inEntity.GetComponent<RenderableComponent>();
-
+	if (!renderableComp->IsVisible())
+	{
+		return;
+	}
+	
+	auto positionComp	= inEntity.GetComponent<PositionComponent>();
 	IVec2 position	= positionComp->GetPosition();
 	position		-= inCameraPosition;
 

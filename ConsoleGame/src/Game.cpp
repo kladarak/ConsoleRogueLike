@@ -46,7 +46,7 @@ int Game::Run()
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
 
-	PlayerEntity::Create(mWorld);
+	PlayerEntity::Create(mWorld, mMessageBroadcaster);
 	SpinnerEntity::Create(mWorld, IVec2(20, 10));
 	SpinnerEntity::Create(mWorld, IVec2(20, 5));
 	SpinnerEntity::Create(mWorld, IVec2(10, 5));
