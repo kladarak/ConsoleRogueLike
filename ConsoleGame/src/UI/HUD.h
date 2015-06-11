@@ -14,7 +14,7 @@ public:
 	void	Render();
 
 private:
-	void	OnCoinCollected(const CoinCollectedMessage&);
+	void	OnCoinCollected();
 
 	int		mMoneyCollected;
 	bool	mDirty;

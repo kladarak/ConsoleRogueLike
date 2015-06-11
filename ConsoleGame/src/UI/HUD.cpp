@@ -12,10 +12,10 @@ HUD::HUD()
 
 void HUD::Init(MessageBroadcaster& inMessageBroadcaster)
 {
-	inMessageBroadcaster.Register<CoinCollectedMessage, HUD, &HUD::OnCoinCollected>(this);
+	inMessageBroadcaster.Register<CoinCollectedMessage>( [this] (const CoinCollectedMessage&) { OnCoinCollected(); } );
 }
 
-void HUD::OnCoinCollected(const CoinCollectedMessage&)
+void HUD::OnCoinCollected()
 {
 	mMoneyCollected += 100;
 	mDirty = true;
