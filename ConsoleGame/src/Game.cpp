@@ -14,6 +14,7 @@
 #include <GameEntities/SpinnerEntity.h>
 #include <Dungeon/DungeonFactory.h>
 
+#include <EntityComponent/Systems/AnimationSystem.h>
 #include <EntityComponent/Systems/InputHandlerSystem.h>
 #include <EntityComponent/Systems/PositionSystem.h>
 #include <EntityComponent/Systems/ProgramSystem.h>
@@ -81,6 +82,8 @@ void Game::Update()
 	TriggerSystem::Update(mWorld);
 
 	ProgramSystem::Update(mWorld, (float) mFrameTime);
+
+	AnimationSystem::Update(mWorld, (float) mFrameTime);
 }
 
 void Game::Render()

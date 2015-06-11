@@ -124,6 +124,12 @@
     <ClCompile Include="src\Renderer\AsciiMesh.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\EntityComponent\Components\AnimationComponent.cpp">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EntityComponent\Systems\AnimationSystem.cpp">
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -239,6 +245,12 @@
     </ClInclude>
     <ClInclude Include="src\Containers\Dynamic2DVector.h">
       <Filter>Source Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Components\AnimationComponent.h">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Systems\AnimationSystem.h">
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
