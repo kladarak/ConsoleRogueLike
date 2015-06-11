@@ -18,8 +18,9 @@
 namespace MonsterEntityFactory
 {
 
-static const char	kMonsterAnimation[]	= "e@";
-static const float	kAnimationDuration	= 0.5f;
+static const char	kMonsterAnimation[]			= "e@";
+static const float	kAnimationDuration			= 0.5f;
+static const float	kMovementCooldownDuration	= 1.0f;
 
 class MonsterState
 {
@@ -28,11 +29,13 @@ public:
 		: mAnimationTime(0.0f)
 		, mAnimationFrame(0)
 	{
+		ResetMovementDuration();
 	}
 
 	MonsterState(MonsterState&& inState)
 		: mAnimationTime					(inState.mAnimationTime)
 		, mAnimationFrame					(inState.mAnimationFrame)
+		, mMovementCooldownTime				(inState.mMovementCooldownTime)
 		, mPlayerAttackMsgCallbackRegHandle	(inState.mPlayerAttackMsgCallbackRegHandle)
 	{
 		inState.mPlayerAttackMsgCallbackRegHandle = MessageRegistrationHandle();
@@ -43,8 +46,15 @@ public:
 		mPlayerAttackMsgCallbackRegHandle.Unregister();
 	}
 
+	void ResetMovementDuration()
+	{
+		mMovementCooldownTime = kMovementCooldownDuration + ((rand()%10) * 0.1f);
+	}
+
 	float						mAnimationTime;
 	int							mAnimationFrame;
+
+	float						mMovementCooldownTime;
 
 	MessageRegistrationHandle	mPlayerAttackMsgCallbackRegHandle;
 };
@@ -52,7 +62,30 @@ public:
 static void Update(const Entity& inThis, float inFrameTime)
 {
 	auto state = inThis.GetComponent<MonsterState>();
-	state->mAnimationTime += inFrameTime;
+	state->mMovementCooldownTime	-= inFrameTime;
+	state->mAnimationTime			+= inFrameTime;
+
+	if (state->mMovementCooldownTime < 0.0f)
+	{
+		auto posComp = inThis.GetComponent<PositionComponent>();
+		auto position = posComp->GetPosition();
+
+		int direction = rand() % 4;
+		switch (direction)
+		{
+			case 0: position.mX += 1; break;
+			case 1: position.mX -= 1; break;
+			case 2: position.mY += 1; break;
+			case 3: position.mY -= 1; break;
+		}
+
+		if (!CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, position))
+		{
+			posComp->SetPosition(position);
+		}
+
+		state->ResetMovementDuration();
+	}
 
 	if (state->mAnimationTime > kAnimationDuration)
 	{
