@@ -47,6 +47,9 @@
     <Filter Include="Source Files\Containers">
       <UniqueIdentifier>{bc0e45d7-0f76-4061-9c17-b488a1ac254e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Animations">
+      <UniqueIdentifier>{30ffd2f2-da7d-4f99-bc76-15b1234d3bd3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -129,6 +132,9 @@
     </ClCompile>
     <ClCompile Include="src\EntityComponent\Systems\AnimationSystem.cpp">
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Animations\Animation.cpp">
+      <Filter>Source Files\Animations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -251,6 +257,12 @@
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Systems\AnimationSystem.h">
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Components\HealthComponent.h">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animations\Animation.h">
+      <Filter>Source Files\Animations</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

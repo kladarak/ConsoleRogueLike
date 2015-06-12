@@ -1,21 +1,22 @@
 #pragma once
 
+#include <EntityComponentSystem/World/World.h>
+
 class MessageBroadcaster;
-class CoinCollectedMessage;
 
 class HUD
 {
 public:
 	HUD();
 
-	void	Init(MessageBroadcaster& inMessageBroadcaster);
+	void	Init(MessageBroadcaster& inMessageBroadcaster, Entity inPlayer);
 
-	bool	NeedsRefreshing() const { return mDirty; }
-	void	Render();
+	void	RenderTop() const;
+	void	RenderBottom() const;
 
 private:
 	void	OnCoinCollected();
 
+	Entity	mPlayer;
 	int		mMoneyCollected;
-	bool	mDirty;
 };

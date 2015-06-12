@@ -34,7 +34,6 @@ private:
 	CameraSystem		mCameraSystem;
 	HUD					mHUD;
 	MessageBroadcaster	mMessageBroadcaster;
-	RenderTarget		mLastRenderedTarget;
 
 	bool				mIsRunning;
 };

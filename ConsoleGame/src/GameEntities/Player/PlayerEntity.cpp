@@ -5,12 +5,13 @@
 #include <EntityComponentSystem/World/World.h>
 
 #include <EntityComponent/Components/CollisionComponent.h>
+#include <EntityComponent/Components/HealthComponent.h>
 #include <EntityComponent/Components/InputHandlerComponent.h>
-#include <EntityComponent/Components/PositionComponent.h>
-#include <EntityComponent/Components/RenderableComponent.h>
-#include <EntityComponent/Components/TriggerBoxComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
+#include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
+#include <EntityComponent/Components/TriggerBoxComponent.h>
+#include <EntityComponent/Components/RenderableComponent.h>
 
 #include <Messages/Messages.h>
 
@@ -22,12 +23,13 @@
 namespace PlayerEntity
 {
 
-void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster)
+Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster)
 {
 	Entity entity = inWorld.CreateEntity();
 
 	entity.AddComponent<PositionComponent>( IVec2(10, 10) );
 	entity.AddComponent<TriggererComponent>();
+	entity.AddComponent<HealthComponent>(3);
 	entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
 	entity.AddComponent<PlayerUpdateState>();
 	entity.AddComponent<RenderableComponent>( Player::kIdleMeshes[Player::EFacingDirection_Down] );
@@ -45,6 +47,8 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster)
 	} );
 
 	inMsgBroadcaster.Register<TouchedMonsterMsg>( &Player::OnTouchedMonster );
+
+	return entity;
 }
 
 }

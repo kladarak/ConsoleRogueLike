@@ -25,7 +25,6 @@ Game::Game()
 	: mLastClockTime		( std::chrono::system_clock::now() )
 	, mFrameTime			( 0.0 )
 	, mTimeElapsed			( 0.0 )
-	, mLastRenderedTarget	( ScreenConstants::EMapCols+1, ScreenConstants::EMapRows )
 	, mIsRunning(false)
 {
 }
@@ -37,8 +36,6 @@ int Game::Run()
 	mLastClockTime = std::chrono::system_clock::now();
 
 	mInputMonitor.StartMonitoring();
-	
-	mHUD.Init(mMessageBroadcaster);
 
 	{
 		auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
@@ -47,10 +44,13 @@ int Game::Run()
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
 
-	PlayerEntity::Create(mWorld, mMessageBroadcaster);
+	auto player = PlayerEntity::Create(mWorld, mMessageBroadcaster);
+
 	SpinnerEntity::Create(mWorld, IVec2(20, 10));
 	SpinnerEntity::Create(mWorld, IVec2(20, 5));
 	SpinnerEntity::Create(mWorld, IVec2(10, 5));
+	
+	mHUD.Init(mMessageBroadcaster, player);
 
 	mIsRunning = true;
 	while (mIsRunning)
@@ -90,19 +90,18 @@ void Game::Render()
 {
 	using namespace ScreenConstants;
 
+	COORD pos = { 0, 0 };
+	HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorPosition(output, pos);
+	
+	mHUD.RenderTop();
+	
+
 	RenderTarget renderTarget(EMapCols+1, EMapRows);
 	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
 	RenderSystem::Render(mWorld, cameraPosition, renderTarget);
 
-	if (mLastRenderedTarget != renderTarget || mHUD.NeedsRefreshing())
-	{
-		COORD pos = { 0, 0 };
-		HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
-		SetConsoleCursorPosition(output, pos);
+	renderTarget.Render();
 
-		renderTarget.Render();
-		mLastRenderedTarget = renderTarget;
-
-		mHUD.Render();
-	}
+	mHUD.RenderBottom();
 }

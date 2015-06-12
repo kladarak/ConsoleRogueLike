@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Animations\Animation.cpp" />
     <ClCompile Include="src\Dungeon\DungeonFactory.cpp" />
     <ClCompile Include="src\Dungeon\DungeonMap.cpp" />
     <ClCompile Include="src\EntityComponent\Components\AnimationComponent.cpp" />
@@ -40,12 +41,14 @@
     <ClCompile Include="src\UI\HUD.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Animations\Animation.h" />
     <ClInclude Include="src\Containers\Dynamic2DVector.h" />
     <ClInclude Include="src\Dungeon\DungeonFactory.h" />
     <ClInclude Include="src\Dungeon\DungeonMap.h" />
     <ClInclude Include="src\EntityComponent\Components\AnimationComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\CameraComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\CollisionComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\HealthComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\InputHandlerComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\PlayerComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\PositionComponent.h" />

@@ -4,9 +4,10 @@
 
 #include <EntityComponentSystem/World/World.h>
 
+#include <EntityComponent/Components/HealthComponent.h>
+#include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
-#include <EntityComponent/Components/PlayerComponent.h>
 
 #include <Messages/Messages.h>
 
@@ -100,6 +101,8 @@ void OnTouchedMonster(const TouchedMonsterMsg& inMsg)
 	auto oldPos		= posComp->GetPreviousPosition();
 	//posComp->SwapPositionBuffers(); // Doing this might fix trigger box problems, but it seems a bit hacky...
 	posComp->SetPosition(oldPos);
+
+	inMsg.mPlayer.GetComponent<HealthComponent>()->DecHealth();
 }
 
 }

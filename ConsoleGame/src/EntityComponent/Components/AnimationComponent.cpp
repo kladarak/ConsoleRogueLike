@@ -1,58 +1,52 @@
 #include "AnimationComponent.h"
 
-
-AnimationComponent::AnimationComponent()
-	: mCurrentKeyFrame(0)
-	, mKeyFrameDuration(0.0f)
-	, mRunningTime(0.0f)
-{
-}
+#include <Core/Debug/Assert.h>
 
 AnimationComponent::AnimationComponent(AnimationComponent&& inRHS)
-	: mKeyFrames		( std::move(inRHS.mKeyFrames)	)
-	, mCurrentKeyFrame	( inRHS.mCurrentKeyFrame		)
-	, mKeyFrameDuration	( inRHS.mKeyFrameDuration		)
-	, mRunningTime		( inRHS.mRunningTime			)
+	: mAnimations		( std::move(inRHS.mAnimations)	)
+	, mSelectedAnimation( inRHS.mSelectedAnimation		)
 {
 }
 
 AnimationComponent::AnimationComponent(const AnimationComponent& inRHS)
-	: mKeyFrames		( inRHS.mKeyFrames			)
-	, mCurrentKeyFrame	( inRHS.mCurrentKeyFrame	)
-	, mKeyFrameDuration	( inRHS.mKeyFrameDuration	)
-	, mRunningTime		( inRHS.mRunningTime		)
+	: mAnimations		( inRHS.mAnimations			)
+	, mSelectedAnimation( inRHS.mSelectedAnimation	)
 {
 }
 
-AnimationComponent::AnimationComponent(const AsciiMesh* inMeshes, int inCount, float inKeyFrameDuration)
-	: mCurrentKeyFrame(0)
-	, mKeyFrameDuration(inKeyFrameDuration)
-	, mRunningTime(0.0f)
+AnimationComponent::AnimationComponent(const Animation& inAnimation)
+	: mSelectedAnimation(0)
+{
+	mAnimations.push_back( inAnimation );
+}
+
+AnimationComponent::AnimationComponent(const Animation* inAnimations, uint32_t inCount)
+	: mSelectedAnimation(0)
 {
 	for (int i = 0; i < inCount; ++i)
 	{
-		mKeyFrames.push_back(inMeshes[i]);
+		mAnimations.push_back( inAnimations[i] );
 	}
+}
+
+void AnimationComponent::SetSelectedAnimation(uint32_t inSelected)
+{
+	assert(inSelected < mAnimations.size());
+	mSelectedAnimation = inSelected;
 }
 
 void AnimationComponent::Update(float inFrameTime)
 {
-	if (mKeyFrames.size() <= 1 || mKeyFrameDuration < 0.001f)
+	if (mAnimations.size() > 0)
 	{
-		return;
-	}
-
-	mRunningTime += inFrameTime;
-	
-	while (mRunningTime > mKeyFrameDuration)
-	{
-		mCurrentKeyFrame = (mCurrentKeyFrame + 1) % mKeyFrames.size();
-		mRunningTime -= mKeyFrameDuration;
+		assert(mSelectedAnimation < mAnimations.size());
+		mAnimations[mSelectedAnimation].Update(inFrameTime);
 	}
 }
 
 const AsciiMesh& AnimationComponent::GetCurrentKeyFrame() const
 {
 	static const AsciiMesh kEmptyMesh;
-	return mKeyFrames.size() > 0 ? mKeyFrames[mCurrentKeyFrame] : kEmptyMesh;
+	assert(mSelectedAnimation < mAnimations.size() || mAnimations.size() == 0);
+	return mAnimations.size() > 0 ? mAnimations[mSelectedAnimation].GetCurrentKeyFrame() : kEmptyMesh;
 }

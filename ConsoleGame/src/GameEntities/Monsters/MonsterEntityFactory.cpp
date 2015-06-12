@@ -28,6 +28,8 @@ static const AsciiMesh kMonsterFrames[] =
 	AsciiMesh( "@", 1, 1 ),
 };
 
+static const Animation kMonsterAnimation(kMonsterFrames, sizeof(kMonsterFrames)/sizeof(AsciiMesh), kAnimationDuration, Animation::EPlaybackStyle_Loop);
+
 class MonsterState
 {
 public:
@@ -112,7 +114,7 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 
 	entity.AddComponent<PositionComponent>(inPosition);
 	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Update );
-	entity.AddComponent<AnimationComponent>(kMonsterFrames, sizeof(kMonsterFrames)/sizeof(AsciiMesh), kAnimationDuration);
+	entity.AddComponent<AnimationComponent>(kMonsterAnimation);
 	entity.AddComponent<RenderableComponent>(kMonsterFrames[0]);
 
 	auto triggerBox = entity.AddComponent<TriggerBoxComponent>( IRect(0, 0, 1, 1) );

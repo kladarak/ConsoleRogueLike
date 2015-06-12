@@ -1,9 +1,10 @@
 #pragma once
 
-class World;
+#include <EntityComponentSystem/World/World.h>
+
 class MessageBroadcaster;
 
 namespace PlayerEntity
 {
-	void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster);
+	Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster);
 }
