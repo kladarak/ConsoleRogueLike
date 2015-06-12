@@ -4,12 +4,13 @@
 
 #include <EntityComponentSystem/World/World.h>
 
+#include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
+#include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
+#include <EntityComponent/Components/ProgramComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
 #include <EntityComponent/Components/TriggerBoxComponent.h>
-#include <EntityComponent/Components/PlayerComponent.h>
-#include <EntityComponent/Components/ProgramComponent.h>
 
 #include <EntityComponent/Systems/CollisionSystem.h>
 
@@ -18,24 +19,25 @@
 namespace MonsterEntityFactory
 {
 
-static const char	kMonsterAnimation[]			= "e@";
 static const float	kAnimationDuration			= 0.5f;
 static const float	kMovementCooldownDuration	= 1.0f;
+
+static const AsciiMesh kMonsterFrames[] =
+{
+	AsciiMesh( "e", 1, 1 ),
+	AsciiMesh( "@", 1, 1 ),
+};
 
 class MonsterState
 {
 public:
 	MonsterState()
-		: mAnimationTime(0.0f)
-		, mAnimationFrame(0)
 	{
 		ResetMovementDuration();
 	}
 
 	MonsterState(MonsterState&& inState)
-		: mAnimationTime					(inState.mAnimationTime)
-		, mAnimationFrame					(inState.mAnimationFrame)
-		, mMovementCooldownTime				(inState.mMovementCooldownTime)
+		: mMovementCooldownTime				(inState.mMovementCooldownTime)
 		, mPlayerAttackMsgCallbackRegHandle	(inState.mPlayerAttackMsgCallbackRegHandle)
 	{
 		inState.mPlayerAttackMsgCallbackRegHandle = MessageRegistrationHandle();
@@ -51,19 +53,14 @@ public:
 		mMovementCooldownTime = kMovementCooldownDuration + ((rand()%10) * 0.1f);
 	}
 
-	float						mAnimationTime;
-	int							mAnimationFrame;
-
 	float						mMovementCooldownTime;
-
 	MessageRegistrationHandle	mPlayerAttackMsgCallbackRegHandle;
 };
 
 static void Update(const Entity& inThis, float inFrameTime)
 {
 	auto state = inThis.GetComponent<MonsterState>();
-	state->mMovementCooldownTime	-= inFrameTime;
-	state->mAnimationTime			+= inFrameTime;
+	state->mMovementCooldownTime -= inFrameTime;
 
 	if (state->mMovementCooldownTime < 0.0f)
 	{
@@ -85,16 +82,6 @@ static void Update(const Entity& inThis, float inFrameTime)
 		}
 
 		state->ResetMovementDuration();
-	}
-
-	if (state->mAnimationTime > kAnimationDuration)
-	{
-		state->mAnimationTime -= kAnimationDuration;
-		state->mAnimationFrame = (state->mAnimationFrame + 1) % (sizeof(kMonsterAnimation) - 1);
-
-		AsciiMesh mesh;
-		mesh.SetCharAtPosition(0, 0, kMonsterAnimation[state->mAnimationFrame]);
-		inThis.GetComponent<RenderableComponent>()->SetMesh(mesh);
 	}
 }
 
@@ -124,7 +111,9 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 	auto entity = inWorld.CreateEntity();
 
 	entity.AddComponent<PositionComponent>(inPosition);
-	auto monsterState = entity.AddComponent<MonsterState>();
+	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Update );
+	entity.AddComponent<AnimationComponent>(kMonsterFrames, sizeof(kMonsterFrames)/sizeof(AsciiMesh), kAnimationDuration);
+	entity.AddComponent<RenderableComponent>(kMonsterFrames[0]);
 
 	auto triggerBox = entity.AddComponent<TriggerBoxComponent>( IRect(0, 0, 1, 1) );
 	triggerBox->RegisterOnEnterCallback( [&] (const Entity& inMonster, const Entity& inTriggerer)
@@ -132,19 +121,12 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 		OnEntityEntered(inMonster, inTriggerer, inMsgBroadcaster);
 	} );
 
-	auto programComp = entity.AddComponent<ProgramComponent>();
-	programComp->RegisterProgram( &Update );
-
-	AsciiMesh mesh;
-	mesh.SetCharAtPosition(0, 0, kMonsterAnimation[0]);
-	entity.AddComponent<RenderableComponent>(mesh);
-
 	auto registrationHandle = inMsgBroadcaster.Register<PlayerAttackMsg>( [entity] (const PlayerAttackMsg& inAttackMsg) 
 	{
 		OnPlayerAttack(entity, inAttackMsg); 
 	} );
 
-	monsterState->mPlayerAttackMsgCallbackRegHandle = registrationHandle;
+	entity.AddComponent<MonsterState>()->mPlayerAttackMsgCallbackRegHandle = registrationHandle;
 }
 
 }
