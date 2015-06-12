@@ -23,16 +23,21 @@ AnimationComponent::AnimationComponent(const Animation& inAnimation)
 AnimationComponent::AnimationComponent(const Animation* inAnimations, uint32_t inCount)
 	: mSelectedAnimation(0)
 {
-	for (int i = 0; i < inCount; ++i)
+	for (uint32_t i = 0; i < inCount; ++i)
 	{
 		mAnimations.push_back( inAnimations[i] );
 	}
 }
 
-void AnimationComponent::SetSelectedAnimation(uint32_t inSelected)
+void AnimationComponent::SetSelectedAnimation(uint32_t inSelected, bool inResetIt)
 {
 	assert(inSelected < mAnimations.size());
 	mSelectedAnimation = inSelected;
+	
+	if (inResetIt)
+	{
+		mAnimations[mSelectedAnimation].Reset();
+	}
 }
 
 void AnimationComponent::Update(float inFrameTime)

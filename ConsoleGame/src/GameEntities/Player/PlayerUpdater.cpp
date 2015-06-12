@@ -4,6 +4,7 @@
 
 #include <EntityComponentSystem/World/World.h>
 
+#include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/HealthComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
@@ -23,7 +24,6 @@ static const float kDamagedFlashDuration = 2.0f;
 void UpdatePlayer(const Entity& inPlayer, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
 {
 	auto playerComp			= inPlayer.GetComponent<PlayerComponent>();
-	auto renderableComp		= inPlayer.GetComponent<RenderableComponent>();
 	auto updateState		= inPlayer.GetComponent<PlayerUpdateState>();
 	
 	auto state				= playerComp->GetState();
@@ -61,18 +61,19 @@ void UpdatePlayer(const Entity& inPlayer, float inFrameTime, MessageBroadcaster&
 		updateState->mLastState				= state;
 		updateState->mLastFacingDirection	= facingDirection;
 
-		auto meshes = [state] () -> const AsciiMesh*
+		int animationSelection = 0;
+		
+		switch (state)
 		{
-			switch (state)
-			{
-				case EState_Idle:		return kIdleMeshes;
-				case EState_Attacking:	return kSwordMeshes;
-				case EState_Defending:	return kShieldMeshes;
-				default:				return kIdleMeshes;
-			}
-		} ();
+			case EState_Idle:		animationSelection = 0; break;
+			case EState_Attacking:	animationSelection = 4;	break;
+			case EState_Defending:	animationSelection = 8;	break;
+			default:				animationSelection = 0;	break;
+		}
+		
+		animationSelection += (int) facingDirection;
 
-		renderableComp->SetMesh( meshes[facingDirection] );
+		inPlayer.GetComponent<AnimationComponent>()->SetSelectedAnimation(animationSelection, true);
 	}
 
 	if (updateState->mDamagedFlashTimeRemaining > 0.0f)
@@ -83,11 +84,11 @@ void UpdatePlayer(const Entity& inPlayer, float inFrameTime, MessageBroadcaster&
 		
 		int anim = (int) (timeRemaining * 4.0f);
 		bool visible = (anim % 2) == 0;
-		renderableComp->SetVisible(visible);
+		inPlayer.GetComponent<RenderableComponent>()->SetVisible(visible);
 	}
 	else
 	{
-		renderableComp->SetVisible(true);
+		inPlayer.GetComponent<RenderableComponent>()->SetVisible(true);
 	}
 }
 

@@ -11,7 +11,7 @@ public:
 	AnimationComponent(const Animation* inAnimations, uint32_t inCount);
 	~AnimationComponent() { }
 
-	void					SetSelectedAnimation(uint32_t inSelected);
+	void					SetSelectedAnimation(uint32_t inSelected, bool inResetIt);
 
 	void					Update(float inFrameTime);
 	const AsciiMesh&		GetCurrentKeyFrame() const;

@@ -4,6 +4,7 @@
 
 #include <EntityComponentSystem/World/World.h>
 
+#include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/HealthComponent.h>
 #include <EntityComponent/Components/InputHandlerComponent.h>
@@ -26,16 +27,17 @@ namespace PlayerEntity
 Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster)
 {
 	Entity entity = inWorld.CreateEntity();
-
-	entity.AddComponent<PositionComponent>( IVec2(10, 10) );
-	entity.AddComponent<TriggererComponent>();
+	
+	entity.AddComponent<AnimationComponent>( Player::kAnimations, gElemCount(Player::kAnimations) );
 	entity.AddComponent<HealthComponent>(3);
 	entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
 	entity.AddComponent<PlayerUpdateState>();
+	entity.AddComponent<PositionComponent>( IVec2(10, 10) );
 	entity.AddComponent<RenderableComponent>( Player::kIdleMeshes[Player::EFacingDirection_Down] );
-
-	auto inputHandlerComp	= entity.AddComponent<InputHandlerComponent>();
+	entity.AddComponent<TriggererComponent>();
+	
 	auto collisionComp		= entity.AddComponent<CollisionComponent>();
+	auto inputHandlerComp	= entity.AddComponent<InputHandlerComponent>();
 	auto programComp		= entity.AddComponent<ProgramComponent>();
 
 	collisionComp->SetCollidableAt( IVec2(0, 0) );
