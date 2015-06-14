@@ -14,6 +14,9 @@
 
 #include <EntityComponent/Systems/CollisionSystem.h>
 
+#include <GameEntities/CoinEntity.h>
+#include <GameEntities/HealthEntity.h>
+
 #include <Messages/Messages.h>
 
 namespace MonsterEntityFactory
@@ -99,12 +102,18 @@ static void OnEntityEntered(const Entity& inMonster, const Entity& inTriggerer, 
 	inMsgBroadcaster.Broadcast( TouchedMonsterMsg(inMonster, inTriggerer) );
 }
 
-static void OnPlayerAttack(Entity inMonster, const PlayerAttackMsg& inAttackMsg)
+static void OnPlayerAttack(Entity inMonster, const PlayerAttackMsg& inAttackMsg, MessageBroadcaster& inMsgBroadcaster)
 {
 	auto position = inMonster.GetComponent<PositionComponent>()->GetPosition();
 	if (inAttackMsg.mAttackPosition == position)
 	{
 		Entity(inMonster).Kill();
+		switch ((rand() % 3) == 0)
+		{
+			case 0: CoinEntity::Create(*inMonster.GetWorld(), inMsgBroadcaster, position); break;
+			case 1: HealthEntity::Create(*inMonster.GetWorld(), inMsgBroadcaster, position); break;
+			default: break;
+		}
 	}
 }
 
@@ -123,9 +132,9 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 		OnEntityEntered(inMonster, inTriggerer, inMsgBroadcaster);
 	} );
 
-	auto registrationHandle = inMsgBroadcaster.Register<PlayerAttackMsg>( [entity] (const PlayerAttackMsg& inAttackMsg) 
+	auto registrationHandle = inMsgBroadcaster.Register<PlayerAttackMsg>( [entity, &inMsgBroadcaster] (const PlayerAttackMsg& inAttackMsg) 
 	{
-		OnPlayerAttack(entity, inAttackMsg); 
+		OnPlayerAttack(entity, inAttackMsg, inMsgBroadcaster); 
 	} );
 
 	entity.AddComponent<MonsterState>()->mPlayerAttackMsgCallbackRegHandle = registrationHandle;

@@ -26,6 +26,7 @@
     <ClCompile Include="src\EntityComponent\Systems\TriggerSystem.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameEntities\CoinEntity.cpp" />
+    <ClCompile Include="src\GameEntities\HealthEntity.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\MonsterEntityFactory.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerEntity.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerInputHandler.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="src\EntityComponent\Systems\TriggerSystem.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\GameEntities\CoinEntity.h" />
+    <ClInclude Include="src\GameEntities\HealthEntity.h" />
     <ClInclude Include="src\GameEntities\Monsters\MonsterEntityFactory.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerEntity.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerEnums.h" />

@@ -136,6 +136,9 @@
     <ClCompile Include="src\Animations\Animation.cpp">
       <Filter>Source Files\Animations</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\HealthEntity.cpp">
+      <Filter>Source Files\GameEntities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -263,6 +266,9 @@
     </ClInclude>
     <ClInclude Include="src\Animations\Animation.h">
       <Filter>Source Files\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\HealthEntity.h">
+      <Filter>Source Files\GameEntities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
