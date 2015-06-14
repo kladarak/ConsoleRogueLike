@@ -18,6 +18,7 @@
 
 #include <Messages/Messages.h>
 
+#include "Weapons/Weapon.h"
 #include "PlayerUpdateState.h"
 #include "PlayerMeshes.h"
 
@@ -173,28 +174,10 @@ static void UpdatePosition(const Entity& inPlayer)
 
 static void Attack(Entity inPlayer)
 {
-	auto playerPos			= inPlayer.GetComponent<PositionComponent>()->GetPosition();
-	auto facingDirection	= inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
-
-	IVec2 attackDir(0, 0);
-	switch (facingDirection)
+	auto weapon = inPlayer.GetComponent<PlayerComponent>()->GetSelectedWeapon();
+	if (nullptr != weapon)
 	{
-		case EFacingDirection_Left:		attackDir.mX = -1; break;
-		case EFacingDirection_Right:	attackDir.mX =  1; break;
-		case EFacingDirection_Up:		attackDir.mY = -1; break;
-		case EFacingDirection_Down:		attackDir.mY =  1; break;
-	}
-
-	IVec2 attackPos = playerPos + attackDir;
-		
-	auto attackedEntities = PositionSystem::GetListOfEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, attackPos);
-	for (auto entity : attackedEntities)
-	{
-		auto msgRecComp = entity.GetComponent<MessageReceiverComponent>();
-		if (nullptr != msgRecComp)
-		{
-			msgRecComp->Broadcast( AttackMsg(inPlayer, attackPos, attackDir) );
-		}
+		weapon->Attack(inPlayer);
 	}
 }
 
@@ -202,9 +185,26 @@ static void UpdateAnimation(Entity inPlayer, float inFrameTime)
 {
 	auto playerComp			= inPlayer.GetComponent<PlayerComponent>();
 	auto updateState		= inPlayer.GetComponent<PlayerUpdateState>();
+	auto animationComp		= inPlayer.GetComponent<AnimationComponent>();
 
 	auto state				= playerComp->GetState();
 	auto facingDirection	= playerComp->GetFacingDirection();
+
+	if (state != updateState->mLastState)
+	{
+		std::vector<Animation> animations = GetAnimations();
+
+		if (playerComp->GetState() == EState_Attacking)
+		{
+			auto weapon = playerComp->GetSelectedWeapon();
+			if (nullptr != weapon)
+			{
+				animations = weapon->GetAnimations();
+			}
+		}
+
+		animationComp->SetAnimations(animations);
+	}
 
 	if (state != updateState->mLastState || facingDirection != updateState->mLastFacingDirection)
 	{
@@ -216,14 +216,14 @@ static void UpdateAnimation(Entity inPlayer, float inFrameTime)
 		switch (state)
 		{
 			case EState_Idle:		animationSelection = 0; break;
-			case EState_Attacking:	animationSelection = 4;	break;
+			case EState_Attacking:	animationSelection = 0;	break; // Has a different anim set.
 			case EState_Defending:	animationSelection = 8;	break;
 			default:				animationSelection = 0;	break;
 		}
 		
 		animationSelection += (int) facingDirection;
 
-		inPlayer.GetComponent<AnimationComponent>()->SetSelectedAnimation(animationSelection, true);
+		animationComp->SetSelectedAnimation(animationSelection);
 	}
 
 	if (updateState->mDamagedFlashTimeRemaining > 0.0f)

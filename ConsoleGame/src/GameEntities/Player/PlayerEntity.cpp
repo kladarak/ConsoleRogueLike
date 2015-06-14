@@ -17,6 +17,8 @@
 
 #include <Messages/Messages.h>
 
+#include "Weapons/Sword.h"
+
 #include "PlayerUpdateState.h"
 #include "PlayerInputHandler.h"
 #include "PlayerUpdater.h"
@@ -33,7 +35,6 @@ Entity Create(World& inWorld)
 	entity.AddComponent<CollisionComponent>()->SetCollidableAt( IVec2(0, 0) );
 	entity.AddComponent<HealthComponent>(3);
 	entity.AddComponent<InputHandlerComponent>()->RegisterHandler( &Player::HandleInput );
-	entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
 	entity.AddComponent<PlayerUpdateState>();
 	entity.AddComponent<PositionComponent>( IVec2(10, 10) );
 	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Player::UpdatePlayer );
@@ -47,6 +48,9 @@ Entity Create(World& inWorld)
 			Player::OnAttacked(entity, inAttackMsg);
 		}
 	);
+	
+	auto playerComp = entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
+	playerComp->AddWeapon( new Sword() );
 
 	return entity;
 }

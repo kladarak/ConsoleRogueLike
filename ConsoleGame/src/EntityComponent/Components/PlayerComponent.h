@@ -1,16 +1,30 @@
 #pragma once
 
+#include <vector>
+
 #include <Maths/IVec2.h>
 #include <GameEntities/Player/PlayerEnums.h>
+#include <GameEntities/Player/Weapons/Inventory.h>
 
 class PlayerComponent
 {
 public:
 	PlayerComponent(Player::EFacingDirection inDirection) 
-		: mFacingDirection(inDirection)
-		, mState(Player::EState_Idle)
-		, mIntendedMovement(0, 0)
-		, mDamaged(false)
+		: mFacingDirection	(inDirection)
+		, mState			(Player::EState_Idle)
+		, mIntendedMovement	(0, 0)
+		, mDamaged			(false)
+		, mSelectedWeapon	(EWeapon_Sword)
+	{
+	}
+
+	PlayerComponent(PlayerComponent&& inRHS)
+		: mFacingDirection	(inRHS.mFacingDirection)
+		, mState			(inRHS.mState)
+		, mIntendedMovement	(inRHS.mIntendedMovement)
+		, mDamaged			(inRHS.mDamaged)
+		, mInventory		(std::move(inRHS.mInventory))
+		, mSelectedWeapon	(inRHS.mSelectedWeapon)
 	{
 	}
 
@@ -27,10 +41,16 @@ public:
 
 	void						SetDamaged(bool inValue)										{ mDamaged = inValue; }
 	bool						IsDamaged() const												{ return mDamaged; }
+	
+	void						AddWeapon(Weapon* inWeapon)										{ mInventory.AddWeapon(inWeapon); }
+	Weapon*						GetSelectedWeapon() const										{ return mInventory.GetWeapon(mSelectedWeapon); }
 
 private:
 	Player::EFacingDirection	mFacingDirection;
 	Player::EState				mState;
 	IVec2						mIntendedMovement;
 	bool						mDamaged;
+	
+	Inventory					mInventory;
+	EWeapon						mSelectedWeapon;
 };

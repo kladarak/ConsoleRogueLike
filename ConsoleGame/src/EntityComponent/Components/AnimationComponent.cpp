@@ -23,9 +23,28 @@ AnimationComponent::AnimationComponent(const Animation& inAnimation)
 AnimationComponent::AnimationComponent(const Animation* inAnimations, uint32_t inCount)
 	: mSelectedAnimation(0)
 {
+	SetAnimations(inAnimations, inCount);
+}
+
+void AnimationComponent::SetAnimations(const Animation* inAnimations, uint32_t inCount)
+{
+	std::vector<Animation> animations;
+
 	for (uint32_t i = 0; i < inCount; ++i)
 	{
-		mAnimations.push_back( inAnimations[i] );
+		animations.push_back( inAnimations[i] );
+	}
+
+	SetAnimations(animations);
+}
+
+void AnimationComponent::SetAnimations(const std::vector<Animation>& inAnimations)
+{
+	mAnimations = inAnimations;
+
+	if (mSelectedAnimation >= mAnimations.size())
+	{
+		mSelectedAnimation = (mAnimations.size() > 0) ? (mAnimations.size() - 1) : 0;
 	}
 }
 
