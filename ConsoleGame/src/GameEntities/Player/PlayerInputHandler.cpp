@@ -79,6 +79,7 @@ void HandleInput(const Entity& inPlayer, const InputBuffer& inBuffer)
 	if (intention.mState != EState_Idle)
 	{
 		playerComp->SetState( intention.mState );
+		playerComp->SetStartedAttackThisFrame( intention.mState == EState_Attacking );
 	}
 
 	if (intention.mMovement != IVec2(0, 0))

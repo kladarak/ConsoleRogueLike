@@ -174,11 +174,15 @@ static void UpdatePosition(const Entity& inPlayer)
 
 static void Attack(Entity inPlayer)
 {
-	auto weapon = inPlayer.GetComponent<PlayerComponent>()->GetSelectedWeapon();
+	auto playerComp = inPlayer.GetComponent<PlayerComponent>();
+	auto weapon		= playerComp->GetSelectedWeapon();
+
 	if (nullptr != weapon)
 	{
-		weapon->Attack(inPlayer);
+		weapon->Attack(inPlayer, playerComp->GetStartedAttackThisFrame());
 	}
+
+	playerComp->SetStartedAttackThisFrame(false);
 }
 
 static void UpdateAnimation(Entity inPlayer, float inFrameTime)

@@ -15,6 +15,7 @@ public:
 	void					SetAnimations(const Animation* inAnimations, uint32_t inCount);
 	void					SetAnimations(const std::vector<Animation>& inAnimations);
 
+	void					ResetSelectedAnimation();
 	void					Update(float inFrameTime);
 	const AsciiMesh&		GetCurrentKeyFrame() const;
 

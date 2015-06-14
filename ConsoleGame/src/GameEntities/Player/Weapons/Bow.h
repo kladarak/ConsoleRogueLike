@@ -1,12 +1,15 @@
+#pragma once
+
 #include "Weapon.h"
 
-class Sword : public Weapon
+class Bow : public Weapon
 {
 public:
-	Sword() : Weapon(EWeapon_Sword) { }
-
+	Bow() : Weapon(EWeapon_Bow) { }
+	
 	virtual void					Attack(Entity inPlayer, bool inStartedAttackThisFrame);
 	virtual std::vector<Animation>	GetAnimations() const;
 
 private:
+
 };

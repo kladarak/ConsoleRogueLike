@@ -10,21 +10,23 @@ class PlayerComponent
 {
 public:
 	PlayerComponent(Player::EFacingDirection inDirection) 
-		: mFacingDirection	(inDirection)
-		, mState			(Player::EState_Idle)
-		, mIntendedMovement	(0, 0)
-		, mDamaged			(false)
-		, mSelectedWeapon	(EWeapon_Sword)
+		: mFacingDirection			(inDirection)
+		, mState					(Player::EState_Idle)
+		, mIntendedMovement			(0, 0)
+		, mDamaged					(false)
+		, mStartedAttackThisFrame	(false)
+		, mSelectedWeapon			(EWeapon_Sword)
 	{
 	}
 
 	PlayerComponent(PlayerComponent&& inRHS)
-		: mFacingDirection	(inRHS.mFacingDirection)
-		, mState			(inRHS.mState)
-		, mIntendedMovement	(inRHS.mIntendedMovement)
-		, mDamaged			(inRHS.mDamaged)
-		, mInventory		(std::move(inRHS.mInventory))
-		, mSelectedWeapon	(inRHS.mSelectedWeapon)
+		: mFacingDirection			(inRHS.mFacingDirection)
+		, mState					(inRHS.mState)
+		, mIntendedMovement			(inRHS.mIntendedMovement)
+		, mDamaged					(inRHS.mDamaged)
+		, mStartedAttackThisFrame	(inRHS.mStartedAttackThisFrame)
+		, mInventory				(std::move(inRHS.mInventory))
+		, mSelectedWeapon			(inRHS.mSelectedWeapon)
 	{
 	}
 
@@ -35,6 +37,8 @@ public:
 
 	Player::EState				GetState() const												{ return mState; }
 	void						SetState(Player::EState inState) 								{ mState = inState; }
+	void						SetStartedAttackThisFrame(bool inValue)							{ mStartedAttackThisFrame = inValue; }
+	bool						GetStartedAttackThisFrame() const								{ return mStartedAttackThisFrame; }
 
 	void						SetIntendedMovement(const IVec2& inMovement)					{ mIntendedMovement = inMovement; }
 	const IVec2&				GetIntendedMovement() const										{ return mIntendedMovement; }
@@ -43,6 +47,7 @@ public:
 	bool						IsDamaged() const												{ return mDamaged; }
 	
 	void						AddWeapon(Weapon* inWeapon)										{ mInventory.AddWeapon(inWeapon); }
+	void						SetSelectedWeapon(EWeapon inWeapon)								{ mSelectedWeapon = inWeapon; }
 	Weapon*						GetSelectedWeapon() const										{ return mInventory.GetWeapon(mSelectedWeapon); }
 
 private:
@@ -50,6 +55,7 @@ private:
 	Player::EState				mState;
 	IVec2						mIntendedMovement;
 	bool						mDamaged;
+	bool						mStartedAttackThisFrame;
 	
 	Inventory					mInventory;
 	EWeapon						mSelectedWeapon;

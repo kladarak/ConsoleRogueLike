@@ -12,3 +12,9 @@ AsciiMesh::AsciiMesh(const char* inChars, size_t inCols, size_t inRows, const IV
 		}
 	}
 }
+
+AsciiMesh::AsciiMesh(char inChar)
+	: mCentreOffset(0, 0)
+{
+	mFragments.Set(0, 0, inChar);
+}

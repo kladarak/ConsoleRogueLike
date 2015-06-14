@@ -14,7 +14,7 @@ public:
 
 	EWeapon GetName() const						{ return mName; }
 
-	virtual void					Attack(Entity inPlayer) = 0;
+	virtual void					Attack(Entity inPlayer, bool inStartedAttackThisFrame) = 0;
 	virtual std::vector<Animation>	GetAnimations() const = 0;
 
 private:

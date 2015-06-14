@@ -59,6 +59,15 @@ void AnimationComponent::SetSelectedAnimation(uint32_t inSelected, bool inResetI
 	}
 }
 
+void AnimationComponent::ResetSelectedAnimation()
+{
+	if (mAnimations.size() > 0)
+	{
+		assert(mSelectedAnimation < mAnimations.size());
+		mAnimations[mSelectedAnimation].Reset();
+	}
+}
+
 void AnimationComponent::Update(float inFrameTime)
 {
 	if (mAnimations.size() > 0)

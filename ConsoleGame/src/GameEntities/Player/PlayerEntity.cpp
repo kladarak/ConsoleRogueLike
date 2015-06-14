@@ -18,6 +18,7 @@
 #include <Messages/Messages.h>
 
 #include "Weapons/Sword.h"
+#include "Weapons/Bow.h"
 
 #include "PlayerUpdateState.h"
 #include "PlayerInputHandler.h"
@@ -51,7 +52,9 @@ Entity Create(World& inWorld)
 	
 	auto playerComp = entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
 	playerComp->AddWeapon( new Sword() );
-
+	playerComp->AddWeapon( new Bow() );
+	playerComp->SetSelectedWeapon( EWeapon_Bow );
+	
 	return entity;
 }
 

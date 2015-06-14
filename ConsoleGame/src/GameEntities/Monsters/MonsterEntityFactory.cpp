@@ -14,7 +14,6 @@
 #include <EntityComponent/Components/TriggerBoxComponent.h>
 
 #include <EntityComponent/Systems/CollisionSystem.h>
-#include <EntityComponent/Systems/PositionSystem.h>
 #include <EntityComponent/Systems/DamageZoneSystem.h>
 
 #include <GameEntities/CoinEntity.h>
@@ -183,17 +182,8 @@ static void Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBr
 
 	auto newPos = position + intendedMovement;
 
-	{
-		auto attackedEntities = PositionSystem::GetListOfEntitiesAtPosition(*inThis.GetWorld(), inThis, newPos);
-		for (auto entity : attackedEntities)
-		{
-			auto msgRecComp = entity.GetComponent<MessageReceiverComponent>();
-			if (nullptr != msgRecComp)
-			{
-				msgRecComp->Broadcast( AttackMsg(inThis, newPos, intendedMovement) );
-			}
-		}
-	}
+	AttackMsg attackMsg(inThis, newPos, intendedMovement);
+	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, newPos, attackMsg);
 
 	bool isValidPos = true;
 	

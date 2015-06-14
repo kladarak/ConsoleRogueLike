@@ -33,7 +33,10 @@
     <ClCompile Include="src\GameEntities\Player\PlayerEntity.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerInputHandler.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerUpdater.cpp" />
+    <ClCompile Include="src\GameEntities\Player\Weapons\Arrow.cpp" />
     <ClCompile Include="src\GameEntities\Player\Weapons\Inventory.cpp" />
+    <ClCompile Include="src\GameEntities\Player\Weapons\Bow.cpp" />
+    <ClCompile Include="src\GameEntities\Player\Weapons\BowAnimations.cpp" />
     <ClCompile Include="src\GameEntities\Player\Weapons\Sword.cpp" />
     <ClCompile Include="src\GameEntities\Player\Weapons\SwordAnimations.cpp" />
     <ClCompile Include="src\GameEntities\RoomEntity.cpp" />
@@ -83,6 +86,9 @@
     <ClInclude Include="src\GameEntities\Player\PlayerMeshes.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerUpdater.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerUpdateState.h" />
+    <ClInclude Include="src\GameEntities\Player\Weapons\Arrow.h" />
+    <ClInclude Include="src\GameEntities\Player\Weapons\Bow.h" />
+    <ClInclude Include="src\GameEntities\Player\Weapons\BowAnimations.h" />
     <ClInclude Include="src\GameEntities\Player\Weapons\Inventory.h" />
     <ClInclude Include="src\GameEntities\Player\Weapons\Sword.h" />
     <ClInclude Include="src\GameEntities\Player\Weapons\SwordAnimations.h" />

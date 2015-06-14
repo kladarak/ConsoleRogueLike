@@ -157,6 +157,15 @@
     <ClCompile Include="src\GameEntities\Player\Weapons\SwordAnimations.cpp">
       <Filter>Source Files\GameEntities\Player\Weapons</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\Weapons\Bow.cpp">
+      <Filter>Source Files\GameEntities\Player\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\Weapons\Arrow.cpp">
+      <Filter>Source Files\GameEntities\Player\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\Weapons\BowAnimations.cpp">
+      <Filter>Source Files\GameEntities\Player\Weapons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -316,6 +325,15 @@
       <Filter>Source Files\GameEntities\Player\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEntities\Player\Weapons\SwordAnimations.h">
+      <Filter>Source Files\GameEntities\Player\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\Weapons\Bow.h">
+      <Filter>Source Files\GameEntities\Player\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\Weapons\Arrow.h">
+      <Filter>Source Files\GameEntities\Player\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\Weapons\BowAnimations.h">
       <Filter>Source Files\GameEntities\Player\Weapons</Filter>
     </ClInclude>
   </ItemGroup>
