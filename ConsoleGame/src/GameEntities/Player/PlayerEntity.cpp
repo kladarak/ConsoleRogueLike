@@ -8,6 +8,7 @@
 #include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/HealthComponent.h>
 #include <EntityComponent/Components/InputHandlerComponent.h>
+#include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
@@ -24,31 +25,28 @@
 namespace PlayerEntity
 {
 
-Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster)
+Entity Create(World& inWorld)
 {
 	Entity entity = inWorld.CreateEntity();
 	
 	entity.AddComponent<AnimationComponent>( Player::kAnimations, gElemCount(Player::kAnimations) );
+	entity.AddComponent<CollisionComponent>()->SetCollidableAt( IVec2(0, 0) );
 	entity.AddComponent<HealthComponent>(3);
+	entity.AddComponent<InputHandlerComponent>()->RegisterHandler( &Player::HandleInput );
 	entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
 	entity.AddComponent<PlayerUpdateState>();
 	entity.AddComponent<PositionComponent>( IVec2(10, 10) );
+	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Player::UpdatePlayer );
 	entity.AddComponent<RenderableComponent>( Player::kIdleMeshes[Player::EFacingDirection_Down] );
 	entity.AddComponent<TriggererComponent>();
 	
-	auto collisionComp		= entity.AddComponent<CollisionComponent>();
-	auto inputHandlerComp	= entity.AddComponent<InputHandlerComponent>();
-	auto programComp		= entity.AddComponent<ProgramComponent>();
-
-	collisionComp->SetCollidableAt( IVec2(0, 0) );
-	inputHandlerComp->RegisterHandler( &Player::HandleInput );
-
-	programComp->RegisterProgram( [&] (const Entity& inPlayer, float inFrameTime)
-	{
-		Player::UpdatePlayer(inPlayer, inFrameTime, inMsgBroadcaster);
-	} );
-
-	inMsgBroadcaster.Register<TouchedMonsterMsg>( &Player::OnTouchedMonster );
+	entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>
+	(
+		[entity] (const AttackMsg& inAttackMsg)
+		{
+			Player::OnAttacked(entity, inAttackMsg);
+		}
+	);
 
 	return entity;
 }

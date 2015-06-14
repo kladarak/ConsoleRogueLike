@@ -10,6 +10,7 @@ public:
 		, mLastFacingDirection(Player::EFacingDirection_Down)
 		, mTimeInState(0.0f)
 		, mDamagedFlashTimeRemaining(0.0f)
+		, mLastSafePosition(0, 0)
 	{
 	}
 
@@ -20,4 +21,6 @@ public:
 	float						mTimeInState;
 
 	float						mDamagedFlashTimeRemaining;
+
+	IVec2						mLastSafePosition;
 };

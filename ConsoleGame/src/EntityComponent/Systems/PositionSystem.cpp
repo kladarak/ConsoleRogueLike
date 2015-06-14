@@ -17,4 +17,22 @@ void SwapPositionBuffers(World& inWorld)
 	}
 }
 
+
+std::vector<Entity> GetListOfEntitiesAtPosition(World& inWorld, Entity inExceptThis, const IVec2& inPosition)
+{
+	std::vector<Entity> out;
+
+	auto entities = inWorld.GetEntities( EntityFilter().MustHave<PositionComponent>() );
+
+	for (auto& entity : entities)
+	{
+		if ( entity != inExceptThis && entity.GetComponent<PositionComponent>()->GetPosition() == inPosition )
+		{
+			out.push_back(entity);
+		}
+	}
+
+	return out;
+}
+
 }

@@ -16,9 +16,11 @@
     <ClCompile Include="src\Dungeon\DungeonMap.cpp" />
     <ClCompile Include="src\EntityComponent\Components\AnimationComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp" />
+    <ClCompile Include="src\EntityComponent\Components\DamageZoneComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Components\TriggerBoxComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\AnimationSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\CollisionSystem.cpp" />
+    <ClCompile Include="src\EntityComponent\Systems\DamageZoneSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\InputHandlerSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\PositionSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\ProgramSystem.cpp" />
@@ -49,8 +51,11 @@
     <ClInclude Include="src\EntityComponent\Components\AnimationComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\CameraComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\CollisionComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\DamageZoneComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\HealthComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\InputHandlerComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\MessageReceiverComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\MonsterComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\PlayerComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\PositionComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\ProgramComponent.h" />
@@ -58,6 +63,7 @@
     <ClInclude Include="src\EntityComponent\Components\TriggerBoxComponent.h" />
     <ClInclude Include="src\EntityComponent\Systems\AnimationSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\CollisionSystem.h" />
+    <ClInclude Include="src\EntityComponent\Systems\DamageZoneSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\InputHandlerSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\PositionSystem.h" />
     <ClInclude Include="src\EntityComponent\Systems\ProgramSystem.h" />

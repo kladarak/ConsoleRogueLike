@@ -44,7 +44,7 @@ int Game::Run()
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
 
-	auto player = PlayerEntity::Create(mWorld, mMessageBroadcaster);
+	auto player = PlayerEntity::Create(mWorld);
 
 	SpinnerEntity::Create(mWorld, IVec2(20, 10));
 	SpinnerEntity::Create(mWorld, IVec2(20, 5));
@@ -79,9 +79,9 @@ void Game::Update()
 	InputBuffer inputBuffer = mInputMonitor.ConsumeBuffer();
 	InputHandlerSystem::Update(mWorld, inputBuffer);
 
-	TriggerSystem::Update(mWorld);
-
 	ProgramSystem::Update(mWorld, (float) mFrameTime);
+
+	TriggerSystem::Update(mWorld);
 
 	AnimationSystem::Update(mWorld, (float) mFrameTime);
 }

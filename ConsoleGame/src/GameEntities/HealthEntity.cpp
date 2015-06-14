@@ -18,7 +18,7 @@ static const char kHealth = 3;
 static const AsciiMesh kHealthMesh(&kHealth, 1, 1);
 
 
-void OnEntityEntered(const Entity& inHealthEntity, const Entity& inPlayer)
+void OnEntityEntered(Entity inHealthEntity, const Entity& inPlayer)
 {
 	if (!inPlayer.HasComponent<PlayerComponent>())
 	{
@@ -26,10 +26,10 @@ void OnEntityEntered(const Entity& inHealthEntity, const Entity& inPlayer)
 	}
 
 	inPlayer.GetComponent<HealthComponent>()->IncHealth();
-	inHealthEntity.GetWorld()->DestroyEntity(inHealthEntity.GetID());
+	inHealthEntity.Kill();
 }
 
-void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& inPosition)
+void Create(World& inWorld, const IVec2& inPosition)
 {
 	auto entity = EntityBuilder(inWorld)
 					.AddComponent<PositionComponent>(inPosition)

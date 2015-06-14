@@ -1,11 +1,12 @@
 #include "MonsterEntityFactory.h"
 
-#include <Core/Messaging/MessageBroadcaster.h>
-
 #include <EntityComponentSystem/World/World.h>
 
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
+#include <EntityComponent/Components/DamageZoneComponent.h>
+#include <EntityComponent/Components/MessageReceiverComponent.h>
+#include <EntityComponent/Components/MonsterComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
@@ -13,6 +14,8 @@
 #include <EntityComponent/Components/TriggerBoxComponent.h>
 
 #include <EntityComponent/Systems/CollisionSystem.h>
+#include <EntityComponent/Systems/PositionSystem.h>
+#include <EntityComponent/Systems/DamageZoneSystem.h>
 
 #include <GameEntities/CoinEntity.h>
 #include <GameEntities/HealthEntity.h>
@@ -41,103 +44,139 @@ public:
 		ResetMovementDuration();
 	}
 
-	MonsterState(MonsterState&& inState)
-		: mMovementCooldownTime				(inState.mMovementCooldownTime)
-		, mPlayerAttackMsgCallbackRegHandle	(inState.mPlayerAttackMsgCallbackRegHandle)
-	{
-		inState.mPlayerAttackMsgCallbackRegHandle = MessageRegistrationHandle();
-	}
-
-	~MonsterState()
-	{
-		mPlayerAttackMsgCallbackRegHandle.Unregister();
-	}
+	~MonsterState() { }
 
 	void ResetMovementDuration()
 	{
 		mMovementCooldownTime = kMovementCooldownDuration + ((rand()%10) * 0.1f);
 	}
 
-	float						mMovementCooldownTime;
-	MessageRegistrationHandle	mPlayerAttackMsgCallbackRegHandle;
+	float mMovementCooldownTime;
 };
 
-static void Update(const Entity& inThis, float inFrameTime)
+static void TakeDamage(const Entity& inMonster, MessageBroadcaster& inMsgBroadcaster)
 {
+	auto position = inMonster.GetComponent<PositionComponent>()->GetPosition();
+
+	Entity(inMonster).Kill();
+	switch (rand() % 3)
+	{
+		case 0: CoinEntity::Create(*inMonster.GetWorld(), inMsgBroadcaster, position); break;
+		case 1: HealthEntity::Create(*inMonster.GetWorld(), position); break;
+		default: break;
+	}
+}
+
+static void OnAttacked(Entity inMonster, const AttackMsg&, MessageBroadcaster& inMsgBroadcaster)
+{
+	TakeDamage(inMonster, inMsgBroadcaster);
+}
+
+static IVec2 GetIntendedMovement(const Entity& inThis, float inFrameTime)
+{
+	IVec2 movement(0, 0);
+
 	auto state = inThis.GetComponent<MonsterState>();
 	state->mMovementCooldownTime -= inFrameTime;
 
 	if (state->mMovementCooldownTime < 0.0f)
 	{
-		auto posComp = inThis.GetComponent<PositionComponent>();
-		auto position = posComp->GetPosition();
-
 		int direction = rand() % 4;
 		switch (direction)
 		{
-			case 0: position.mX += 1; break;
-			case 1: position.mX -= 1; break;
-			case 2: position.mY += 1; break;
-			case 3: position.mY -= 1; break;
-		}
-
-		if (!CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, position))
-		{
-			posComp->SetPosition(position);
+			case 0: movement.mX =  1; break;
+			case 1: movement.mX = -1; break;
+			case 2: movement.mY =  1; break;
+			case 3: movement.mY = -1; break;
 		}
 
 		state->ResetMovementDuration();
 	}
+
+	return movement;
 }
 
-static void OnEntityEntered(const Entity& inMonster, const Entity& inTriggerer, MessageBroadcaster& inMsgBroadcaster)
+static void Update(const Entity& inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
 {
-	auto playerComponent = inTriggerer.GetComponent<PlayerComponent>();
+	// Check if in danger zone.
+	// If so, take damage.
+	// If not, get intended movement
+	// If moving, attack in intended direction.
+	// If it's not collidable, or is monster or player, then move there.
 
-	if ( nullptr == playerComponent )
+	auto posComp = inThis.GetComponent<PositionComponent>();
+	auto position = posComp->GetPosition();
+
+	{
+		bool isInDamageZone = DamageZoneSystem::IsDamageZone(*inThis.GetWorld(), inThis, position);
+		if (isInDamageZone)
+		{
+			TakeDamage(inThis, inMsgBroadcaster);
+			return;
+		}
+	}
+
+	IVec2 intendedMovement = GetIntendedMovement(inThis, inFrameTime);
+	if (intendedMovement == IVec2(0, 0))
 	{
 		return;
 	}
 
-	inMsgBroadcaster.Broadcast( TouchedMonsterMsg(inMonster, inTriggerer) );
-}
+	auto newPos = position + intendedMovement;
 
-static void OnPlayerAttack(Entity inMonster, const PlayerAttackMsg& inAttackMsg, MessageBroadcaster& inMsgBroadcaster)
-{
-	auto position = inMonster.GetComponent<PositionComponent>()->GetPosition();
-	if (inAttackMsg.mAttackPosition == position)
 	{
-		Entity(inMonster).Kill();
-		switch ((rand() % 3) == 0)
+		auto attackedEntities = PositionSystem::GetListOfEntitiesAtPosition(*inThis.GetWorld(), inThis, newPos);
+		for (auto entity : attackedEntities)
 		{
-			case 0: CoinEntity::Create(*inMonster.GetWorld(), inMsgBroadcaster, position); break;
-			case 1: HealthEntity::Create(*inMonster.GetWorld(), inMsgBroadcaster, position); break;
-			default: break;
+			auto msgRecComp = entity.GetComponent<MessageReceiverComponent>();
+			if (nullptr != msgRecComp)
+			{
+				msgRecComp->Broadcast( AttackMsg(inThis, newPos, intendedMovement) );
+			}
 		}
+	}
+
+	bool isValidPos = true;
+	
+	auto collidablesAtPosition = CollisionSystem::GetListofCollidablesAtPosition(*inThis.GetWorld(), newPos);
+	for (auto& collidable : collidablesAtPosition)
+	{
+		if (!collidable.HasComponent<MonsterComponent>() && !collidable.HasComponent<PlayerComponent>())
+		{
+			isValidPos = false;
+			break;
+		}
+	}
+
+	if (isValidPos)
+	{
+		posComp->SetPosition(newPos);
 	}
 }
 
 void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& inPosition)
 {
 	auto entity = inWorld.CreateEntity();
-
-	entity.AddComponent<PositionComponent>(inPosition);
-	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Update );
+	
 	entity.AddComponent<AnimationComponent>(kMonsterAnimation);
+	entity.AddComponent<CollisionComponent>()->SetCollidableAt(0, 0);
+	entity.AddComponent<DamageZoneComponent>()->SetDamageZoneAt(0, 0);
+	entity.AddComponent<MonsterComponent>();
+	entity.AddComponent<MonsterState>();
+	entity.AddComponent<PositionComponent>(inPosition);
 	entity.AddComponent<RenderableComponent>(kMonsterFrames[0]);
 
-	auto triggerBox = entity.AddComponent<TriggerBoxComponent>( IRect(0, 0, 1, 1) );
-	triggerBox->RegisterOnEnterCallback( [&] (const Entity& inMonster, const Entity& inTriggerer)
-	{
-		OnEntityEntered(inMonster, inTriggerer, inMsgBroadcaster);
-	} );
-
-	auto registrationHandle = inMsgBroadcaster.Register<PlayerAttackMsg>( [entity, &inMsgBroadcaster] (const PlayerAttackMsg& inAttackMsg) 
-	{
-		OnPlayerAttack(entity, inAttackMsg, inMsgBroadcaster); 
-	} );
-
-	entity.AddComponent<MonsterState>()->mPlayerAttackMsgCallbackRegHandle = registrationHandle;
+	entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>(
+		[entity, &inMsgBroadcaster] (const AttackMsg& inAttackMsg)
+		{
+			OnAttacked(entity, inAttackMsg, inMsgBroadcaster); 
+		} );
+	
+	entity.AddComponent<ProgramComponent>()->RegisterProgram(
+		[&inMsgBroadcaster] (const Entity& inThis, float inFrameTime)
+		{
+			Update(inThis, inFrameTime, inMsgBroadcaster); 
+		} );
 }
 
 }

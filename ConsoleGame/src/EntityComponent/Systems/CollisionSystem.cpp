@@ -11,20 +11,34 @@ namespace CollisionSystem
 
 bool CollidesWithAnyEntity(World& inWorld, const Entity& inExceptThis, const IVec2& inPosition)
 {
-	auto collidableEntities = inWorld.GetEntities( EntityFilter().MustHave<PositionComponent>().MustHave<CollisionComponent>() );
+	auto collidableEntities = GetListofCollidablesAtPosition(inWorld, inPosition);
 
 	for (auto& entity : collidableEntities)
 	{
 		if (entity != inExceptThis)
 		{
-			if (CollidesWith(entity, inPosition))
-			{
-				return true;
-			}
+			return true;
 		}
 	}
 
 	return false;
+}
+
+std::vector<Entity> GetListofCollidablesAtPosition(World& inWorld, const IVec2& inPosition)
+{
+	std::vector<Entity> out;
+
+	auto collidableEntities = inWorld.GetEntities( EntityFilter().MustHave<PositionComponent>().MustHave<CollisionComponent>() );
+
+	for (auto& entity : collidableEntities)
+	{
+		if (CollidesWith(entity, inPosition))
+		{
+			out.push_back(entity);
+		}
+	}
+
+	return out;
 }
 
 bool CollidesWith(const Entity& inCollidableEntity, const IVec2& inPosition)

@@ -6,9 +6,15 @@
 
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/HealthComponent.h>
+#include <EntityComponent/Components/MessageReceiverComponent.h>
+#include <EntityComponent/Components/MonsterComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
+
+#include <EntityComponent/Systems/CollisionSystem.h>
+#include <EntityComponent/Systems/DamageZoneSystem.h>
+#include <EntityComponent/Systems/PositionSystem.h>
 
 #include <Messages/Messages.h>
 
@@ -21,40 +27,183 @@ namespace Player
 static const float kStateHoldTime = 0.5f;
 static const float kDamagedFlashDuration = 2.0f;
 
-void UpdatePlayer(const Entity& inPlayer, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
+static void TakeDamage(Entity inPlayer)
 {
-	auto playerComp			= inPlayer.GetComponent<PlayerComponent>();
-	auto updateState		= inPlayer.GetComponent<PlayerUpdateState>();
+	auto updateState = inPlayer.GetComponent<PlayerUpdateState>();
+	if (updateState->mDamagedFlashTimeRemaining <= 0.0f)
+	{
+		updateState->mDamagedFlashTimeRemaining = kDamagedFlashDuration;
+		inPlayer.GetComponent<HealthComponent>()->DecHealth();
+	}
+}
+
+static bool CanMoveToPosition(Entity inPlayer, const IVec2& inPosition)
+{
+	auto collidablesAtPosition = CollisionSystem::GetListofCollidablesAtPosition(*inPlayer.GetWorld(), inPosition);
+	for (auto& collidable : collidablesAtPosition)
+	{
+		if (!collidable.HasComponent<MonsterComponent>())
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void OnAttacked(const Entity& inPlayer, const AttackMsg& inAttackMsg)
+{
+	TakeDamage(inPlayer);
 	
-	auto state				= playerComp->GetState();
-	auto facingDirection	= playerComp->GetFacingDirection();
+	// Move to random position away from direction of attack
+	auto posComp = inPlayer.GetComponent<PositionComponent>();
+	auto currPos = posComp->GetPosition();
+
+	auto preferredPos = currPos + inAttackMsg.mAttackDirection;
+	if ( CanMoveToPosition(inPlayer, preferredPos) )
+	{
+		posComp->SetPosition(preferredPos);
+	}
+	else 
+	{
+		static const IVec2 kRecoveryPositions[] = { IVec2(0, 1), IVec2(0, -1), IVec2(1, 0), IVec2(-1, 0) };
+
+		for (size_t i = 0; i < gElemCount(kRecoveryPositions); ++i)
+		{
+			IVec2 testPos = currPos + kRecoveryPositions[i];
+			if ( !CollisionSystem::CollidesWithAnyEntity(*inPlayer.GetWorld(), inPlayer, testPos) )
+			{
+				posComp->SetPosition(testPos);
+			}
+		}
+	}
+}
+
+static void CheckAndHandleIfInDamageZone(Entity inPlayer)
+{
+	auto posComp		= inPlayer.GetComponent<PositionComponent>();
+	auto updateState	= inPlayer.GetComponent<PlayerUpdateState>();
+	
+	auto position		= posComp->GetPosition();
+	bool isInDamageZone = DamageZoneSystem::IsDamageZone(*inPlayer.GetWorld(), inPlayer, position);
+	if (isInDamageZone)
+	{
+		TakeDamage(inPlayer);
+		
+		// Go back to previous position
+		posComp->SetPosition( updateState->mLastSafePosition );
+	}
+}
+
+static void UpdateState(Entity inPlayer, float inFrameTime)
+{
+	auto playerComp		= inPlayer.GetComponent<PlayerComponent>();
+	auto updateState	= inPlayer.GetComponent<PlayerUpdateState>();
 
 	updateState->mTimeInState += inFrameTime;
 
-	if (state != updateState->mLastState)
+	if (playerComp->GetState() != updateState->mLastState)
 	{
 		updateState->mTimeInState = 0.0f;
 	}
 	else if (updateState->mTimeInState > kStateHoldTime)
 	{
-		state = EState_Idle;
-		playerComp->SetState(state);
+		playerComp->SetState(EState_Idle);
 		updateState->mTimeInState = 0.0f;
 	}
+}
 
-	if (state == EState_Attacking)
+static void UpdatePosition(const Entity& inPlayer)
+{
+	auto playerComponent = inPlayer.GetComponent<PlayerComponent>();
+	IVec2 intendedMovement = playerComponent->GetIntendedMovement();
+	playerComponent->SetIntendedMovement( IVec2(0, 0) );
+
+	if (intendedMovement == IVec2(0, 0))
 	{
-		auto position = inPlayer.GetComponent<PositionComponent>()->GetPosition();
-		switch (facingDirection)
-		{
-			case EFacingDirection_Left:		position.mX -= 1; break;
-			case EFacingDirection_Right:	position.mX += 1; break;
-			case EFacingDirection_Up:		position.mY -= 1; break;
-			case EFacingDirection_Down:		position.mY += 1; break;
-		}
-
-		inMsgBroadcaster.Broadcast( PlayerAttackMsg(inPlayer, position) );
+		return;
 	}
+
+	auto		positionComp	= inPlayer.GetComponent<PositionComponent>();
+	const IVec2	currentPos		= positionComp->GetPosition();
+	IVec2		newPos			= currentPos;
+
+	if (intendedMovement.mX != 0 && intendedMovement.mY != 0)
+	{
+		// attempt to move diagonally.
+		IVec2 stepXAxis		= currentPos + IVec2(intendedMovement.mX, 0);
+		IVec2 stepYAxis		= currentPos + IVec2(0, intendedMovement.mY);
+		IVec2 intendedPos	= currentPos + intendedMovement;
+
+		bool collidesInX	= !CanMoveToPosition(inPlayer, stepXAxis);
+		bool collidesInY	= !CanMoveToPosition(inPlayer, stepYAxis);
+		bool collidesAtDest = !CanMoveToPosition(inPlayer, intendedPos);
+
+		if ( collidesInX && collidesInY )
+		{
+			// Do nothing
+		}
+		else if (collidesInX && collidesAtDest)
+		{
+			newPos = stepYAxis;
+		}
+		else if (collidesInY && collidesAtDest)
+		{
+			newPos = stepXAxis;
+		}
+		else
+		{
+			newPos = intendedPos;
+		}
+	}
+	else
+	{
+		IVec2 intendedPos = currentPos + intendedMovement;
+
+		if ( CanMoveToPosition(inPlayer, intendedPos) )
+		{
+			newPos = intendedPos;
+		}
+	}
+
+	positionComp->SetPosition(newPos);
+	inPlayer.GetComponent<PlayerUpdateState>()->mLastSafePosition = currentPos;
+}
+
+static void Attack(Entity inPlayer)
+{
+	auto playerPos			= inPlayer.GetComponent<PositionComponent>()->GetPosition();
+	auto facingDirection	= inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
+
+	IVec2 attackDir(0, 0);
+	switch (facingDirection)
+	{
+		case EFacingDirection_Left:		attackDir.mX = -1; break;
+		case EFacingDirection_Right:	attackDir.mX =  1; break;
+		case EFacingDirection_Up:		attackDir.mY = -1; break;
+		case EFacingDirection_Down:		attackDir.mY =  1; break;
+	}
+
+	IVec2 attackPos = playerPos + attackDir;
+		
+	auto attackedEntities = PositionSystem::GetListOfEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, attackPos);
+	for (auto entity : attackedEntities)
+	{
+		auto msgRecComp = entity.GetComponent<MessageReceiverComponent>();
+		if (nullptr != msgRecComp)
+		{
+			msgRecComp->Broadcast( AttackMsg(inPlayer, attackPos, attackDir) );
+		}
+	}
+}
+
+static void UpdateAnimation(Entity inPlayer, float inFrameTime)
+{
+	auto playerComp			= inPlayer.GetComponent<PlayerComponent>();
+	auto updateState		= inPlayer.GetComponent<PlayerUpdateState>();
+
+	auto state				= playerComp->GetState();
+	auto facingDirection	= playerComp->GetFacingDirection();
 
 	if (state != updateState->mLastState || facingDirection != updateState->mLastFacingDirection)
 	{
@@ -92,18 +241,18 @@ void UpdatePlayer(const Entity& inPlayer, float inFrameTime, MessageBroadcaster&
 	}
 }
 
-void OnTouchedMonster(const TouchedMonsterMsg& inMsg)
+void UpdatePlayer(const Entity& inPlayer, float inFrameTime)
 {
-	auto updateState = inMsg.mPlayer.GetComponent<PlayerUpdateState>();
-	updateState->mDamagedFlashTimeRemaining = kDamagedFlashDuration;
+	CheckAndHandleIfInDamageZone(inPlayer);
+	UpdateState(inPlayer, inFrameTime);
+	UpdatePosition(inPlayer);
 
-	// Go back to previous position
-	auto posComp	= inMsg.mPlayer.GetComponent<PositionComponent>();
-	auto oldPos		= posComp->GetPreviousPosition();
-	//posComp->SwapPositionBuffers(); // Doing this might fix trigger box problems, but it seems a bit hacky...
-	posComp->SetPosition(oldPos);
+	if (inPlayer.GetComponent<PlayerComponent>()->GetState() == EState_Attacking)
+	{
+		Attack(inPlayer);
+	}
 
-	inMsg.mPlayer.GetComponent<HealthComponent>()->DecHealth();
+	UpdateAnimation(inPlayer, inFrameTime);
 }
 
 }

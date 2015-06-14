@@ -10,7 +10,7 @@
 namespace SpinnerEntity
 {
 
-static const float kStateChangeRate = 0.5f; // seconds
+static const float kStateChangeRate = 0.05f; // seconds
 
 static const AsciiMesh kSpinnerFrames[] =
 {

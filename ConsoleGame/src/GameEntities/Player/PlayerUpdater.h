@@ -1,11 +1,10 @@
 #pragma once
 
 class Entity;
-class MessageBroadcaster;
-class TouchedMonsterMsg;
+class AttackMsg;
 
 namespace Player
 {
-	void UpdatePlayer(const Entity& inPlayer, float inFrameTime, MessageBroadcaster& inMsgBroadcaster);
-	void OnTouchedMonster(const TouchedMonsterMsg& inMsg);
+	void UpdatePlayer(const Entity& inPlayer, float inFrameTime);
+	void OnAttacked(const Entity& inPlayer, const AttackMsg& inMsg);
 }

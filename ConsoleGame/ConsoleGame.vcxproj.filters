@@ -139,6 +139,12 @@
     <ClCompile Include="src\GameEntities\HealthEntity.cpp">
       <Filter>Source Files\GameEntities</Filter>
     </ClCompile>
+    <ClCompile Include="src\EntityComponent\Systems\DamageZoneSystem.cpp">
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EntityComponent\Components\DamageZoneComponent.cpp">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -269,6 +275,18 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\HealthEntity.h">
       <Filter>Source Files\GameEntities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Components\MessageReceiverComponent.h">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Components\DamageZoneComponent.h">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Systems\DamageZoneSystem.h">
+      <Filter>Source Files\ComponentsSystems\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Components\MonsterComponent.h">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

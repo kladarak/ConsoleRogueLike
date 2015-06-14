@@ -66,53 +66,6 @@ static PlayerIntention GetPlayerIntention(const InputBuffer& inBuffer)
 	return intention;
 }
 
-static void UpdatePosition(const Entity& inThis, const IVec2& inMovement)
-{
-	auto		positionComp	= inThis.GetComponent<PositionComponent>();
-	const IVec2	currentPos		= positionComp->GetPosition();
-	IVec2		newPos			= currentPos;
-
-	if (inMovement.mX != 0 && inMovement.mY != 0)
-	{
-		// attempt to move diagonally.
-		IVec2 stepXAxis		= currentPos + IVec2(inMovement.mX, 0);
-		IVec2 stepYAxis		= currentPos + IVec2(0, inMovement.mY);
-		IVec2 intendedPos	= currentPos + inMovement;
-
-		bool collidesInX	= CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, stepXAxis);
-		bool collidesInY	= CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, stepYAxis);
-		bool collidesAtDest = CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, intendedPos);
-
-		if ( collidesInX && collidesInY )
-		{
-			// Do nothing
-		}
-		else if (collidesInX && collidesAtDest)
-		{
-			newPos = stepYAxis;
-		}
-		else if (collidesInY && collidesAtDest)
-		{
-			newPos = stepXAxis;
-		}
-		else
-		{
-			newPos = intendedPos;
-		}
-	}
-	else
-	{
-		IVec2	intendedPos	= currentPos + inMovement;
-		bool	collides	= CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, intendedPos);
-		if (!collides)
-		{
-			newPos = intendedPos;
-		}
-	}
-
-	positionComp->SetPosition(newPos);
-}
-
 void HandleInput(const Entity& inPlayer, const InputBuffer& inBuffer)
 {
 	auto	intention		= GetPlayerIntention(inBuffer);
@@ -130,7 +83,7 @@ void HandleInput(const Entity& inPlayer, const InputBuffer& inBuffer)
 
 	if (intention.mMovement != IVec2(0, 0))
 	{
-		UpdatePosition(inPlayer, intention.mMovement);
+		playerComp->SetIntendedMovement( intention.mMovement );
 	}
 }
 

@@ -5,22 +5,13 @@
 
 class CoinCollectedMessage { };
 
-class TouchedMonsterMsg
+class AttackMsg
 {
 public:
-	TouchedMonsterMsg(Entity inMonster, Entity inPlayer) 
-		: mMonster(inMonster), mPlayer(inPlayer) { }
+	AttackMsg(Entity inAttacker, const IVec2& inAttackPosition, const IVec2& inAttackDirection)
+		: mAttacker(inAttacker), mAttackPosition(inAttackPosition), mAttackDirection(inAttackDirection) { }
 
-	Entity mMonster;
-	Entity mPlayer;
-};
-
-class PlayerAttackMsg
-{
-public:
-	PlayerAttackMsg(Entity inPlayer, const IVec2& inAttackPosition)
-		: mPlayer(inPlayer), mAttackPosition(inAttackPosition) { }
-
-	Entity	mPlayer;
+	Entity	mAttacker;
 	IVec2	mAttackPosition;
+	IVec2	mAttackDirection;
 };
