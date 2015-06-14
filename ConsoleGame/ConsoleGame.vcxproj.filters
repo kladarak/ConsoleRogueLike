@@ -288,5 +288,8 @@
     <ClInclude Include="src\EntityComponent\Components\MonsterComponent.h">
       <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\Containers\ContainerMacros.h">
+      <Filter>Source Files\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

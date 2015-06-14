@@ -20,6 +20,8 @@
 #include <GameEntities/CoinEntity.h>
 #include <GameEntities/HealthEntity.h>
 
+#include <Containers/ContainerMacros.h>
+
 #include <Messages/Messages.h>
 
 namespace MonsterEntityFactory
@@ -27,19 +29,49 @@ namespace MonsterEntityFactory
 
 static const float	kAnimationDuration			= 0.5f;
 static const float	kMovementCooldownDuration	= 1.0f;
+static const float	kDeathAnimationDuration		= 1.5f;
 
-static const AsciiMesh kMonsterFrames[] =
+namespace MonsterAnimation
 {
-	AsciiMesh( "e", 1, 1 ),
-	AsciiMesh( "@", 1, 1 ),
-};
+	static const AsciiMesh kIdleFrames[] =
+	{
+		AsciiMesh( "e", 1, 1 ),
+		AsciiMesh( "@", 1, 1 ),
+	};
 
-static const Animation kMonsterAnimation(kMonsterFrames, sizeof(kMonsterFrames)/sizeof(AsciiMesh), kAnimationDuration, Animation::EPlaybackStyle_Loop);
+	static const Animation kIdle(kIdleFrames, gElemCount(kIdleFrames), kAnimationDuration, Animation::EPlaybackStyle_Loop);
+	
+	static const char kDeathKF0 = 178;
+	static const char kDeathKF1 = 177;
+	static const char kDeathKF2 = 176;
+
+	static const AsciiMesh kDeathFrames[] =
+	{
+		AsciiMesh( &kDeathKF0,	1, 1 ),
+		AsciiMesh( &kDeathKF1,	1, 1 ),
+		AsciiMesh( &kDeathKF2,	1, 1 ),
+		AsciiMesh( ".",			1, 1 ),
+	};
+	
+	static const Animation kDeath(kDeathFrames, gElemCount(kDeathFrames), kDeathAnimationDuration/gElemCount(kDeathFrames), Animation::EPlaybackStyle_Once);
+
+	static const Animation kAnimations[] =
+	{
+		kIdle,
+		kDeath
+	};
+
+	enum
+	{
+		EIdleAnimation = 0,
+		EDeathAnimation
+	};
+}
 
 class MonsterState
 {
 public:
-	MonsterState()
+	MonsterState() : mIsDying(false), mTimeUntilDeath(FLT_MAX)
 	{
 		ResetMovementDuration();
 	}
@@ -51,25 +83,30 @@ public:
 		mMovementCooldownTime = kMovementCooldownDuration + ((rand()%10) * 0.1f);
 	}
 
-	float mMovementCooldownTime;
+	float	mMovementCooldownTime;
+
+	float	mTimeUntilDeath;
+	bool	mIsDying;
 };
 
-static void TakeDamage(const Entity& inMonster, MessageBroadcaster& inMsgBroadcaster)
+static void TakeDamage(Entity inMonster)
 {
-	auto position = inMonster.GetComponent<PositionComponent>()->GetPosition();
-
-	Entity(inMonster).Kill();
-	switch (rand() % 3)
+	auto monsterState = inMonster.GetComponent<MonsterState>();
+	if (monsterState->mIsDying)
 	{
-		case 0: CoinEntity::Create(*inMonster.GetWorld(), inMsgBroadcaster, position); break;
-		case 1: HealthEntity::Create(*inMonster.GetWorld(), position); break;
-		default: break;
+		return;
 	}
+
+	monsterState->mIsDying			= true;
+	monsterState->mTimeUntilDeath	= kDeathAnimationDuration;
+
+	inMonster.GetComponent<AnimationComponent>()->SetSelectedAnimation( MonsterAnimation::EDeathAnimation, true );
+	inMonster.RemoveComponent<DamageZoneComponent>();
 }
 
-static void OnAttacked(Entity inMonster, const AttackMsg&, MessageBroadcaster& inMsgBroadcaster)
+static void OnAttacked(Entity inMonster, const AttackMsg&)
 {
-	TakeDamage(inMonster, inMsgBroadcaster);
+	TakeDamage(inMonster);
 }
 
 static IVec2 GetIntendedMovement(const Entity& inThis, float inFrameTime)
@@ -96,8 +133,30 @@ static IVec2 GetIntendedMovement(const Entity& inThis, float inFrameTime)
 	return movement;
 }
 
-static void Update(const Entity& inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
+static void Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
 {
+	auto monsterState = inThis.GetComponent<MonsterState>();
+	if (monsterState->mIsDying)
+	{
+		monsterState->mTimeUntilDeath -= inFrameTime;
+
+		if (monsterState->mTimeUntilDeath <= 0.0f)
+		{
+			auto position = inThis.GetComponent<PositionComponent>()->GetPosition();
+
+			inThis.Kill();
+
+			switch (rand() % 3)
+			{
+				case 0: CoinEntity::Create(*inThis.GetWorld(), inMsgBroadcaster, position); break;
+				case 1: HealthEntity::Create(*inThis.GetWorld(), position); break;
+				default: break;
+			}
+		}
+
+		return;
+	}
+
 	// Check if in danger zone.
 	// If so, take damage.
 	// If not, get intended movement
@@ -111,7 +170,7 @@ static void Update(const Entity& inThis, float inFrameTime, MessageBroadcaster& 
 		bool isInDamageZone = DamageZoneSystem::IsDamageZone(*inThis.GetWorld(), inThis, position);
 		if (isInDamageZone)
 		{
-			TakeDamage(inThis, inMsgBroadcaster);
+			TakeDamage(inThis);
 			return;
 		}
 	}
@@ -158,18 +217,18 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 {
 	auto entity = inWorld.CreateEntity();
 	
-	entity.AddComponent<AnimationComponent>(kMonsterAnimation);
+	entity.AddComponent<AnimationComponent>( MonsterAnimation::kAnimations, gElemCount(MonsterAnimation::kAnimations) );
 	entity.AddComponent<CollisionComponent>()->SetCollidableAt(0, 0);
 	entity.AddComponent<DamageZoneComponent>()->SetDamageZoneAt(0, 0);
 	entity.AddComponent<MonsterComponent>();
 	entity.AddComponent<MonsterState>();
 	entity.AddComponent<PositionComponent>(inPosition);
-	entity.AddComponent<RenderableComponent>(kMonsterFrames[0]);
+	entity.AddComponent<RenderableComponent>( MonsterAnimation::kIdleFrames[0] );
 
 	entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>(
 		[entity, &inMsgBroadcaster] (const AttackMsg& inAttackMsg)
 		{
-			OnAttacked(entity, inAttackMsg, inMsgBroadcaster); 
+			OnAttacked(entity, inAttackMsg); 
 		} );
 	
 	entity.AddComponent<ProgramComponent>()->RegisterProgram(

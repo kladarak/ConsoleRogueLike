@@ -24,8 +24,9 @@
 namespace Player
 {
 
-static const float kStateHoldTime = 0.5f;
-static const float kDamagedFlashDuration = 2.0f;
+static const float kStateHoldTime			= 0.5f;
+static const float kDamagedFlashDuration	= 2.0f;
+static const float kDamageFlashRate			= 10.0f;
 
 static void TakeDamage(Entity inPlayer)
 {
@@ -231,7 +232,7 @@ static void UpdateAnimation(Entity inPlayer, float inFrameTime)
 		
 		float timeRemaining = updateState->mDamagedFlashTimeRemaining;
 		
-		int anim = (int) (timeRemaining * 4.0f);
+		int anim = (int) (timeRemaining * kDamageFlashRate);
 		bool visible = (anim % 2) == 0;
 		inPlayer.GetComponent<RenderableComponent>()->SetVisible(visible);
 	}

@@ -1,13 +1,14 @@
 #pragma once
 
-#include "PlayerEnums.h"
 #include <Animations/Animation.h>
+#include <Containers/ContainerMacros.h>
+
+#include "PlayerEnums.h"
 
 namespace Player
 {
 	
 //--------------------------------------------------------------------
-#define gElemCount( arr ) (sizeof(arr)/sizeof(arr[0]))
 
 static const char kIdlePose = 'O';
 
