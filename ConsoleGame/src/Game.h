@@ -1,8 +1,7 @@
 #pragma once
 
-#include <chrono>
-
 #include <Core/Messaging/MessageBroadcaster.h>
+#include <Core/Time/Timer.h>
 
 #include <EntityComponentSystem/World/World.h>
 
@@ -22,12 +21,8 @@ public:
 private:
 	void Update();
 	void Render();
-
-	typedef std::chrono::time_point<std::chrono::system_clock> SystemClockTime;
-	SystemClockTime		mLastClockTime;
-	double				mFrameTime;
-	double				mTimeElapsed;
 	
+	Timer				mTimer;
 	World				mWorld;
 	InputMonitor		mInputMonitor;
 	DungeonMap			mDungeonMap;

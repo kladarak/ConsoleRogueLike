@@ -22,10 +22,7 @@
 #include <EntityComponent/Systems/TriggerSystem.h>
 
 Game::Game()
-	: mLastClockTime		( std::chrono::system_clock::now() )
-	, mFrameTime			( 0.0 )
-	, mTimeElapsed			( 0.0 )
-	, mIsRunning(false)
+	: mIsRunning(false)
 {
 }
 
@@ -33,8 +30,7 @@ int Game::Run()
 {
 	srand( (uint32_t) time(NULL) );
 
-	mLastClockTime = std::chrono::system_clock::now();
-
+	mTimer.Start();
 	mInputMonitor.StartMonitoring();
 
 	{
@@ -64,26 +60,20 @@ int Game::Run()
 
 void Game::Update()
 {
-	typedef std::chrono::duration<double> ChronoDuration;
-	SystemClockTime now			= std::chrono::system_clock::now();
-	ChronoDuration	elapsedSec	= now - mLastClockTime;
-	
-	mLastClockTime	= now;
-	mFrameTime		= elapsedSec.count();
-	mTimeElapsed	+= mFrameTime;
+	mTimer.Tick();
+	float frameTime = mTimer.GetDeltaTime();
 
 	mWorld.FlushDestroyedEntities();
 
 	PositionSystem::SwapPositionBuffers(mWorld);
 
-	InputBuffer inputBuffer = mInputMonitor.ConsumeBuffer();
-	InputHandlerSystem::Update(mWorld, inputBuffer);
+	InputHandlerSystem::Update(mWorld, mInputMonitor.ConsumeBuffer());
 
-	ProgramSystem::Update(mWorld, (float) mFrameTime);
+	ProgramSystem::Update(mWorld, frameTime);
 
 	TriggerSystem::Update(mWorld);
 
-	AnimationSystem::Update(mWorld, (float) mFrameTime);
+	AnimationSystem::Update(mWorld, frameTime);
 }
 
 void Game::Render()
@@ -96,7 +86,6 @@ void Game::Render()
 	
 	mHUD.RenderTop();
 	
-
 	RenderTarget renderTarget(EMapCols+1, EMapRows);
 	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
 	RenderSystem::Render(mWorld, cameraPosition, renderTarget);
@@ -104,4 +93,5 @@ void Game::Render()
 	renderTarget.Render();
 
 	mHUD.RenderBottom();
+	printf("%03i FPS (%03.3fms)           \n", (int) (1.0f / mTimer.GetDeltaTime()), mTimer.GetDeltaTime() * 1000.0f);
 }
