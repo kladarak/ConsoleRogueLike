@@ -16,6 +16,11 @@
 
 #include "ScreenConstants.h"
 
+void InGameState::Reset()
+{
+	*this = InGameState();
+}
+
 void InGameState::Init()
 {
 	auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
@@ -29,7 +34,7 @@ void InGameState::Init()
 	mHUD.Init(mMessageBroadcaster, player);
 }
 
-void InGameState::Update(float inFrameTime, const InputBuffer& inInput)
+EGameState InGameState::Update(float inFrameTime, const InputBuffer& inInput)
 {
 	mWorld.FlushDestroyedEntities();
 
@@ -42,6 +47,8 @@ void InGameState::Update(float inFrameTime, const InputBuffer& inInput)
 	TriggerSystem::Update(mWorld);
 
 	AnimationSystem::Update(mWorld, inFrameTime);
+
+	return EGameState_InGame;
 }
 
 std::string InGameState::GetRenderBuffer()

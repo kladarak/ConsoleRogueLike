@@ -172,6 +172,9 @@
     <ClCompile Include="src\StateMachine\InGameState.cpp">
       <Filter>Source Files\StateMachine</Filter>
     </ClCompile>
+    <ClCompile Include="src\StateMachine\StartMenuState.cpp">
+      <Filter>Source Files\StateMachine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -343,6 +346,15 @@
       <Filter>Source Files\GameEntities\Player\Weapons</Filter>
     </ClInclude>
     <ClInclude Include="src\StateMachine\InGameState.h">
+      <Filter>Source Files\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StateMachine\StateBase.h">
+      <Filter>Source Files\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StateMachine\EGameState.h">
+      <Filter>Source Files\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StateMachine\StartMenuState.h">
       <Filter>Source Files\StateMachine</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,17 +4,20 @@
 
 #include <Input/InputMonitor.h>
 
-#include <StateMachine/InGameState.h>
+#include <StateMachine/StateBase.h>
 
 class Game
 {
 public:
 	Game();
+	~Game();
 
 	int Run();
 
 private:
 	void Init();
+	void HandleStateChange();
+	void SwitchToState(EGameState inState);
 	void Update();
 	void Render();
 	
@@ -22,5 +25,8 @@ private:
 	InputMonitor		mInputMonitor;
 	bool				mIsRunning;
 
-	InGameState			mInGameState;
+	EGameState			mCurrentState;
+	EGameState			mNextState;
+
+	StateBase*			mStates[EGameState_Count];
 };
