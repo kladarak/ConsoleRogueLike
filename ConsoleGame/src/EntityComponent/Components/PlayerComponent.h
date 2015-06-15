@@ -46,6 +46,7 @@ public:
 	void						SetDamaged(bool inValue)										{ mDamaged = inValue; }
 	bool						IsDamaged() const												{ return mDamaged; }
 	
+	const Inventory&			GetInventory() const											{ return mInventory; }
 	void						AddWeapon(Weapon* inWeapon)										{ mInventory.AddWeapon(inWeapon); }
 	void						SetSelectedWeapon(EWeapon inWeapon)								{ mSelectedWeapon = inWeapon; }
 	Weapon*						GetSelectedWeapon() const										{ return mInventory.GetWeapon(mSelectedWeapon); }

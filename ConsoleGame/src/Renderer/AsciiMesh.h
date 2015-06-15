@@ -2,6 +2,7 @@
 
 #include <Containers/Dynamic2DVector.h>
 #include <Maths/IVec2.h>
+#include <Maths/IRect.h>
 
 class AsciiMesh
 {
@@ -19,7 +20,9 @@ public:
 	const IVec2&					GetCentreOffset() const								{ return mCentreOffset; }
 
 	template<typename TFunctor>
-	void		ForEachFrag(const TFunctor& inFunctor) const;
+	void							ForEachFrag(const TFunctor& inFunctor) const;
+
+	IRect							GetLocalBounds() const;
 
 private:
 	Dynamic2DVector<char>			mFragments;

@@ -8,6 +8,8 @@
 
 #include <Messages/Messages.h>
 
+#include <Renderer/RenderTargetWriter.h>
+
 static const char kHeartIcon = 3;
 
 HUD::HUD()
@@ -28,24 +30,33 @@ void HUD::OnCoinCollected()
 
 std::string HUD::GetTopBarRenderBuffer() const
 {
-	auto health = mPlayer.GetComponent<HealthComponent>();
-	int current = health->GetCurrentHealth();
-	int max		= health->GetMaxHealth();
-
-	std::string buffer(max, '.');
-	for (int i = 0; i < current; ++i)
+	RenderTargetWriter renderTargetWriter(100, 1);
+	
 	{
-		buffer[i] = kHeartIcon;
+		auto health = mPlayer.GetComponent<HealthComponent>();
+		int current = health->GetCurrentHealth();
+		int max		= health->GetMaxHealth();
+
+		std::string healthBar(max, '.');
+		for (int i = 0; i < current; ++i)
+		{
+			healthBar[i] = kHeartIcon;
+		}
+	
+		renderTargetWriter.Write(healthBar, 0, 0);
 	}
 
-	return buffer + "\n";
+	return renderTargetWriter.GetRenderBuffer();
 }
 
 std::string HUD::GetBottomBarRenderBuffer() const
 {
-	std::string out;
+	RenderTargetWriter renderTargetWriter(100, 1);
+	
+	{
+		std::string money = "Money: $" + std::to_string(mMoneyCollected) + "\n";
+		renderTargetWriter.Write(money, 0, 0);
+	}
 
-	out = "Money: $" + std::to_string(mMoneyCollected) + "\n";
-
-	return out;
+	return renderTargetWriter.GetRenderBuffer();
 }

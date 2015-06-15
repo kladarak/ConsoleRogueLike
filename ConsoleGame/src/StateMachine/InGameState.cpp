@@ -1,20 +1,11 @@
 #include "InGameState.h"
 
-#include <GameEntities/RoomEntity.h>
-#include <GameEntities/Player/PlayerEntity.h>
-#include <GameEntities/SpinnerEntity.h>
-#include <Dungeon/DungeonFactory.h>
+#include <Input/InputBuffer.h>
 
-#include <EntityComponent/Systems/AnimationSystem.h>
-#include <EntityComponent/Systems/InputHandlerSystem.h>
-#include <EntityComponent/Systems/PositionSystem.h>
-#include <EntityComponent/Systems/ProgramSystem.h>
-#include <EntityComponent/Systems/RenderSystem.h>
-#include <EntityComponent/Systems/TriggerSystem.h>
-
-#include <Renderer/RenderTarget.h>
-
-#include "ScreenConstants.h"
+InGameState::InGameState()
+	: mCurrentScreen(EGameScreen_PlayScreen)
+{
+}
 
 void InGameState::Reset()
 {
@@ -23,49 +14,38 @@ void InGameState::Reset()
 
 void InGameState::Init()
 {
-	auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
-	
-	mDungeonMap.Init(rooms);
-	
-	mCameraSystem.Init(mWorld, mDungeonMap);
+	mPlayScreen.Init();
+	mInventoryScreen.Init( mPlayScreen.GetPlayer() );
 
-	auto player = PlayerEntity::Create(mWorld);
-
-	mHUD.Init(mMessageBroadcaster, player);
+	mCurrentScreen = EGameScreen_PlayScreen;
 }
 
 EGameState InGameState::Update(float inFrameTime, const InputBuffer& inInput)
 {
-	mWorld.FlushDestroyedEntities();
+	if (inInput.IsPressed('\t'))
+	{
+		switch (mCurrentScreen)
+		{	
+			case EGameScreen_PlayScreen:		mCurrentScreen = EGameScreen_InventoryScreen;	break;
+			case EGameScreen_InventoryScreen:	mCurrentScreen = EGameScreen_PlayScreen;		break;
+		}
+	}
 
-	PositionSystem::SwapPositionBuffers(mWorld);
-
-	InputHandlerSystem::Update(mWorld, inInput);
-
-	ProgramSystem::Update(mWorld, inFrameTime);
-
-	TriggerSystem::Update(mWorld);
-
-	AnimationSystem::Update(mWorld, inFrameTime);
+	switch (mCurrentScreen)
+	{	
+		case EGameScreen_PlayScreen:		mPlayScreen.Update(inFrameTime, inInput);		break;
+		case EGameScreen_InventoryScreen:	mInventoryScreen.Update(inFrameTime, inInput);	break;
+	}
 
 	return EGameState_InGame;
 }
 
 std::string InGameState::GetRenderBuffer()
 {
-	using namespace ScreenConstants;
-
-	std::string outBuffer;
-
-	outBuffer += mHUD.GetTopBarRenderBuffer();
-	
-	RenderTarget renderTarget(EMapCols+1, EMapRows);
-	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
-	RenderSystem::Render(mWorld, cameraPosition, renderTarget);
-
-	outBuffer += renderTarget.GetBuffer();
-
-	outBuffer += mHUD.GetBottomBarRenderBuffer();
-
-	return outBuffer;
+	switch (mCurrentScreen)
+	{	
+		case EGameScreen_PlayScreen:		return mPlayScreen.GetRenderBuffer();
+		case EGameScreen_InventoryScreen:	return mInventoryScreen.GetRenderBuffer();
+		default:							return "";
+	}
 }

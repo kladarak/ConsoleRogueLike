@@ -11,6 +11,11 @@
 
 #include "SwordAnimations.h"
 
+Sword::Sword() 
+	: Weapon(WeaponData::kSwordData)
+{
+}
+
 void Sword::Attack(Entity inPlayer, bool inStartedAttackThisFrame)
 {
 	using namespace Player;

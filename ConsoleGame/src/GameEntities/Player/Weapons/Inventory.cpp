@@ -21,7 +21,7 @@ Weapon* Inventory::GetWeapon(EWeapon inWeapon) const
 {
 	for (auto weapon : mWeapons)
 	{
-		if (weapon->GetName() == inWeapon)
+		if (weapon->GetWeaponType() == inWeapon)
 		{
 			return weapon;
 		}

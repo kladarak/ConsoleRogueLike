@@ -18,3 +18,8 @@ AsciiMesh::AsciiMesh(char inChar)
 {
 	mFragments.Set(0, 0, inChar);
 }
+
+IRect AsciiMesh::GetLocalBounds() const
+{
+	return IRect(mCentreOffset.mX, mCentreOffset.mY, mFragments.GetColCount(), mFragments.GetRowCount());
+}

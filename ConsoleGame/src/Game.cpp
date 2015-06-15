@@ -87,7 +87,7 @@ void Game::Render()
 	COORD pos = { 0, 0 };
 	HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorPosition(output, pos);
-	
+
 	printf("%04i FPS (%03.3fms)\n\n", (uint32_t) (1.0f / mTimer.GetDeltaTime()), mTimer.GetDeltaTime() * 1000.0f);
 	printf(buffer.c_str());
 }

@@ -20,7 +20,7 @@ struct MenuOption
 static const MenuOption kOptions[] =
 {
 	{ EMenuOption_StartGame,	"Start Game" },
-	{ EMenuOption_Dummy,		"Dummy Option" },
+	//{ EMenuOption_Dummy,		"Dummy Option" },
 };
 
 StartMenuState::StartMenuState()

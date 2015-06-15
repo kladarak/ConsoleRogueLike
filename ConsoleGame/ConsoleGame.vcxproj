@@ -47,6 +47,9 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer\AsciiMesh.cpp" />
     <ClCompile Include="src\Renderer\RenderTarget.cpp" />
+    <ClCompile Include="src\Renderer\RenderTargetWriter.cpp" />
+    <ClCompile Include="src\StateMachine\InGameScreenStates\InGamePlayScreen.cpp" />
+    <ClCompile Include="src\StateMachine\InGameScreenStates\InventoryScreen.cpp" />
     <ClCompile Include="src\StateMachine\InGameState.cpp" />
     <ClCompile Include="src\StateMachine\StartMenuState.cpp" />
     <ClCompile Include="src\UI\HUD.cpp" />
@@ -95,6 +98,7 @@
     <ClInclude Include="src\GameEntities\Player\Weapons\Sword.h" />
     <ClInclude Include="src\GameEntities\Player\Weapons\SwordAnimations.h" />
     <ClInclude Include="src\GameEntities\Player\Weapons\Weapon.h" />
+    <ClInclude Include="src\GameEntities\Player\Weapons\WeaponData.h" />
     <ClInclude Include="src\GameEntities\Player\Weapons\WeaponEnums.h" />
     <ClInclude Include="src\GameEntities\RoomEntity.h" />
     <ClInclude Include="src\GameEntities\SpinnerEntity.h" />
@@ -106,7 +110,10 @@
     <ClInclude Include="src\Messages\Messages.h" />
     <ClInclude Include="src\Renderer\AsciiMesh.h" />
     <ClInclude Include="src\Renderer\RenderTarget.h" />
+    <ClInclude Include="src\Renderer\RenderTargetWriter.h" />
     <ClInclude Include="src\ScreenConstants.h" />
+    <ClInclude Include="src\StateMachine\InGameScreenStates\InGamePlayScreen.h" />
+    <ClInclude Include="src\StateMachine\InGameScreenStates\InventoryScreen.h" />
     <ClInclude Include="src\StateMachine\InGameState.h" />
     <ClInclude Include="src\StateMachine\StartMenuState.h" />
     <ClInclude Include="src\StateMachine\StateBase.h" />

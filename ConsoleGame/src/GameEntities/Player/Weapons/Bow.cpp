@@ -8,8 +8,15 @@
 
 #include <Messages/Messages.h>
 
+#include "WeaponData.h"
 #include "Arrow.h"
 #include "BowAnimations.h"
+
+
+Bow::Bow() 
+	: Weapon(WeaponData::kBowData)
+{
+}
 
 void Bow::Attack(Entity inPlayer, bool inStartedAttackThisFrame)
 {

@@ -56,6 +56,9 @@
     <Filter Include="Source Files\StateMachine">
       <UniqueIdentifier>{c4c8412c-2258-4cc0-adb0-7360b24ae319}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\StateMachine\InGameScreenStates">
+      <UniqueIdentifier>{973b815a-38e7-43e3-8f09-1dfb27a944f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -174,6 +177,15 @@
     </ClCompile>
     <ClCompile Include="src\StateMachine\StartMenuState.cpp">
       <Filter>Source Files\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StateMachine\InGameScreenStates\InGamePlayScreen.cpp">
+      <Filter>Source Files\StateMachine\InGameScreenStates</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StateMachine\InGameScreenStates\InventoryScreen.cpp">
+      <Filter>Source Files\StateMachine\InGameScreenStates</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\RenderTargetWriter.cpp">
+      <Filter>Source Files\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -356,6 +368,18 @@
     </ClInclude>
     <ClInclude Include="src\StateMachine\StartMenuState.h">
       <Filter>Source Files\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StateMachine\InGameScreenStates\InGamePlayScreen.h">
+      <Filter>Source Files\StateMachine\InGameScreenStates</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StateMachine\InGameScreenStates\InventoryScreen.h">
+      <Filter>Source Files\StateMachine\InGameScreenStates</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\Weapons\WeaponData.h">
+      <Filter>Source Files\GameEntities\Player\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\RenderTargetWriter.h">
+      <Filter>Source Files\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
