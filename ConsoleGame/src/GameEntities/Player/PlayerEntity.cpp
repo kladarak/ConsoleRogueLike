@@ -53,6 +53,7 @@ Entity Create(World& inWorld)
 	auto playerComp = entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
 	playerComp->AddWeapon( new Sword() );
 	playerComp->AddWeapon( new Bow() );
+	//playerComp->SetSelectedWeapon( EWeapon_Sword );
 	playerComp->SetSelectedWeapon( EWeapon_Bow );
 	
 	return entity;

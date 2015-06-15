@@ -47,6 +47,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer\AsciiMesh.cpp" />
     <ClCompile Include="src\Renderer\RenderTarget.cpp" />
+    <ClCompile Include="src\StateMachine\InGameState.cpp" />
     <ClCompile Include="src\UI\HUD.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +106,7 @@
     <ClInclude Include="src\Renderer\AsciiMesh.h" />
     <ClInclude Include="src\Renderer\RenderTarget.h" />
     <ClInclude Include="src\ScreenConstants.h" />
+    <ClInclude Include="src\StateMachine\InGameState.h" />
     <ClInclude Include="src\UI\HUD.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

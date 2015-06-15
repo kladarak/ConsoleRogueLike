@@ -2,24 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <chrono>
 #include <cstring>
 
 #include "Windows.h"
-
-#include "ScreenConstants.h"
-
-#include <GameEntities/RoomEntity.h>
-#include <GameEntities/Player/PlayerEntity.h>
-#include <GameEntities/SpinnerEntity.h>
-#include <Dungeon/DungeonFactory.h>
-
-#include <EntityComponent/Systems/AnimationSystem.h>
-#include <EntityComponent/Systems/InputHandlerSystem.h>
-#include <EntityComponent/Systems/PositionSystem.h>
-#include <EntityComponent/Systems/ProgramSystem.h>
-#include <EntityComponent/Systems/RenderSystem.h>
-#include <EntityComponent/Systems/TriggerSystem.h>
 
 Game::Game()
 	: mIsRunning(false)
@@ -46,15 +31,7 @@ void Game::Init()
 	mTimer.Start();
 	mInputMonitor.StartMonitoring();
 
-	auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
-	
-	mDungeonMap.Init(rooms);
-	
-	mCameraSystem.Init(mWorld, mDungeonMap);
-
-	auto player = PlayerEntity::Create(mWorld);
-
-	mHUD.Init(mMessageBroadcaster, player);
+	mInGameState.Init();
 
 	mIsRunning = true;
 }
@@ -63,36 +40,20 @@ void Game::Update()
 {
 	mTimer.Tick();
 	float frameTime = mTimer.GetDeltaTime();
+	auto inputBuffer = mInputMonitor.ConsumeBuffer();
 
-	mWorld.FlushDestroyedEntities();
-
-	PositionSystem::SwapPositionBuffers(mWorld);
-
-	InputHandlerSystem::Update(mWorld, mInputMonitor.ConsumeBuffer());
-
-	ProgramSystem::Update(mWorld, frameTime);
-
-	TriggerSystem::Update(mWorld);
-
-	AnimationSystem::Update(mWorld, frameTime);
+	mInGameState.Update(frameTime, inputBuffer);
 }
 
 void Game::Render()
 {
-	using namespace ScreenConstants;
+	std::string buffer = mInGameState.GetRenderBuffer();
 
 	COORD pos = { 0, 0 };
 	HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorPosition(output, pos);
 	
-	mHUD.RenderTop();
-	
-	RenderTarget renderTarget(EMapCols+1, EMapRows);
-	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
-	RenderSystem::Render(mWorld, cameraPosition, renderTarget);
+	printf(buffer.c_str());
 
-	renderTarget.Render();
-
-	mHUD.RenderBottom();
-	printf("%03i FPS (%03.3fms)           \n", (int) (1.0f / mTimer.GetDeltaTime()), mTimer.GetDeltaTime() * 1000.0f);
+	printf("%04i FPS (%03.3fms)           \n", (uint32_t) (1.0f / mTimer.GetDeltaTime()), mTimer.GetDeltaTime() * 1000.0f);
 }

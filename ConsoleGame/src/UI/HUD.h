@@ -9,14 +9,14 @@ class HUD
 public:
 	HUD();
 
-	void	Init(MessageBroadcaster& inMessageBroadcaster, Entity inPlayer);
+	void		Init(MessageBroadcaster& inMessageBroadcaster, Entity inPlayer);
 
-	void	RenderTop() const;
-	void	RenderBottom() const;
+	std::string	GetTopBarRenderBuffer() const;
+	std::string	GetBottomBarRenderBuffer() const;
 
 private:
-	void	OnCoinCollected();
+	void		OnCoinCollected();
 
-	Entity	mPlayer;
-	int		mMoneyCollected;
+	Entity		mPlayer;
+	int			mMoneyCollected;
 };

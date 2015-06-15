@@ -1,5 +1,7 @@
 #include "HUD.h"
 
+#include <string>
+
 #include <Core/Messaging/MessageBroadcaster.h>
 
 #include <EntityComponent/Components/HealthComponent.h>
@@ -24,7 +26,7 @@ void HUD::OnCoinCollected()
 	mMoneyCollected += 100;
 }
 
-void HUD::RenderTop() const
+std::string HUD::GetTopBarRenderBuffer() const
 {
 	auto health = mPlayer.GetComponent<HealthComponent>();
 	int current = health->GetCurrentHealth();
@@ -36,10 +38,14 @@ void HUD::RenderTop() const
 		buffer[i] = kHeartIcon;
 	}
 
-	printf("%s\n", buffer.c_str());
+	return buffer + "\n";
 }
 
-void HUD::RenderBottom() const
+std::string HUD::GetBottomBarRenderBuffer() const
 {
-	printf("Money: $%i\n", mMoneyCollected);
+	std::string out;
+
+	out = "Money: $" + std::to_string(mMoneyCollected) + "\n";
+
+	return out;
 }

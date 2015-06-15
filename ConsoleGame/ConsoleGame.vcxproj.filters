@@ -53,6 +53,9 @@
     <Filter Include="Source Files\GameEntities\Player\Weapons">
       <UniqueIdentifier>{01e4c07e-76d0-49fb-af63-a4be0c023e3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\StateMachine">
+      <UniqueIdentifier>{c4c8412c-2258-4cc0-adb0-7360b24ae319}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -165,6 +168,9 @@
     </ClCompile>
     <ClCompile Include="src\GameEntities\Player\Weapons\BowAnimations.cpp">
       <Filter>Source Files\GameEntities\Player\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StateMachine\InGameState.cpp">
+      <Filter>Source Files\StateMachine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -335,6 +341,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Player\Weapons\BowAnimations.h">
       <Filter>Source Files\GameEntities\Player\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StateMachine\InGameState.h">
+      <Filter>Source Files\StateMachine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

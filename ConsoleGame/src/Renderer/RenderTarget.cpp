@@ -34,10 +34,8 @@ bool RenderTarget::operator==(const RenderTarget& inRHS)
 	return true;
 }
 
-void RenderTarget::Render()
+std::string RenderTarget::GetBuffer() const
 {
-	// TODO: Test whether doing one character at a time is slower than building a big buffer and flushing at once.
-
 	std::string buffer;
 
 	for (auto& row : mChars)
@@ -46,5 +44,5 @@ void RenderTarget::Render()
 		buffer += "\n";
 	}
 	
-	printf("%s\n", buffer.c_str());
+	return buffer;
 }
