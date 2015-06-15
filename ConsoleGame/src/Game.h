@@ -19,6 +19,7 @@ public:
 	int Run();
 
 private:
+	void Init();
 	void Update();
 	void Render();
 	
