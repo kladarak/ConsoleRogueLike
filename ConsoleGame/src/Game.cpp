@@ -28,6 +28,19 @@ Game::Game()
 
 int Game::Run()
 {
+	Init();
+
+	while (mIsRunning)
+	{
+		Update();
+		Render();
+	}
+
+	return 0;
+}
+
+void Game::Init()
+{
 	srand( (uint32_t) time(NULL) );
 
 	mTimer.Start();
@@ -49,13 +62,6 @@ int Game::Run()
 	mHUD.Init(mMessageBroadcaster, player);
 
 	mIsRunning = true;
-	while (mIsRunning)
-	{
-		Update();
-		Render();
-	}
-
-	return 0;
 }
 
 void Game::Update()
