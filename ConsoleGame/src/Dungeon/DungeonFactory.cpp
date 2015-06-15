@@ -120,8 +120,7 @@ static AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 		}
 	}
 
-	//return std::move(outMesh);
-	return outMesh;
+	return std::move(outMesh);
 }
 
 static Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
@@ -191,10 +190,17 @@ std::vector<Entity> Generate(World& inWorld, MessageBroadcaster& inMessageBroadc
 			doorMask |= (row != (ROOM_ROW_COUNT-1)) ? EDoorMask_Bottom	: EDoorMask_None;
 
 			auto room = CreateRoom(inWorld, (EDoorMask) doorMask, pos);
-			FillRoom(room, inMessageBroadcaster);
-
 			rooms.push_back(room);
 		}
+	}
+
+	// Fill rooms after creating all rooms, to fix draw order problems.
+	// A better way would be to either have an initial clearing screen pass then skip rendering any whitespace,
+	// or render white space only if no other character has been written to a fragment yet,
+	// or sort the renderables based on some sort of mark up on each renderable.
+	for (auto& room : rooms)
+	{
+		FillRoom(room, inMessageBroadcaster);
 	}
 
 	return rooms;
