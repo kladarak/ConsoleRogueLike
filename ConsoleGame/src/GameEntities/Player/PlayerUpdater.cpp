@@ -221,7 +221,7 @@ static void UpdateAnimation(Entity inPlayer, float inFrameTime)
 		{
 			case EState_Idle:		animationSelection = 0; break;
 			case EState_Attacking:	animationSelection = 0;	break; // Has a different anim set.
-			case EState_Defending:	animationSelection = 8;	break;
+			case EState_Defending:	animationSelection = 4;	break;
 			default:				animationSelection = 0;	break;
 		}
 		

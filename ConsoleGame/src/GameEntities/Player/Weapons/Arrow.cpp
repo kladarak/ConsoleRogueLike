@@ -14,7 +14,7 @@
 namespace Arrow
 {
 
-static const float kMovementTime = 0.1f;
+static const float kMovementTime = 0.05f;
 static const AsciiMesh kMeshes[] = 
 {
 	(char) 24, 
