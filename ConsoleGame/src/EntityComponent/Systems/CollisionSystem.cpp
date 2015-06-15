@@ -9,6 +9,11 @@
 namespace CollisionSystem
 {
 
+bool CollidesWithAnyEntity(World& inWorld, const IVec2& inPosition)
+{
+	return GetListofCollidablesAtPosition(inWorld, inPosition).size() > 0;
+}
+
 bool CollidesWithAnyEntity(World& inWorld, const Entity& inExceptThis, const IVec2& inPosition)
 {
 	auto collidableEntities = GetListofCollidablesAtPosition(inWorld, inPosition);

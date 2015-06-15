@@ -46,19 +46,14 @@ void Game::Init()
 	mTimer.Start();
 	mInputMonitor.StartMonitoring();
 
-	{
-		auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
-		mDungeonMap.Init(rooms);
-	}
+	auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
+	
+	mDungeonMap.Init(rooms);
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
 
 	auto player = PlayerEntity::Create(mWorld);
 
-	SpinnerEntity::Create(mWorld, IVec2(20, 10));
-	SpinnerEntity::Create(mWorld, IVec2(20, 5));
-	SpinnerEntity::Create(mWorld, IVec2(10, 5));
-	
 	mHUD.Init(mMessageBroadcaster, player);
 
 	mIsRunning = true;

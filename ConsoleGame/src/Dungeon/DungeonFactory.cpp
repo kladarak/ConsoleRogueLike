@@ -12,6 +12,7 @@
 #include <EntityComponent/Systems/CollisionSystem.h>
 
 #include <GameEntities/CoinEntity.h>
+#include <GameEntities/SpinnerEntity.h>
 #include <GameEntities/Monsters/MonsterEntityFactory.h>
 
 #include "ScreenConstants.h"
@@ -74,7 +75,7 @@ enum EDoorMask
 	EDoorMask_Right		= 1 << 3,
 };
 
-AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
+static AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 {
 	char scratchRoom[ROOM_HEIGHT][ROOM_WIDTH];
 	memset(scratchRoom, ' ', ROOM_HEIGHT*ROOM_WIDTH);
@@ -123,7 +124,7 @@ AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 	return outMesh;
 }
 
-Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
+static Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
 {
 	Entity entity = inWorld.CreateEntity();
 
@@ -147,45 +148,30 @@ Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
 	return entity;
 }
 
-void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
+static void SpawnRandomEntities(World& inWorld, const IVec2& inRoomPos, int inCount, const std::function<void (const IVec2& inPos)>& inEntitySpawner)
 {
-	auto position = inRoom.GetComponent<PositionComponent>()->GetPosition();
-
-	// Spawn random money
+	for (int i = 0; i < inCount; ++i)
 	{
-		int moneyCount = rand() % 5;
+		int x = rand() % ROOM_WIDTH;
+		int y = rand() % ROOM_HEIGHT;
+		IVec2 entityPos(x, y);
+		entityPos += inRoomPos;
 
-		for (int i = 0; i < moneyCount; ++i)
+		if ( !CollisionSystem::CollidesWithAnyEntity(inWorld, entityPos) )
 		{
-			int x = rand() % ROOM_WIDTH;
-			int y = rand() % ROOM_HEIGHT;
-			IVec2 coinPos(x, y);
-			coinPos += position;
-
-			if ( !CollisionSystem::CollidesWith(inRoom, coinPos) )
-			{
-				CoinEntity::Create(*inRoom.GetWorld(), inMessageBroadcaster, coinPos);
-			}
+			inEntitySpawner(entityPos);
 		}
 	}
+}
 
-	// Spawn monsters
-	{
-		bool addedMonster = false;
-		while (!addedMonster)
-		{
-			int x = rand() % ROOM_WIDTH;
-			int y = rand() % ROOM_HEIGHT;
-			IVec2 monsterPos(x, y);
-			monsterPos += position;
-
-			if ( !CollisionSystem::CollidesWith(inRoom, monsterPos) )
-			{
-				MonsterEntityFactory::Create(*inRoom.GetWorld(), inMessageBroadcaster, monsterPos);
-				addedMonster = true;
-			}
-		}
-	}
+static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
+{
+	World& world = *inRoom.GetWorld();
+	auto roomPos = inRoom.GetComponent<PositionComponent>()->GetPosition();
+	
+	SpawnRandomEntities(world, roomPos, rand()%4, [&] (const IVec2& inPos) { SpinnerEntity::Create(world, inPos); } );
+	SpawnRandomEntities(world, roomPos, rand()%4, [&] (const IVec2& inPos) { MonsterEntityFactory::Create(world, inMessageBroadcaster, inPos); } );
+	SpawnRandomEntities(world, roomPos, rand()%5, [&] (const IVec2& inPos) { CoinEntity::Create(world, inMessageBroadcaster, inPos); } );
 }
 
 std::vector<Entity> Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
