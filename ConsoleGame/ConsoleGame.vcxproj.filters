@@ -187,6 +187,9 @@
     <ClCompile Include="src\GameEntities\Player\Items\Shield.cpp">
       <Filter>Source Files\GameEntities\Player\Items</Filter>
     </ClCompile>
+    <ClCompile Include="src\EntityComponent\Components\CollisionMesh.cpp">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
