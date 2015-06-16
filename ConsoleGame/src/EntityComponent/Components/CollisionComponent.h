@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Containers/Dynamic2DVectorWithOffset.h>
+#include "CollisionMesh.h"
 
 class Entity;
 
@@ -8,35 +8,22 @@ class CollisionComponent
 {
 public:
 	CollisionComponent()	{ }
+	CollisionComponent(CollisionComponent&& inRHS)		: mCollisionMesh( std::move(inRHS.mCollisionMesh) )	{ }
+	CollisionComponent(const CollisionComponent& inRHS) : mCollisionMesh( inRHS.mCollisionMesh )			{ }
+	CollisionComponent(const CollisionMesh& inRHS)		: mCollisionMesh( inRHS )							{ }
 	~CollisionComponent()	{ }
-	CollisionComponent(CollisionComponent&& inRHS)		: mCollidablePositions( std::move(inRHS.mCollidablePositions) )	{ }
-	CollisionComponent(const CollisionComponent& inRHS) : mCollidablePositions( inRHS.mCollidablePositions )			{ }
 	
-	void							SetCollidableAt(int inX, int inY)			{ SetCollidableAt(IVec2(inX, inY)); }
-	void							SetCollidableAt(const IVec2& inPosition);
-	void							SetCollidableAt(const std::vector<IVec2>& inPositions);
+	void							SetCollidableAt(int inX, int inY)							{ mCollisionMesh.Set(inX, inY, true); }
 	
-	void							SetCentreOffset(const IVec2& inOffset)		{ mCollidablePositions.SetCentreOffset(inOffset);	}
-	const IVec2&					GetCentreOffset() const						{ return mCollidablePositions.GetCentreOffset();	}
+	void							SetCentreOffset(const IVec2& inOffset)						{ mCollisionMesh.SetCentreOffset(inOffset);	}
+	const IVec2&					GetCentreOffset() const										{ return mCollisionMesh.GetCentreOffset();	}
 
 	template<typename TFunctor>
-	void							ForEachCollidablePosition(const TFunctor& inFunctor) const;
+	void							ForEachCollidablePosition(const TFunctor& inFunctor) const	{ mCollisionMesh.ForEachCollidablePosition( inFunctor ); }
 
-	bool							CollidesWith(const IVec2& inPos) const;
+	bool							CollidesWith(const IVec2& inPos) const						{ return mCollisionMesh.CollidesWith(inPos); }
 
 private:
-	Dynamic2DVectorWithOffset<bool> mCollidablePositions;
+	CollisionMesh					mCollisionMesh;
 
 };
-
-template<typename TFunctor>
-void CollisionComponent::ForEachCollidablePosition(const TFunctor& inFunctor) const
-{
-	mCollidablePositions.ForEach( [&] (int inX, int inY, bool inCollidable)
-	{
-		if (inCollidable)
-		{
-			inFunctor(inX, inY);
-		}
-	} );
-}

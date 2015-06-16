@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Containers/Dynamic2DVectorWithOffset.h>
-#include <Maths/IVec2.h>
-#include <Maths/IRect.h>
 
 class AsciiMesh : public Dynamic2DVectorWithOffset<char>
 {

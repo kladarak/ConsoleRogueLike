@@ -82,9 +82,6 @@
     <ClCompile Include="src\GameEntities\SpinnerEntity.cpp">
       <Filter>Source Files\GameEntities</Filter>
     </ClCompile>
-    <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp">
-      <Filter>Source Files\ComponentsSystems\Components</Filter>
-    </ClCompile>
     <ClCompile Include="src\EntityComponent\Systems\CollisionSystem.cpp">
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClCompile>
@@ -386,6 +383,9 @@
     </ClInclude>
     <ClInclude Include="src\Containers\Dynamic2DVectorWithOffset.h">
       <Filter>Source Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityComponent\Components\CollisionMesh.h">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

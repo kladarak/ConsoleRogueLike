@@ -15,7 +15,6 @@
     <ClCompile Include="src\Dungeon\DungeonFactory.cpp" />
     <ClCompile Include="src\Dungeon\DungeonMap.cpp" />
     <ClCompile Include="src\EntityComponent\Components\AnimationComponent.cpp" />
-    <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Components\DamageZoneComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Components\TriggerBoxComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\AnimationSystem.cpp" />
@@ -65,6 +64,7 @@
     <ClInclude Include="src\EntityComponent\Components\AnimationComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\CameraComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\CollisionComponent.h" />
+    <ClInclude Include="src\EntityComponent\Components\CollisionMesh.h" />
     <ClInclude Include="src\EntityComponent\Components\DamageZoneComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\HealthComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\InputHandlerComponent.h" />
