@@ -10,53 +10,55 @@ class PlayerComponent
 {
 public:
 	PlayerComponent(Player::EFacingDirection inDirection) 
-		: mFacingDirection			(inDirection)
-		, mState					(Player::EState_Idle)
-		, mIntendedMovement			(0, 0)
-		, mDamaged					(false)
-		, mItemSlot1				(nullptr)
-		, mItemSlot2				(nullptr)
+		: mFacingDirection	(inDirection)
+		, mState			(Player::EState_Idle)
+		, mDamaged			(false)
 	{
+		memset(mItemSlot, 0, sizeof(mItemSlot));
 	}
 
 	PlayerComponent(PlayerComponent&& inRHS)
-		: mFacingDirection			(inRHS.mFacingDirection)
-		, mState					(inRHS.mState)
-		, mIntendedMovement			(inRHS.mIntendedMovement)
-		, mDamaged					(inRHS.mDamaged)
-		, mInventory				(std::move(inRHS.mInventory))
-		, mItemSlot1				(inRHS.mItemSlot1)
-		, mItemSlot2				(inRHS.mItemSlot2)
+		: mIntention		(inRHS.mIntention)
+		, mFacingDirection	(inRHS.mFacingDirection)
+		, mState			(inRHS.mState)
+		, mDamaged			(inRHS.mDamaged)
+		, mInventory		(std::move(inRHS.mInventory))
 	{
+		memcpy(mItemSlot, inRHS.mItemSlot, sizeof(mItemSlot));
 	}
 
 	~PlayerComponent() { }
-	
+
+	void						SetIntention(const Player::Intention& inIntention)				{ mIntention = inIntention; }
+	const Player::Intention&	GetIntention() const											{ return mIntention; }
+
 	Player::EFacingDirection	GetFacingDirection() const										{ return mFacingDirection; }
 	void						SetFacingDirection(Player::EFacingDirection inFacingDirection)	{ mFacingDirection = inFacingDirection; }
 
 	Player::EState				GetState() const												{ return mState; }
 	void						SetState(Player::EState inState) 								{ mState = inState; }
 
-	void						SetIntendedMovement(const IVec2& inMovement)					{ mIntendedMovement = inMovement; }
-	const IVec2&				GetIntendedMovement() const										{ return mIntendedMovement; }
+	Player::EItemSlot			GetUsingItemSlot() const										{ return mUsingItemSlot; }
+	void						SetUsingItemSlot(Player::EItemSlot inSlot) 						{ mUsingItemSlot = inSlot; }
+	ItemBase*					GetUsingItem() const											{ return GetItemInSlot(mUsingItemSlot); }
 
 	void						SetDamaged(bool inValue)										{ mDamaged = inValue; }
 	bool						IsDamaged() const												{ return mDamaged; }
 	
 	Inventory&					GetInventory()													{ return mInventory; }
-	void						SetItemInSlot1(ItemBase* inItem)								{ mItemSlot1 = inItem; }
-	ItemBase*					GetItemInSlot1() const											{ return mItemSlot1; }
-	void						SetItemInSlot2(ItemBase* inItem)								{ mItemSlot2 = inItem; }
-	ItemBase*					GetItemInSlot2() const											{ return mItemSlot2; }
+	void						SetItemInSlot(ItemBase* inItem, Player::EItemSlot inSlot)		{ if (IsItemSlotInRage(inSlot)) { mItemSlot[inSlot] = inItem; } }
+	ItemBase*					GetItemInSlot(Player::EItemSlot inSlot) const					{ return IsItemSlotInRage(inSlot) ? mItemSlot[inSlot] : nullptr; }
 
 private:
+	static bool					IsItemSlotInRage(Player::EItemSlot inSlot)						{ return (inSlot >= Player::EItemSlot_Slot0 && inSlot < Player::EItemSlot_SlotCount); }
+	
+	Player::Intention			mIntention;
+
 	Player::EFacingDirection	mFacingDirection;
 	Player::EState				mState;
-	IVec2						mIntendedMovement;
+	Player::EItemSlot			mUsingItemSlot;
 	bool						mDamaged;
 	
 	Inventory					mInventory;
-	ItemBase*					mItemSlot1;
-	ItemBase*					mItemSlot2;
+	ItemBase*					mItemSlot[Player::EItemSlot_SlotCount];
 };

@@ -12,8 +12,8 @@ public:
 	{
 		return	( (inPos.mX >= mX)
 				& (inPos.mY >= mY)
-				& (inPos.mX < mWidth)
-				& (inPos.mY < mHeight) ) != 0;
+				& (inPos.mX < (mX + mWidth))
+				& (inPos.mY < (mY + mHeight)) ) != 0;
 	}
 	
 	int mX;

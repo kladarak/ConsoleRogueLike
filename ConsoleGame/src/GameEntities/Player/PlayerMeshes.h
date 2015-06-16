@@ -8,26 +8,20 @@
 namespace Player
 {
 	
-static const AsciiMesh kIdleMesh( 'O' );
+static const AsciiMesh		kIdleRenderMesh( 'O' );
+static const CollisionMesh	kIdleCollisionMesh( 0, 0 );
 
-static const Animation kAnimations[] =
+static const Animation kIdleAnimations[] =
 {
-	Animation( &kIdleMesh, 1, 0.0f, Animation::EPlaybackStyle_Once ),
-	Animation( &kIdleMesh, 1, 0.0f, Animation::EPlaybackStyle_Once ),
-	Animation( &kIdleMesh, 1, 0.0f, Animation::EPlaybackStyle_Once ),
-	Animation( &kIdleMesh, 1, 0.0f, Animation::EPlaybackStyle_Once ),
+	Animation( &kIdleRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Once ),
+	Animation( &kIdleRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Once ),
+	Animation( &kIdleRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Once ),
+	Animation( &kIdleRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Once ),
 };
 
-static inline std::vector<Animation> GetAnimations()
+static inline std::vector<Animation> GetIdleAnimations()
 {
-	std::vector<Animation> animations;
-
-	for (size_t i = 0; i < gElemCount(kAnimations); ++i)
-	{
-		animations.push_back(kAnimations[i]);
-	}
-
-	return animations;
+	return gCArrayToVector(kIdleAnimations, gElemCount(kIdleAnimations));
 }
 
 }

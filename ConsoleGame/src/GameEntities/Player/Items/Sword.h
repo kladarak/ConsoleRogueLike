@@ -4,10 +4,12 @@ class Sword : public ItemBase
 {
 public:
 	Sword();
-
-	virtual void					Use(Entity inPlayer, bool inStartedAttackThisFrame);
-	virtual std::vector<Animation>	GetAnimations() const;
+	
+	virtual void OnStartUsing(Entity inPlayer);
+	virtual bool UpdateUsing(Entity inPlayer, float inFrameTime);
+	virtual void OnStoppedUsing(Entity inPlayer);
 
 private:
+	float mSwipeTimeElapsed;
 
 };

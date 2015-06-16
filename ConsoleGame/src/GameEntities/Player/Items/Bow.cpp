@@ -2,6 +2,7 @@
 
 #include <Containers/ContainerMacros.h>
 
+#include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
@@ -17,20 +18,19 @@
 
 static const char		kBowIcon[]	= { 'D', ' ', 26 };
 static const ItemData	kBowData	= { "Bow", AsciiMesh(kBowIcon, gElemCount(kBowIcon), 1) };
+static const float		kAnimTime	= 0.5f;
 
 Bow::Bow() 
 	: ItemBase(kBowData)
+	, mAnimTimeElapsed(0.0f)
 {
 }
 
-void Bow::Use(Entity inPlayer, bool inStartedAttackThisFrame)
+void Bow::OnStartUsing(Entity inPlayer)
 {
-	if (!inStartedAttackThisFrame)
-	{
-		return;
-	}
-
 	using namespace Player;
+	
+	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( BowAnimations::Generate() );
 
 	auto playerPos			= inPlayer.GetComponent<PositionComponent>()->GetPosition();
 	auto facingDirection	= inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
@@ -47,9 +47,17 @@ void Bow::Use(Entity inPlayer, bool inStartedAttackThisFrame)
 	IVec2 attackPos = playerPos + attackDir;
 	
 	Arrow::Create(*inPlayer.GetWorld(), attackPos, attackDir);
+
+	mAnimTimeElapsed = 0.0f;
 }
 
-std::vector<Animation> Bow::GetAnimations() const
+bool Bow::UpdateUsing(Entity /*inPlayer*/, float inFrameTime)
 {
-	return BowAnimations::Generate();
+	mAnimTimeElapsed += inFrameTime;
+
+	return mAnimTimeElapsed > kAnimTime;
+}
+
+void Bow::OnStoppedUsing(Entity /*inPlayer*/)
+{
 }

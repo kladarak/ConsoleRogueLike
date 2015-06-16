@@ -185,17 +185,7 @@ static void Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBr
 	AttackMsg attackMsg(inThis, newPos, intendedMovement);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, newPos, attackMsg);
 
-	bool isValidPos = true;
-	
-	auto collidablesAtPosition = CollisionSystem::GetListofCollidablesAtPosition(*inThis.GetWorld(), newPos);
-	for (auto& collidable : collidablesAtPosition)
-	{
-		if (!collidable.HasComponent<MonsterComponent>() && !collidable.HasComponent<PlayerComponent>())
-		{
-			isValidPos = false;
-			break;
-		}
-	}
+	bool isValidPos = !CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, newPos);
 
 	if (isValidPos)
 	{

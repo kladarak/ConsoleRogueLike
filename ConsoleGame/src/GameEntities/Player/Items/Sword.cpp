@@ -14,17 +14,35 @@
 #include "SwordAnimations.h"
 #include "ItemData.h"
 
-static const char kSwordIcon[]		= {	'-','|','-','-','-' };
-static const ItemData kSwordData	= { "Sword", AsciiMesh(kSwordIcon, gElemCount(kSwordIcon), 1) };
+static const char		kSwordIcon[]	= {	'-','|','-','-','-' };
+static const ItemData	kSwordData		= { "Sword", AsciiMesh(kSwordIcon, gElemCount(kSwordIcon), 1) };
+static const float		kSwipeTime		= 0.5f;
 
 Sword::Sword() 
-	: ItemBase(kSwordData)
+	:	ItemBase(kSwordData)
+	,	mSwipeTimeElapsed(0.0f)
 {
 }
 
-void Sword::Use(Entity inPlayer, bool inStartedAttackThisFrame)
+void Sword::OnStartUsing(Entity inPlayer)
 {
 	using namespace Player;
+	
+	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( SwordAnimations::Generate() );
+	mSwipeTimeElapsed = 0.0f;
+
+	UpdateUsing(inPlayer, 0.0f);
+}
+
+bool Sword::UpdateUsing(Entity inPlayer, float inFrameTime)
+{
+	using namespace Player;
+
+	mSwipeTimeElapsed += inFrameTime;
+	if (mSwipeTimeElapsed > kSwipeTime)
+	{
+		return true;
+	}
 
 	auto playerPos			= inPlayer.GetComponent<PositionComponent>()->GetPosition();
 	auto facingDirection	= inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
@@ -38,18 +56,13 @@ void Sword::Use(Entity inPlayer, bool inStartedAttackThisFrame)
 		case EFacingDirection_Down:		attackDir.mY =  1; break;
 	}
 
-	IVec2 attackPos = playerPos + attackDir;
-		
-	AttackMsg attackMsg(inPlayer, attackPos, attackDir);
+	IVec2		attackPos = playerPos + attackDir;
+	AttackMsg	attackMsg(inPlayer, attackPos, attackDir);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, attackPos, attackMsg);
 
-	if (inStartedAttackThisFrame)
-	{
-		inPlayer.GetComponent<AnimationComponent>()->ResetSelectedAnimation();
-	}
+	return false;
 }
 
-std::vector<Animation> Sword::GetAnimations() const
+void Sword::OnStoppedUsing(Entity /*inPlayer*/)
 {
-	return SwordAnimations::Generate();
 }

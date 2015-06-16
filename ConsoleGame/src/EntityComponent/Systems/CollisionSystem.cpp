@@ -55,4 +55,67 @@ bool CollidesWith(const Entity& inCollidableEntity, const IVec2& inPosition)
 	return collisionComp->CollidesWith( relativePos );
 }
 
+std::vector<Entity> GetListofCollidablesCollidedWith(World& inWorld, const Entity& inEntity)
+{
+	std::vector<Entity> out;
+
+	inWorld.ForEachEntity( [&] (const Entity& inOther)
+	{
+		if (inEntity != inOther && CollidesWith(inEntity, inOther))
+		{
+			out.push_back(inOther);
+		}
+	} );
+
+	return out;
+}
+
+bool CollidesWith(const Entity& inLHS, const Entity& inRHS)
+{
+	auto lhsPositionComp	= inLHS.GetComponent<PositionComponent>();
+	auto rhsPositionComp	= inRHS.GetComponent<PositionComponent>();
+	auto lhsCollisionComp	= inLHS.GetComponent<CollisionComponent>();
+	auto rhsCollisionComp	= inRHS.GetComponent<CollisionComponent>();
+	
+	// Must have position components
+	if (nullptr == lhsPositionComp || nullptr == rhsPositionComp)
+	{
+		return false;
+	}
+	
+	// Early out if no collision components
+	if (nullptr == lhsCollisionComp && nullptr == rhsCollisionComp)
+	{
+		return false;
+	}
+	
+	auto lhsPos	= inLHS.GetComponent<PositionComponent>()->GetPosition();
+	auto rhsPos	= inRHS.GetComponent<PositionComponent>()->GetPosition();
+
+	if (nullptr == lhsCollisionComp)
+	{
+		return CollidesWith(inRHS, lhsPos);
+	}
+	
+	if (nullptr == rhsCollisionComp)
+	{
+		return CollidesWith(inLHS, rhsPos);
+	}
+
+	bool collides = false;
+
+	lhsCollisionComp->ForEachCollidablePosition( [&] (int inX, int inY)
+	{
+		if (!collides)
+		{
+			IVec2 collPos(inX, inY);
+			collPos += lhsPos;
+			collPos -= rhsPos;
+			collides = rhsCollisionComp->CollidesWith(collPos);
+		}
+	} );
+
+	return collides;
+}
+
 }

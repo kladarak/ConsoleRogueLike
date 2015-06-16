@@ -33,14 +33,14 @@ Entity Create(World& inWorld)
 {
 	Entity entity = inWorld.CreateEntity();
 	
-	entity.AddComponent<AnimationComponent>( Player::kAnimations, gElemCount(Player::kAnimations) );
+	entity.AddComponent<AnimationComponent>( Player::kIdleAnimations, gElemCount(Player::kIdleAnimations) );
 	entity.AddComponent<CollisionComponent>()->SetCollidableAt(0, 0);
 	entity.AddComponent<HealthComponent>(3);
 	entity.AddComponent<InputHandlerComponent>()->RegisterHandler( &Player::HandleInput );
 	entity.AddComponent<PlayerUpdateState>();
 	entity.AddComponent<PositionComponent>( IVec2(10, 10) );
 	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Player::UpdatePlayer );
-	entity.AddComponent<RenderableComponent>( Player::kIdleMesh );
+	entity.AddComponent<RenderableComponent>( Player::kIdleRenderMesh );
 	entity.AddComponent<TriggererComponent>();
 	
 	entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>
@@ -60,8 +60,8 @@ Entity Create(World& inWorld)
 	inventory.AddItem( bow );
 	inventory.AddItem( new Shield() );
 
-	playerComp->SetItemInSlot1( sword );
-	playerComp->SetItemInSlot2( bow );
+	playerComp->SetItemInSlot( sword,	Player::EItemSlot_Slot0 );
+	playerComp->SetItemInSlot( bow,		Player::EItemSlot_Slot1 );
 	
 	return entity;
 }

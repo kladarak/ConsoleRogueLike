@@ -15,9 +15,31 @@ namespace Player
 	enum EState
 	{
 		EState_Idle,
-		EState_StartUsingItem1,
-		EState_UsingItem1,
-		EState_StartUsingItem2,
-		EState_UsingItem2,
+		EState_UseItem,
+	};
+
+	enum EItemSlot
+	{
+		EItemSlot_None	= -1,
+		EItemSlot_Slot0 = 0,
+		EItemSlot_Slot1,
+
+		EItemSlot_SlotCount,
+	};
+
+	struct Intention
+	{
+		IVec2				mMovement;
+		EFacingDirection	mFacingDirection;
+		EState				mState;
+		EItemSlot			mUseItemSlot;
+
+		Intention() 
+			: mMovement			(0, 0)
+			, mFacingDirection	(Player::EFacingDirection_Count)
+			, mState			(Player::EState_Idle)
+			, mUseItemSlot		(EItemSlot_None)
+		{
+		}
 	};
 }

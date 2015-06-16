@@ -14,23 +14,9 @@
 namespace Player
 {
 	
-struct PlayerIntention
+static Intention GetPlayerIntention(const InputBuffer& inBuffer)
 {
-	IVec2						mMovement;
-	Player::EFacingDirection	mFacingDirection;
-	Player::EState				mState;
-
-	PlayerIntention() 
-		: mMovement			(0, 0)
-		, mFacingDirection	(Player::EFacingDirection_Count)
-		, mState			(Player::EState_Idle)
-	{
-	}
-};
-
-static PlayerIntention GetPlayerIntention(const InputBuffer& inBuffer)
-{
-	PlayerIntention intention;
+	Intention intention;
 
 	if ( inBuffer.IsPressed('a') )
 	{
@@ -56,11 +42,13 @@ static PlayerIntention GetPlayerIntention(const InputBuffer& inBuffer)
 	
 	if (inBuffer.IsPressed(' '))
 	{
-		intention.mState = EState_StartUsingItem1;
+		intention.mState		= EState_UseItem;
+		intention.mUseItemSlot	= EItemSlot_Slot0;
 	}
 	else if (inBuffer.IsPressed('e'))
 	{
-		intention.mState = EState_StartUsingItem2;
+		intention.mState		= EState_UseItem;
+		intention.mUseItemSlot	= EItemSlot_Slot1;
 	}
 
 	return intention;
@@ -68,23 +56,9 @@ static PlayerIntention GetPlayerIntention(const InputBuffer& inBuffer)
 
 void HandleInput(const Entity& inPlayer, const InputBuffer& inBuffer)
 {
-	auto	intention		= GetPlayerIntention(inBuffer);
-	auto	playerComp		= inPlayer.GetComponent<PlayerComponent>();
-	
-	if (intention.mFacingDirection != EFacingDirection_Count)
-	{
-		playerComp->SetFacingDirection( intention.mFacingDirection );
-	}
-
-	if (intention.mState != EState_Idle)
-	{
-		playerComp->SetState( intention.mState );
-	}
-
-	if (intention.mMovement != IVec2(0, 0))
-	{
-		playerComp->SetIntendedMovement( intention.mMovement );
-	}
+	auto intention	= GetPlayerIntention(inBuffer);
+	auto playerComp	= inPlayer.GetComponent<PlayerComponent>();
+	playerComp->SetIntention(intention);
 }
 
 }

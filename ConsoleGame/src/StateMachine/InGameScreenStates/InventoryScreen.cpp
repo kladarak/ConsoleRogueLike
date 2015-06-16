@@ -38,12 +38,12 @@ void InventoryScreen::Update(float /*inFrameTime*/, const InputBuffer& inInput)
 	
 	if (inInput.IsPressed(' '))
 	{
-		playerComp->SetItemInSlot1( items[mHighlightedItem] );
+		playerComp->SetItemInSlot( items[mHighlightedItem], Player::EItemSlot_Slot0 );
 	}
 	
 	if (inInput.IsPressed('e'))
 	{
-		playerComp->SetItemInSlot2( items[mHighlightedItem] );
+		playerComp->SetItemInSlot( items[mHighlightedItem], Player::EItemSlot_Slot1 );
 	}
 }
 
@@ -55,8 +55,8 @@ std::string InventoryScreen::GetRenderBuffer() const
 
 	auto	playerComp	= mPlayer.GetComponent<PlayerComponent>();
 	auto&	inventory	= playerComp->GetInventory();
-	auto	armedItem1	= playerComp->GetItemInSlot1();
-	auto	armedItem2	= playerComp->GetItemInSlot2();
+	auto	armedItem0	= playerComp->GetItemInSlot( Player::EItemSlot_Slot0 );
+	auto	armedItem1	= playerComp->GetItemInSlot( Player::EItemSlot_Slot1 );
 	auto&	items		= inventory.GetAllItems();
 	
 	int row = 0;
@@ -71,8 +71,8 @@ std::string InventoryScreen::GetRenderBuffer() const
 		auto item = items[i];
 
 		std::string itemName = item->GetName();
-		itemName += (item == armedItem1) ? " (Spc)" : "";
-		itemName += (item == armedItem2) ? " (E)"	: "";
+		itemName += (item == armedItem0) ? " (Spc)" : "";
+		itemName += (item == armedItem1) ? " (E)"	: "";
 		renderTargetWriter.Write(itemName, col, row++);
 		
 		const AsciiMesh& icon = item->GetHUDIcon();

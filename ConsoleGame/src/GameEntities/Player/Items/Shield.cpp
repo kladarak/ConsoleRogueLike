@@ -3,9 +3,11 @@
 #include <Containers/ContainerMacros.h>
 #include <GameEntities/Player/PlayerEnums.h>
 
+#include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionMesh.h>
 #include <EntityComponent/Components/CollisionComponent.h>
-// TODO: If this modifies collision, then we ned to reset it after we stop using this item...
+#include <EntityComponent/Components/PlayerComponent.h>
+#include <EntityComponent/Components/PositionComponent.h>
 
 //--------------------------------------------------------------------
 
@@ -61,14 +63,39 @@ static const CollisionMesh kShieldCollisionMeshes[Player::EFacingDirection_Count
 
 Shield::Shield()
 	: ItemBase(kShieldData)
+	, mHeldUp(false)
 {
 }
 	
-void Shield::Use(Entity inPlayer, bool inStartedUsingThisFrame)
+void Shield::OnStartUsing(Entity inPlayer)
 {
+	using namespace Player;
+
+	if (!mHeldUp)
+	{
+		inPlayer.GetComponent<AnimationComponent>()->SetAnimations( gCArrayToVector(kAnimations, gElemCount(kAnimations)) );
+	
+		auto playerPos			= inPlayer.GetComponent<PositionComponent>()->GetPosition();
+		auto facingDirection	= inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
+	
+		inPlayer.GetComponent<CollisionComponent>()->SetCollisionMesh( kShieldCollisionMeshes[facingDirection] );
+
+		mHeldUp = true;
+	}
+	else
+	{
+		// Switch to Idle - make no modifications.
+		mHeldUp = false;
+	}
 }
 
-std::vector<Animation> Shield::GetAnimations() const
+bool Shield::UpdateUsing(Entity /*inPlayer*/, float /*inFrameTime*/)
 {
-	return gCArrayToVector(kAnimations, gElemCount(kAnimations));
+	// We're finished if we're idle.
+	return !mHeldUp;
+}
+
+void Shield::OnStoppedUsing(Entity /*inPlayer*/)
+{
+	mHeldUp = false;
 }

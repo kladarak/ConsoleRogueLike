@@ -7,9 +7,10 @@ class Shield : public ItemBase
 public:
 	Shield();
 	
-	virtual void					Use(Entity inPlayer, bool inStartedUsingThisFrame);
-	virtual std::vector<Animation>	GetAnimations() const;
+	virtual void OnStartUsing(Entity inPlayer);
+	virtual bool UpdateUsing(Entity inPlayer, float inFrameTime);
+	virtual void OnStoppedUsing(Entity inPlayer);
 
 private:
-
+	bool mHeldUp;
 };

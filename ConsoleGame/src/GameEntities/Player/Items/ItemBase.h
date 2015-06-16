@@ -15,8 +15,9 @@ public:
 	const std::string&				GetName() const			{ return mData.mName;		}
 	const AsciiMesh&				GetHUDIcon() const		{ return mData.mHUDIcon;	}
 
-	virtual void					Use(Entity inPlayer, bool inStartedUsingThisFrame)	= 0;
-	virtual std::vector<Animation>	GetAnimations() const								= 0;
+	virtual void					OnStartUsing(Entity inPlayer)					= 0;
+	virtual bool					UpdateUsing(Entity inPlayer, float inFrameTime)	= 0;
+	virtual void					OnStoppedUsing(Entity inPlayer)					= 0;
 
 private:
 	ItemData mData;

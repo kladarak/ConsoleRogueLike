@@ -51,21 +51,21 @@ std::string HUD::GetTopBarRenderBuffer() const
 
 	{
 		auto playerComp = mPlayer.GetComponent<PlayerComponent>();
-		auto item1 = playerComp->GetItemInSlot1();
-		auto item2 = playerComp->GetItemInSlot2();
+		auto item0 = playerComp->GetItemInSlot( Player::EItemSlot_Slot0 );
+		auto item1 = playerComp->GetItemInSlot( Player::EItemSlot_Slot1 );
 
 		int left = ScreenConstants::EMapCols - 10;
 		renderTargetWriter.Write("Spc:",	left, 0);
 		renderTargetWriter.Write("E:",		left, 1);
 
-		if (nullptr != item1)
+		if (nullptr != item0)
 		{
-			renderTargetWriter.Write(item1->GetHUDIcon(), left+5, 0);
+			renderTargetWriter.Write(item0->GetHUDIcon(), left+5, 0);
 		}
 
-		if (nullptr != item2)
+		if (nullptr != item1)
 		{
-			renderTargetWriter.Write(item2->GetHUDIcon(), left+5, 1);
+			renderTargetWriter.Write(item1->GetHUDIcon(), left+5, 1);
 		}
 	}
 
