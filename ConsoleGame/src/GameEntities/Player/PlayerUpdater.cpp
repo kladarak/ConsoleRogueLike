@@ -174,15 +174,48 @@ static void UpdatePosition(const Entity& inPlayer)
 
 static void UseItem(Entity inPlayer)
 {
-	auto playerComp = inPlayer.GetComponent<PlayerComponent>();
-	auto item		= playerComp->GetItemInSlot1();
-
-	if (nullptr != item)
+	auto playerComp		= inPlayer.GetComponent<PlayerComponent>();
+	auto state			= playerComp->GetState();
+	
+	switch (state)
 	{
-		item->Use(inPlayer, playerComp->GetStartedAttackThisFrame());
-	}
+		case EState_StartUsingItem1:
+		case EState_UsingItem1:
+		{
+			auto item = playerComp->GetItemInSlot1();
+			if (nullptr != item)
+			{	
+				bool startedThisFrame = state == EState_StartUsingItem1;
+				item->Use(inPlayer, startedThisFrame);
+				playerComp->SetState(EState_UsingItem1);
+			}
+			else
+			{
+				playerComp->SetState(EState_Idle);
+			}
+			break;
+		}
 
-	playerComp->SetStartedAttackThisFrame(false);
+		case EState_StartUsingItem2:
+		case EState_UsingItem2:
+		{
+			auto item = playerComp->GetItemInSlot2();
+			if (nullptr != item)
+			{	
+				bool startedThisFrame = state == EState_StartUsingItem2;
+				item->Use(inPlayer, startedThisFrame);
+				playerComp->SetState(EState_UsingItem2);
+			}
+			else
+			{
+				playerComp->SetState(EState_Idle);
+			}
+			break;
+		}
+
+		default:
+			break;
+	}
 }
 
 static void UpdateAnimation(Entity inPlayer, float inFrameTime)
@@ -196,38 +229,38 @@ static void UpdateAnimation(Entity inPlayer, float inFrameTime)
 
 	if (state != updateState->mLastState)
 	{
-		std::vector<Animation> animations = GetAnimations();
-
-		if (playerComp->GetState() == EState_Attacking)
+		std::vector<Animation> animations = [&] ()
 		{
-			auto weapon = playerComp->GetItemInSlot1();
-			if (nullptr != weapon)
+			switch (playerComp->GetState())
 			{
-				animations = weapon->GetAnimations();
+				case EState_StartUsingItem1:
+				case EState_UsingItem1:
+				{
+					auto item = playerComp->GetItemInSlot1();
+					return (nullptr != item) ? item->GetAnimations() : GetAnimations();
+				}
+
+				case EState_StartUsingItem2:
+				case EState_UsingItem2:
+				{
+					auto item = playerComp->GetItemInSlot2();
+					return (nullptr != item) ? item->GetAnimations() : GetAnimations();
+				}
+
+				default:
+					return GetAnimations();
 			}
-		}
+		} ();
 
 		animationComp->SetAnimations(animations);
 	}
+	
+	updateState->mLastState = state;
 
-	if (state != updateState->mLastState || facingDirection != updateState->mLastFacingDirection)
+	if (facingDirection != updateState->mLastFacingDirection)
 	{
-		updateState->mLastState				= state;
-		updateState->mLastFacingDirection	= facingDirection;
-
-		int animationSelection = 0;
-		
-		switch (state)
-		{
-			case EState_Idle:		animationSelection = 0; break;
-			case EState_Attacking:	animationSelection = 0;	break; // Has a different anim set.
-			case EState_Defending:	animationSelection = 4;	break;
-			default:				animationSelection = 0;	break;
-		}
-		
-		animationSelection += (int) facingDirection;
-
-		animationComp->SetSelectedAnimation(animationSelection);
+		updateState->mLastFacingDirection = facingDirection;
+		animationComp->SetSelectedAnimation( facingDirection, true /*ResetAnimation*/ );
 	}
 
 	if (updateState->mDamagedFlashTimeRemaining > 0.0f)
@@ -251,12 +284,7 @@ void UpdatePlayer(const Entity& inPlayer, float inFrameTime)
 	CheckAndHandleIfInDamageZone(inPlayer);
 	UpdateState(inPlayer, inFrameTime);
 	UpdatePosition(inPlayer);
-
-	if (inPlayer.GetComponent<PlayerComponent>()->GetState() == EState_Attacking)
-	{
-		UseItem(inPlayer);
-	}
-
+	UseItem(inPlayer);
 	UpdateAnimation(inPlayer, inFrameTime);
 }
 

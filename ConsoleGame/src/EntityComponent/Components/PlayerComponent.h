@@ -14,7 +14,6 @@ public:
 		, mState					(Player::EState_Idle)
 		, mIntendedMovement			(0, 0)
 		, mDamaged					(false)
-		, mStartedAttackThisFrame	(false)
 		, mItemSlot1				(nullptr)
 		, mItemSlot2				(nullptr)
 	{
@@ -25,7 +24,6 @@ public:
 		, mState					(inRHS.mState)
 		, mIntendedMovement			(inRHS.mIntendedMovement)
 		, mDamaged					(inRHS.mDamaged)
-		, mStartedAttackThisFrame	(inRHS.mStartedAttackThisFrame)
 		, mInventory				(std::move(inRHS.mInventory))
 		, mItemSlot1				(inRHS.mItemSlot1)
 		, mItemSlot2				(inRHS.mItemSlot2)
@@ -39,8 +37,6 @@ public:
 
 	Player::EState				GetState() const												{ return mState; }
 	void						SetState(Player::EState inState) 								{ mState = inState; }
-	void						SetStartedAttackThisFrame(bool inValue)							{ mStartedAttackThisFrame = inValue; }
-	bool						GetStartedAttackThisFrame() const								{ return mStartedAttackThisFrame; }
 
 	void						SetIntendedMovement(const IVec2& inMovement)					{ mIntendedMovement = inMovement; }
 	const IVec2&				GetIntendedMovement() const										{ return mIntendedMovement; }
@@ -59,7 +55,6 @@ private:
 	Player::EState				mState;
 	IVec2						mIntendedMovement;
 	bool						mDamaged;
-	bool						mStartedAttackThisFrame;
 	
 	Inventory					mInventory;
 	ItemBase*					mItemSlot1;

@@ -15,7 +15,9 @@ namespace Player
 	enum EState
 	{
 		EState_Idle,
-		EState_Attacking,
-		EState_Defending,
+		EState_StartUsingItem1,
+		EState_UsingItem1,
+		EState_StartUsingItem2,
+		EState_UsingItem2,
 	};
 }

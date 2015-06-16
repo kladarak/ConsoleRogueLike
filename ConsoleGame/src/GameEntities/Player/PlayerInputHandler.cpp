@@ -56,11 +56,11 @@ static PlayerIntention GetPlayerIntention(const InputBuffer& inBuffer)
 	
 	if (inBuffer.IsPressed(' '))
 	{
-		intention.mState = EState_Attacking;
+		intention.mState = EState_StartUsingItem1;
 	}
 	else if (inBuffer.IsPressed('e'))
 	{
-		intention.mState = EState_Defending;
+		intention.mState = EState_StartUsingItem2;
 	}
 
 	return intention;
@@ -79,7 +79,6 @@ void HandleInput(const Entity& inPlayer, const InputBuffer& inBuffer)
 	if (intention.mState != EState_Idle)
 	{
 		playerComp->SetState( intention.mState );
-		playerComp->SetStartedAttackThisFrame( intention.mState == EState_Attacking );
 	}
 
 	if (intention.mMovement != IVec2(0, 0))
