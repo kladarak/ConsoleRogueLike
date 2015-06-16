@@ -8,6 +8,7 @@ class InputBuffer;
 class InventoryScreen
 {
 public:
+	InventoryScreen();
 
 	void		Init(Entity inPlayer);
 	void		Update(float inFrameTime, const InputBuffer& inInput);
@@ -15,4 +16,5 @@ public:
 
 private:
 	Entity		mPlayer;
+	uint32_t	mHighlightedItem;
 };

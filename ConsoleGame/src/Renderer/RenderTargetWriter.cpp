@@ -7,6 +7,11 @@ RenderTargetWriter::RenderTargetWriter(int inColumns, int inRows)
 {
 }
 
+void RenderTargetWriter::Write(char inChar, int inX, int inY)
+{
+	mRenderTarget.Set(inX, inY, inChar);
+}
+
 void RenderTargetWriter::Write(const std::string& inString, int inX, int inY)
 {
 	int x = inX;
