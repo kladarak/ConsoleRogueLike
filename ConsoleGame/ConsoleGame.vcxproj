@@ -59,6 +59,7 @@
     <ClInclude Include="src\Animations\Animation.h" />
     <ClInclude Include="src\Containers\ContainerMacros.h" />
     <ClInclude Include="src\Containers\Dynamic2DVector.h" />
+    <ClInclude Include="src\Containers\Dynamic2DVectorWithOffset.h" />
     <ClInclude Include="src\Dungeon\DungeonFactory.h" />
     <ClInclude Include="src\Dungeon\DungeonMap.h" />
     <ClInclude Include="src\EntityComponent\Components\AnimationComponent.h" />

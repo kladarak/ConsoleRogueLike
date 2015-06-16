@@ -384,5 +384,8 @@
     <ClInclude Include="src\GameEntities\Player\Items\Shield.h">
       <Filter>Source Files\GameEntities\Player\Items</Filter>
     </ClInclude>
+    <ClInclude Include="src\Containers\Dynamic2DVectorWithOffset.h">
+      <Filter>Source Files\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

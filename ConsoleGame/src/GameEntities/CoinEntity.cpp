@@ -16,7 +16,7 @@ namespace CoinEntity
 
 static const char kCoinSprite = '$';
 
-static void OnEntityEntered(MessageBroadcaster& inMessageBroadcaster, const Entity& inCoinEntity, const Entity& inTriggerer)
+static void OnEntityEntered(MessageBroadcaster& inMessageBroadcaster, Entity inCoinEntity, Entity inTriggerer)
 {
 	if (!inTriggerer.HasComponent<PlayerComponent>())
 	{
@@ -25,8 +25,7 @@ static void OnEntityEntered(MessageBroadcaster& inMessageBroadcaster, const Enti
 
 	inMessageBroadcaster.Broadcast( CoinCollectedMessage() );
 
-	// This gets around the constness....
-	inCoinEntity.GetWorld()->DestroyEntity(inCoinEntity.GetID());
+	inCoinEntity.Kill();
 }
 
 void Create(World& inWorld, MessageBroadcaster& inMessageBroadcaster, const IVec2& inPos)
@@ -35,15 +34,15 @@ void Create(World& inWorld, MessageBroadcaster& inMessageBroadcaster, const IVec
 
 	entity.AddComponent<PositionComponent>(inPos);
 
-	auto triggerBoxComp	= entity.AddComponent<TriggerBoxComponent>( IRect(0, 0, 1, 1) );
-	triggerBoxComp->RegisterOnEnterCallback( [&] (const Entity& inCoinEntity, const Entity& inTriggerer) 
-	{
-		OnEntityEntered(inMessageBroadcaster, inCoinEntity, inTriggerer);
-	});
+	entity.AddComponent<TriggerBoxComponent>( IRect(0, 0, 1, 1) )->RegisterOnEnterCallback
+	( 
+		[&] (Entity inCoinEntity, Entity inTriggerer) 
+		{
+			OnEntityEntered(inMessageBroadcaster, inCoinEntity, inTriggerer);
+		}
+	);
 
-	AsciiMesh mesh;
-	mesh.SetCharAtPosition(0, 0, kCoinSprite);
-	entity.AddComponent<RenderableComponent>(mesh);
+	entity.AddComponent<RenderableComponent>( kCoinSprite );
 }
 
 }

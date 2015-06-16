@@ -54,12 +54,5 @@ void Shield::Use(Entity inPlayer, bool inStartedUsingThisFrame)
 
 std::vector<Animation> Shield::GetAnimations() const
 {
-	std::vector<Animation> animations;
-
-	for (size_t i = 0; i < gElemCount(kAnimations); ++i)
-	{
-		animations.push_back( kAnimations[i] );
-	}
-
-	return animations;
+	return gCArrayToVector(kAnimations, gElemCount(kAnimations));
 }

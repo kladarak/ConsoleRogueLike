@@ -1,42 +1,21 @@
 #pragma once
 
-#include <Containers/Dynamic2DVector.h>
+#include <Containers/Dynamic2DVectorWithOffset.h>
 #include <Maths/IVec2.h>
 #include <Maths/IRect.h>
 
-class AsciiMesh
+class AsciiMesh : public Dynamic2DVectorWithOffset<char>
 {
 public:
-	AsciiMesh() { }
-	AsciiMesh(AsciiMesh&& inRHS)		: mFragments( std::move(inRHS.mFragments) ),	mCentreOffset( inRHS.mCentreOffset ) { }
-	AsciiMesh(const AsciiMesh& inRHS)	: mFragments( inRHS.mFragments ),				mCentreOffset( inRHS.mCentreOffset ) { }
+	AsciiMesh()							: Dynamic2DVectorWithOffset<char>()					{ }
+	AsciiMesh(AsciiMesh&& inRHS)		: Dynamic2DVectorWithOffset<char>( inRHS )			{ }
+	AsciiMesh(const AsciiMesh& inRHS)	: Dynamic2DVectorWithOffset<char>( inRHS )			{ }
+	AsciiMesh(char inChar)				: Dynamic2DVectorWithOffset<char>( 1, 1, inChar )	{ }
 	AsciiMesh(const char* inChars, size_t inCols, size_t inRows, const IVec2& inCentreOffset = IVec2(0, 0));
-	AsciiMesh(char inChar);
 
-	void							SetCharAtPosition(int inX, int inY, char inChar)	{ mFragments.Set(inX, inY, inChar); }
-	const Dynamic2DVector<char>&	GetFragments() const								{ return mFragments; }
-
-	void							SetCentreOffset(const IVec2& inOffset)				{ mCentreOffset = inOffset; }
-	const IVec2&					GetCentreOffset() const								{ return mCentreOffset; }
+	void							SetCharAtPosition(int inX, int inY, char inChar)	{ Set(inX, inY, inChar); }
 
 	template<typename TFunctor>
-	void							ForEachFrag(const TFunctor& inFunctor) const;
+	void							ForEachFrag(const TFunctor& inFunctor) const		{ ForEach(inFunctor); }
 
-	IRect							GetLocalBounds() const;
-
-private:
-	Dynamic2DVector<char>			mFragments;
-	IVec2							mCentreOffset;
 };
-
-
-template<typename TFunctor>
-void AsciiMesh::ForEachFrag(const TFunctor& inFunctor) const
-{
-	mFragments.ForEach( [&] (int inX, int inY, char inChar)
-	{
-		int x = inX + mCentreOffset.mX;
-		int y = inY + mCentreOffset.mY;
-		inFunctor(x, y, inChar);
-	} );
-}
