@@ -20,11 +20,11 @@ std::string InventoryScreen::GetRenderBuffer() const
 {
 	assert(mPlayer.IsValid());
 	
-	RenderTargetWriter renderTargetWriter(100, 50);
+	RenderTargetWriter renderTargetWriter(100, 20);
 
 	auto& inventory = mPlayer.GetComponent<PlayerComponent>()->GetInventory();
 	auto& items = inventory.GetAllItems();
-
+	
 	int row = 0;
 	for (auto& item : items)
 	{
@@ -32,7 +32,7 @@ std::string InventoryScreen::GetRenderBuffer() const
 		
 		const AsciiMesh& icon = item->GetHUDIcon();
 		renderTargetWriter.Write(icon, 0, row);
-
+	
 		row += icon.GetLocalBounds().mHeight;
 		row++;
 	}

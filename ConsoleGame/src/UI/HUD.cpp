@@ -30,7 +30,7 @@ void HUD::OnCoinCollected()
 
 std::string HUD::GetTopBarRenderBuffer() const
 {
-	RenderTargetWriter renderTargetWriter(100, 2);
+	RenderTargetWriter renderTargetWriter(100, 1);
 	
 	{
 		auto health = mPlayer.GetComponent<HealthComponent>();
@@ -45,9 +45,6 @@ std::string HUD::GetTopBarRenderBuffer() const
 	
 		renderTargetWriter.Write(healthBar, 0, 0);
 	}
-
-
-
 
 	return renderTargetWriter.GetRenderBuffer();
 }
