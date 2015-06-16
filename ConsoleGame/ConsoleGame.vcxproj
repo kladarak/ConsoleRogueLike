@@ -34,6 +34,7 @@
     <ClCompile Include="src\GameEntities\Player\Items\Bow.cpp" />
     <ClCompile Include="src\GameEntities\Player\Items\BowAnimations.cpp" />
     <ClCompile Include="src\GameEntities\Player\Items\Inventory.cpp" />
+    <ClCompile Include="src\GameEntities\Player\Items\Shield.cpp" />
     <ClCompile Include="src\GameEntities\Player\Items\Sword.cpp" />
     <ClCompile Include="src\GameEntities\Player\Items\SwordAnimations.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerEntity.cpp" />
@@ -91,6 +92,7 @@
     <ClInclude Include="src\GameEntities\Player\Items\Inventory.h" />
     <ClInclude Include="src\GameEntities\Player\Items\ItemBase.h" />
     <ClInclude Include="src\GameEntities\Player\Items\ItemData.h" />
+    <ClInclude Include="src\GameEntities\Player\Items\Shield.h" />
     <ClInclude Include="src\GameEntities\Player\Items\Sword.h" />
     <ClInclude Include="src\GameEntities\Player\Items\SwordAnimations.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerEntity.h" />

@@ -187,6 +187,9 @@
     <ClCompile Include="src\GameEntities\Player\Items\SwordAnimations.cpp">
       <Filter>Source Files\GameEntities\Player\Items</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\Items\Shield.cpp">
+      <Filter>Source Files\GameEntities\Player\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -376,6 +379,9 @@
       <Filter>Source Files\GameEntities\Player\Items</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEntities\Player\Items\SwordAnimations.h">
+      <Filter>Source Files\GameEntities\Player\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\Items\Shield.h">
       <Filter>Source Files\GameEntities\Player\Items</Filter>
     </ClInclude>
   </ItemGroup>

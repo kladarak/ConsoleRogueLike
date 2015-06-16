@@ -19,6 +19,7 @@
 
 #include "Items/Sword.h"
 #include "Items/Bow.h"
+#include "Items/Shield.h"
 
 #include "PlayerUpdateState.h"
 #include "PlayerInputHandler.h"
@@ -39,7 +40,7 @@ Entity Create(World& inWorld)
 	entity.AddComponent<PlayerUpdateState>();
 	entity.AddComponent<PositionComponent>( IVec2(10, 10) );
 	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Player::UpdatePlayer );
-	entity.AddComponent<RenderableComponent>( Player::kIdleMeshes[Player::EFacingDirection_Down] );
+	entity.AddComponent<RenderableComponent>( Player::kIdleMesh );
 	entity.AddComponent<TriggererComponent>();
 	
 	entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>
@@ -57,6 +58,7 @@ Entity Create(World& inWorld)
 	auto bow	= new Bow();
 	inventory.AddItem( sword );
 	inventory.AddItem( bow );
+	inventory.AddItem( new Shield() );
 
 	playerComp->SetItemInSlot1( sword );
 	playerComp->SetItemInSlot2( bow );
