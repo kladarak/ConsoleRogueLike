@@ -5,10 +5,13 @@
 #include <Core/Messaging/MessageBroadcaster.h>
 
 #include <EntityComponent/Components/HealthComponent.h>
+#include <EntityComponent/Components/PlayerComponent.h>
+#include <GameEntities/Player/Items/ItemBase.h>
 
 #include <Messages/Messages.h>
 
 #include <Renderer/RenderTargetWriter.h>
+#include "ScreenConstants.h"
 
 static const char kHeartIcon = 3;
 
@@ -30,7 +33,7 @@ void HUD::OnCoinCollected()
 
 std::string HUD::GetTopBarRenderBuffer() const
 {
-	RenderTargetWriter renderTargetWriter(100, 1);
+	RenderTargetWriter renderTargetWriter(100, 2);
 	
 	{
 		auto health = mPlayer.GetComponent<HealthComponent>();
@@ -44,6 +47,26 @@ std::string HUD::GetTopBarRenderBuffer() const
 		}
 	
 		renderTargetWriter.Write(healthBar, 0, 0);
+	}
+
+	{
+		auto playerComp = mPlayer.GetComponent<PlayerComponent>();
+		auto item1 = playerComp->GetItemInSlot1();
+		auto item2 = playerComp->GetItemInSlot2();
+
+		int left = ScreenConstants::EMapCols - 10;
+		renderTargetWriter.Write("Spc:",	left, 0);
+		renderTargetWriter.Write("E:",		left, 1);
+
+		if (nullptr != item1)
+		{
+			renderTargetWriter.Write(item1->GetHUDIcon(), left+5, 0);
+		}
+
+		if (nullptr != item2)
+		{
+			renderTargetWriter.Write(item2->GetHUDIcon(), left+5, 1);
+		}
 	}
 
 	return renderTargetWriter.GetRenderBuffer();
