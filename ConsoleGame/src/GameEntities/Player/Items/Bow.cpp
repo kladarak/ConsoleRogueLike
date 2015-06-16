@@ -1,6 +1,7 @@
-#include "Sword.h"
+#include "Bow.h"
 
-#include <EntityComponent/Components/AnimationComponent.h>
+#include <Containers/ContainerMacros.h>
+
 #include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
@@ -9,15 +10,26 @@
 
 #include <Messages/Messages.h>
 
-#include "SwordAnimations.h"
+#include "ItemData.h"
+#include "Arrow.h"
+#include "BowAnimations.h"
 
-Sword::Sword() 
-	: Weapon(WeaponData::kSwordData)
+
+static const char		kBowIcon[]	= { 'D', ' ', 26 };
+static const ItemData	kBowData	= { "Bow", AsciiMesh(kBowIcon, gElemCount(kBowIcon), 1) };
+
+Bow::Bow() 
+	: ItemBase(kBowData)
 {
 }
 
-void Sword::Attack(Entity inPlayer, bool inStartedAttackThisFrame)
+void Bow::Use(Entity inPlayer, bool inStartedAttackThisFrame)
 {
+	if (!inStartedAttackThisFrame)
+	{
+		return;
+	}
+
 	using namespace Player;
 
 	auto playerPos			= inPlayer.GetComponent<PositionComponent>()->GetPosition();
@@ -33,17 +45,11 @@ void Sword::Attack(Entity inPlayer, bool inStartedAttackThisFrame)
 	}
 
 	IVec2 attackPos = playerPos + attackDir;
-		
-	AttackMsg attackMsg(inPlayer, attackPos, attackDir);
-	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, attackPos, attackMsg);
-
-	if (inStartedAttackThisFrame)
-	{
-		inPlayer.GetComponent<AnimationComponent>()->ResetSelectedAnimation();
-	}
+	
+	Arrow::Create(*inPlayer.GetWorld(), attackPos, attackDir);
 }
 
-std::vector<Animation> Sword::GetAnimations() const
+std::vector<Animation> Bow::GetAnimations() const
 {
-	return SwordAnimations::Generate();
+	return BowAnimations::Generate();
 }

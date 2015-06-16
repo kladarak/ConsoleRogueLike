@@ -17,8 +17,8 @@
 
 #include <Messages/Messages.h>
 
-#include "Weapons/Sword.h"
-#include "Weapons/Bow.h"
+#include "Items/Sword.h"
+#include "Items/Bow.h"
 
 #include "PlayerUpdateState.h"
 #include "PlayerInputHandler.h"
@@ -51,10 +51,15 @@ Entity Create(World& inWorld)
 	);
 	
 	auto playerComp = entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
-	playerComp->AddWeapon( new Sword() );
-	playerComp->AddWeapon( new Bow() );
-	//playerComp->SetSelectedWeapon( EWeapon_Sword );
-	playerComp->SetSelectedWeapon( EWeapon_Bow );
+	auto& inventory = playerComp->GetInventory();
+
+	auto sword	= new Sword();
+	auto bow	= new Bow();
+	inventory.AddItem( sword );
+	inventory.AddItem( bow );
+
+	playerComp->SetItemInSlot1( sword );
+	playerComp->SetItemInSlot2( bow );
 	
 	return entity;
 }

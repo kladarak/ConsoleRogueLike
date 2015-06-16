@@ -4,7 +4,7 @@
 
 #include <Maths/IVec2.h>
 #include <GameEntities/Player/PlayerEnums.h>
-#include <GameEntities/Player/Weapons/Inventory.h>
+#include <GameEntities/Player/Items/Inventory.h>
 
 class PlayerComponent
 {
@@ -15,7 +15,8 @@ public:
 		, mIntendedMovement			(0, 0)
 		, mDamaged					(false)
 		, mStartedAttackThisFrame	(false)
-		, mSelectedWeapon			(EWeapon_Sword)
+		, mItemSlot1				(nullptr)
+		, mItemSlot2				(nullptr)
 	{
 	}
 
@@ -26,7 +27,8 @@ public:
 		, mDamaged					(inRHS.mDamaged)
 		, mStartedAttackThisFrame	(inRHS.mStartedAttackThisFrame)
 		, mInventory				(std::move(inRHS.mInventory))
-		, mSelectedWeapon			(inRHS.mSelectedWeapon)
+		, mItemSlot1				(inRHS.mItemSlot1)
+		, mItemSlot2				(inRHS.mItemSlot2)
 	{
 	}
 
@@ -46,10 +48,11 @@ public:
 	void						SetDamaged(bool inValue)										{ mDamaged = inValue; }
 	bool						IsDamaged() const												{ return mDamaged; }
 	
-	const Inventory&			GetInventory() const											{ return mInventory; }
-	void						AddWeapon(Weapon* inWeapon)										{ mInventory.AddWeapon(inWeapon); }
-	void						SetSelectedWeapon(EWeapon inWeapon)								{ mSelectedWeapon = inWeapon; }
-	Weapon*						GetSelectedWeapon() const										{ return mInventory.GetWeapon(mSelectedWeapon); }
+	Inventory&					GetInventory()													{ return mInventory; }
+	void						SetItemInSlot1(ItemBase* inItem)								{ mItemSlot1 = inItem; }
+	ItemBase*					GetItemInSlot1() const											{ return mItemSlot1; }
+	void						SetItemInSlot2(ItemBase* inItem)								{ mItemSlot2 = inItem; }
+	ItemBase*					GetItemInSlot2() const											{ return mItemSlot2; }
 
 private:
 	Player::EFacingDirection	mFacingDirection;
@@ -59,5 +62,6 @@ private:
 	bool						mStartedAttackThisFrame;
 	
 	Inventory					mInventory;
-	EWeapon						mSelectedWeapon;
+	ItemBase*					mItemSlot1;
+	ItemBase*					mItemSlot2;
 };

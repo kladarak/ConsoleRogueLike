@@ -2,8 +2,8 @@
 
 #include <EntityComponent/Components/PlayerComponent.h>
 
-#include <GameEntities/Player/Weapons/Inventory.h>
-#include <GameEntities/Player/Weapons/Weapon.h>
+#include <GameEntities/Player/Items/Inventory.h>
+#include <GameEntities/Player/Items/ItemBase.h>
 
 #include <Renderer/RenderTargetWriter.h>
 
@@ -23,14 +23,14 @@ std::string InventoryScreen::GetRenderBuffer() const
 	RenderTargetWriter renderTargetWriter(100, 50);
 
 	auto& inventory = mPlayer.GetComponent<PlayerComponent>()->GetInventory();
-	auto& weapons = inventory.GetAllWeapons();
+	auto& items = inventory.GetAllItems();
 
 	int row = 0;
-	for (auto& weapon : weapons)
+	for (auto& item : items)
 	{
-		renderTargetWriter.Write(weapon->GetName(), 0, row++);
+		renderTargetWriter.Write(item->GetName(), 0, row++);
 		
-		const AsciiMesh& icon = weapon->GetHUDIcon();
+		const AsciiMesh& icon = item->GetHUDIcon();
 		renderTargetWriter.Write(icon, 0, row);
 
 		row += icon.GetLocalBounds().mHeight;

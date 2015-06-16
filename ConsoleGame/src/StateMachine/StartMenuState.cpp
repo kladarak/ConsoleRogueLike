@@ -37,7 +37,7 @@ void StartMenuState::Init()
 {
 }
 
-EGameState StartMenuState::Update(float inFrameTime, const InputBuffer& inInput)
+EGameState StartMenuState::Update(float /*inFrameTime*/, const InputBuffer& inInput)
 {
 	EGameState outState = EGameState_StartMenu;
 	

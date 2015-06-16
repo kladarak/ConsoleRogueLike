@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include "StateBase.h"
 
 class StartMenuState : public StateBase
@@ -13,5 +14,5 @@ public:
 	virtual	std::string GetRenderBuffer();
 
 private:
-	int		mHighlightedMenuOption;
+	uint32_t			mHighlightedMenuOption;
 };

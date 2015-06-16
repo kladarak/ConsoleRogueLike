@@ -18,7 +18,7 @@
 
 #include <Messages/Messages.h>
 
-#include "Weapons/Weapon.h"
+#include "Items/ItemBase.h"
 #include "PlayerUpdateState.h"
 #include "PlayerMeshes.h"
 
@@ -172,14 +172,14 @@ static void UpdatePosition(const Entity& inPlayer)
 	inPlayer.GetComponent<PlayerUpdateState>()->mLastSafePosition = currentPos;
 }
 
-static void Attack(Entity inPlayer)
+static void UseItem(Entity inPlayer)
 {
 	auto playerComp = inPlayer.GetComponent<PlayerComponent>();
-	auto weapon		= playerComp->GetSelectedWeapon();
+	auto item		= playerComp->GetItemInSlot1();
 
-	if (nullptr != weapon)
+	if (nullptr != item)
 	{
-		weapon->Attack(inPlayer, playerComp->GetStartedAttackThisFrame());
+		item->Use(inPlayer, playerComp->GetStartedAttackThisFrame());
 	}
 
 	playerComp->SetStartedAttackThisFrame(false);
@@ -200,7 +200,7 @@ static void UpdateAnimation(Entity inPlayer, float inFrameTime)
 
 		if (playerComp->GetState() == EState_Attacking)
 		{
-			auto weapon = playerComp->GetSelectedWeapon();
+			auto weapon = playerComp->GetItemInSlot1();
 			if (nullptr != weapon)
 			{
 				animations = weapon->GetAnimations();
@@ -254,7 +254,7 @@ void UpdatePlayer(const Entity& inPlayer, float inFrameTime)
 
 	if (inPlayer.GetComponent<PlayerComponent>()->GetState() == EState_Attacking)
 	{
-		Attack(inPlayer);
+		UseItem(inPlayer);
 	}
 
 	UpdateAnimation(inPlayer, inFrameTime);
