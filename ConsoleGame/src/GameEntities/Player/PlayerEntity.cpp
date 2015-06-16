@@ -34,7 +34,7 @@ Entity Create(World& inWorld)
 	Entity entity = inWorld.CreateEntity();
 	
 	entity.AddComponent<AnimationComponent>( Player::kAnimations, gElemCount(Player::kAnimations) );
-	entity.AddComponent<CollisionComponent>()->SetCollidableAt( IVec2(0, 0) );
+	entity.AddComponent<CollisionComponent>()->SetCollidableAt(0, 0);
 	entity.AddComponent<HealthComponent>(3);
 	entity.AddComponent<InputHandlerComponent>()->RegisterHandler( &Player::HandleInput );
 	entity.AddComponent<PlayerUpdateState>();

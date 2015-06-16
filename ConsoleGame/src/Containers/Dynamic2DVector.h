@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <Core/Debug/Assert.h>
 
 template<typename T>
 class Dynamic2DVector
@@ -13,7 +14,7 @@ public:
 	Dynamic2DVector(const Dynamic2DVector& inRHS)				: mData( inRHS.mData )							{ }
 
 	void		Set(size_t inX, size_t inY, const T& inData);
-	const T&	Get(size_t inX, size_t inY) const;
+	T			Get(size_t inX, size_t inY) const;
 	void		Clear();
 
 	size_t		GetRowCount() const	{ return mData.size(); }
@@ -54,7 +55,7 @@ void Dynamic2DVector<T>::Set(size_t inX, size_t inY, const T& inData)
 }
 
 template<typename T>
-const T& Dynamic2DVector<T>::Get(size_t inX, size_t inY) const
+T Dynamic2DVector<T>::Get(size_t inX, size_t inY) const
 {
 	assert(inX < GetColCount());
 	assert(inY < GetRowCount());

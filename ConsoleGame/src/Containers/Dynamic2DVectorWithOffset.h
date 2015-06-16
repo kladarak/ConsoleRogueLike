@@ -17,7 +17,7 @@ public:
 	virtual ~Dynamic2DVectorWithOffset()  {}
 
 	void				Set(size_t inX, size_t inY, const T& inData)	{ mVector.Set(inX - mCentreOffset.mX, inY - mCentreOffset.mY, inData);	}
-	const T&			Get(size_t inX, size_t inY) const				{ return mVector.Get(inX - mCentreOffset.mX, inY - mCentreOffset.mY);	}
+	T					Get(size_t inX, size_t inY) const				{ return mVector.Get(inX - mCentreOffset.mX, inY - mCentreOffset.mY);	}
 	void				Clear()											{ mVector.Clear(); }
 
 	size_t				GetRowCount() const								{ return mVector.GetRowCount(); }

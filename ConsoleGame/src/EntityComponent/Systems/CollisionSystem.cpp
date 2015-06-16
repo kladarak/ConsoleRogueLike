@@ -52,16 +52,7 @@ bool CollidesWith(const Entity& inCollidableEntity, const IVec2& inPosition)
 	auto collisionComp	= inCollidableEntity.GetComponent<CollisionComponent>();
 	auto relativePos	= inPosition - positionComp->GetPosition();
 
-	auto& collidablePositions = collisionComp->GetCollidablePositions();
-	for (auto& pos : collidablePositions)
-	{
-		if (pos == relativePos)
-		{
-			return true;
-		}
-	}
-
-	return false;
+	return collisionComp->CollidesWith( relativePos );
 }
 
 }

@@ -28,7 +28,7 @@ void Create(World& inWorld, const IVec2& inPos)
 
 	entity.AddComponent<PositionComponent>(inPos);
 	entity.AddComponent<RenderableComponent>( kSpinnerFrames[0] );
-	entity.AddComponent<CollisionComponent>()->SetCollidableAt( IVec2(0, 0) );
+	entity.AddComponent<CollisionComponent>()->SetCollidableAt(0, 0);
 	entity.AddComponent<AnimationComponent>(kSpinnerAnimation);
 }
 
