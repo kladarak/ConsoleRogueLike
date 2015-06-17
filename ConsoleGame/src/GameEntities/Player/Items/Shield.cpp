@@ -75,10 +75,7 @@ void Shield::OnStartUsing(Entity inPlayer)
 	{
 		inPlayer.GetComponent<AnimationComponent>()->SetAnimations( gCArrayToVector(kAnimations, gElemCount(kAnimations)) );
 	
-		auto playerPos			= inPlayer.GetComponent<PositionComponent>()->GetPosition();
-		auto facingDirection	= inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
-	
-		inPlayer.GetComponent<CollisionComponent>()->SetCollisionMesh( kShieldCollisionMeshes[facingDirection] );
+		UpdateUsing(inPlayer, 0.0f);
 
 		mHeldUp = true;
 	}
@@ -89,8 +86,14 @@ void Shield::OnStartUsing(Entity inPlayer)
 	}
 }
 
-bool Shield::UpdateUsing(Entity /*inPlayer*/, float /*inFrameTime*/)
+bool Shield::UpdateUsing(Entity inPlayer, float /*inFrameTime*/)
 {
+	if (mHeldUp)
+	{
+		auto facingDirection = inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
+		inPlayer.GetComponent<CollisionComponent>()->SetCollisionMesh( kShieldCollisionMeshes[facingDirection] );
+	}
+
 	// We're finished if we're idle.
 	return !mHeldUp;
 }

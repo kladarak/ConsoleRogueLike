@@ -21,9 +21,6 @@
 #include "Items/Bow.h"
 #include "Items/Shield.h"
 
-#include "PlayerUpdateState.h"
-#include "PlayerInputHandler.h"
-#include "PlayerUpdater.h"
 #include "PlayerMeshes.h"
 
 namespace PlayerEntity
@@ -36,32 +33,48 @@ Entity Create(World& inWorld)
 	entity.AddComponent<AnimationComponent>( Player::kIdleAnimations, gElemCount(Player::kIdleAnimations) );
 	entity.AddComponent<CollisionComponent>()->SetCollidableAt(0, 0);
 	entity.AddComponent<HealthComponent>(3);
-	entity.AddComponent<InputHandlerComponent>()->RegisterHandler( &Player::HandleInput );
-	entity.AddComponent<PlayerUpdateState>();
-	entity.AddComponent<PositionComponent>( IVec2(10, 10) );
-	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Player::UpdatePlayer );
+	entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
+	entity.AddComponent<PositionComponent>(10, 10);
 	entity.AddComponent<RenderableComponent>( Player::kIdleRenderMesh );
 	entity.AddComponent<TriggererComponent>();
 	
+	entity.AddComponent<InputHandlerComponent>()->RegisterHandler
+	(
+		[] (const Entity& inPlayer, const InputBuffer& inBuffer)
+		{
+			inPlayer.GetComponent<PlayerComponent>()->HandleInput(inBuffer);
+		}
+	);
+
+	entity.AddComponent<ProgramComponent>()->RegisterProgram
+	(
+		[] (const Entity& inPlayer, float inFrameTime)
+		{
+			inPlayer.GetComponent<PlayerComponent>()->Update(inPlayer, inFrameTime);
+		}
+	);
+
 	entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>
 	(
 		[entity] (const AttackMsg& inAttackMsg)
 		{
-			Player::OnAttacked(entity, inAttackMsg);
+			entity.GetComponent<PlayerComponent>()->OnAttacked(entity, inAttackMsg);
 		}
 	);
 	
-	auto playerComp = entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
-	auto& inventory = playerComp->GetInventory();
+	{
+		auto playerComp = entity.GetComponent<PlayerComponent>();
+		auto& inventory = playerComp->GetInventory();
 
-	auto sword	= new Sword();
-	auto bow	= new Bow();
-	inventory.AddItem( sword );
-	inventory.AddItem( bow );
-	inventory.AddItem( new Shield() );
+		auto sword	= new Sword();
+		auto bow	= new Bow();
+		inventory.AddItem( sword );
+		inventory.AddItem( bow );
+		inventory.AddItem( new Shield() );
 
-	playerComp->SetItemInSlot( sword,	Player::EItemSlot_Slot0 );
-	playerComp->SetItemInSlot( bow,		Player::EItemSlot_Slot1 );
+		playerComp->SetItemInSlot( sword,	Player::EItemSlot_Slot0 );
+		playerComp->SetItemInSlot( bow,		Player::EItemSlot_Slot1 );
+	}
 	
 	return entity;
 }

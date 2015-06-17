@@ -5,6 +5,7 @@
 
 class World;
 class Entity;
+class CollisionMesh;
 
 namespace CollisionSystem
 {
@@ -16,4 +17,6 @@ namespace CollisionSystem
 	// Untested functions.
 	std::vector<Entity> GetListofCollidablesCollidedWith(World& inWorld, const Entity& inEntity);
 	bool				CollidesWith(const Entity& inLHS, const Entity& inRHS);
+
+	std::vector<Entity> GetListofCollidablesCollidedWith(World& inWorld, const CollisionMesh& inMesh, const IVec2& inPosition);
 }

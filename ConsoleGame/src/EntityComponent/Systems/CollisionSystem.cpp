@@ -9,6 +9,11 @@
 namespace CollisionSystem
 {
 
+static std::vector<Entity> sGetCollidableEntities(World& inWorld)
+{
+	return inWorld.GetEntities( EntityFilter().MustHave<PositionComponent>().MustHave<CollisionComponent>() );
+}
+
 bool CollidesWithAnyEntity(World& inWorld, const IVec2& inPosition)
 {
 	return GetListofCollidablesAtPosition(inWorld, inPosition).size() > 0;
@@ -33,7 +38,7 @@ std::vector<Entity> GetListofCollidablesAtPosition(World& inWorld, const IVec2& 
 {
 	std::vector<Entity> out;
 
-	auto collidableEntities = inWorld.GetEntities( EntityFilter().MustHave<PositionComponent>().MustHave<CollisionComponent>() );
+	auto collidableEntities = sGetCollidableEntities(inWorld);
 
 	for (auto& entity : collidableEntities)
 	{
@@ -116,6 +121,34 @@ bool CollidesWith(const Entity& inLHS, const Entity& inRHS)
 	} );
 
 	return collides;
+}
+
+std::vector<Entity> GetListofCollidablesCollidedWith(World& inWorld, const CollisionMesh& inMesh, const IVec2& inPosition)
+{
+	std::vector<Entity> out;
+	
+	auto collidableEntities = sGetCollidableEntities(inWorld);
+	
+	for (auto& entity : collidableEntities)
+	{
+		bool collides = false;
+
+		inMesh.ForEachCollidablePosition( [&] (int inMeshX, int inMeshY)
+		{
+			if (!collides)
+			{
+				auto meshPos = IVec2(inMeshX, inMeshY) + inPosition;
+				collides = CollidesWith(entity, meshPos);
+			}
+		} );
+
+		if (collides)
+		{
+			out.push_back(entity);
+		}
+	}
+
+	return out;
 }
 
 }

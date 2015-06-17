@@ -59,6 +59,9 @@
     <Filter Include="Source Files\GameEntities\Player\Items">
       <UniqueIdentifier>{01e4c07e-76d0-49fb-af63-a4be0c023e3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameEntities\Player\PlayerBehaviour">
+      <UniqueIdentifier>{7480d6d3-9941-4973-8441-ff1118aa1ace}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -118,14 +121,8 @@
     <ClCompile Include="src\GameEntities\Player\PlayerEntity.cpp">
       <Filter>Source Files\GameEntities\Player</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameEntities\Player\PlayerUpdater.cpp">
-      <Filter>Source Files\GameEntities\Player</Filter>
-    </ClCompile>
     <ClCompile Include="src\GameEntities\Monsters\MonsterEntityFactory.cpp">
       <Filter>Source Files\GameEntities\Monsters</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GameEntities\Player\PlayerInputHandler.cpp">
-      <Filter>Source Files\GameEntities\Player</Filter>
     </ClCompile>
     <ClCompile Include="src\EntityComponent\Systems\PositionSystem.cpp">
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
@@ -189,6 +186,12 @@
     </ClCompile>
     <ClCompile Include="src\EntityComponent\Components\CollisionMesh.cpp">
       <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\PlayerComponent.cpp">
+      <Filter>Source Files\GameEntities\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\PlayerBehaviours\PlayerBehaviourBase.cpp">
+      <Filter>Source Files\GameEntities\Player\PlayerBehaviour</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -282,12 +285,6 @@
     <ClInclude Include="src\GameEntities\Player\PlayerEntity.h">
       <Filter>Source Files\GameEntities\Player</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameEntities\Player\PlayerUpdater.h">
-      <Filter>Source Files\GameEntities\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameEntities\Player\PlayerUpdateState.h">
-      <Filter>Source Files\GameEntities\Player</Filter>
-    </ClInclude>
     <ClInclude Include="src\GameEntities\Player\PlayerEnums.h">
       <Filter>Source Files\GameEntities\Player</Filter>
     </ClInclude>
@@ -296,9 +293,6 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Monsters\MonsterEntityFactory.h">
       <Filter>Source Files\GameEntities\Monsters</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameEntities\Player\PlayerInputHandler.h">
-      <Filter>Source Files\GameEntities\Player</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Systems\PositionSystem.h">
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
@@ -389,6 +383,9 @@
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Components\CollisionMesh.h">
       <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerBehaviourBase.h">
+      <Filter>Source Files\GameEntities\Player\PlayerBehaviour</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
