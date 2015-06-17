@@ -4,10 +4,12 @@
 #include <GameEntities/Player/PlayerEnums.h>
 
 #include <EntityComponent/Components/AnimationComponent.h>
-#include <EntityComponent/Components/CollisionMesh.h>
 #include <EntityComponent/Components/CollisionComponent.h>
+#include <EntityComponent/Components/MonsterComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
+
+#include <EntityComponent/Systems/CollisionSystem.h>
 
 //--------------------------------------------------------------------
 
@@ -63,42 +65,39 @@ static const CollisionMesh kShieldCollisionMeshes[Player::EFacingDirection_Count
 
 Shield::Shield()
 	: ItemBase(kShieldData)
-	, mHeldUp(false)
 {
 }
-	
-void Shield::OnStartUsing(Entity inPlayer)
+
+//--------------------------------------------------------------------
+
+void ShieldPlayerBehaviour::OnStart(Entity inPlayer)
 {
 	using namespace Player;
 
-	if (!mHeldUp)
-	{
-		inPlayer.GetComponent<AnimationComponent>()->SetAnimations( gCArrayToVector(kAnimations, gElemCount(kAnimations)) );
-	
-		UpdateUsing(inPlayer, 0.0f);
-
-		mHeldUp = true;
-	}
-	else
-	{
-		// Switch to Idle - make no modifications.
-		mHeldUp = false;
-	}
+	mHeldUp = true;
+	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( gCArrayToVector(kAnimations, gElemCount(kAnimations)) );
 }
 
-bool Shield::UpdateUsing(Entity inPlayer, float /*inFrameTime*/)
+void ShieldPlayerBehaviour::OnRestart(Entity inPlayer)
+{
+	mHeldUp = false;
+}
+
+void ShieldPlayerBehaviour::Update(Entity inPlayer, float /*inFrameTime*/)
 {
 	if (mHeldUp)
 	{
 		auto facingDirection = inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
 		inPlayer.GetComponent<CollisionComponent>()->SetCollisionMesh( kShieldCollisionMeshes[facingDirection] );
 	}
-
-	// We're finished if we're idle.
-	return !mHeldUp;
 }
 
-void Shield::OnStoppedUsing(Entity /*inPlayer*/)
+void ShieldPlayerBehaviour::OnFinish(Entity /*inPlayer*/)
 {
 	mHeldUp = false;
+}
+
+bool ShieldPlayerBehaviour::IsFinished() const
+{
+	return !mHeldUp;
 }

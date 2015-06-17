@@ -26,4 +26,20 @@ namespace Player
 
 		EItemSlot_SlotCount,
 	};
+	
+	struct Intention
+	{
+		IVec2						mMovement;
+		Player::EFacingDirection	mFacingDirection;
+		Player::EState				mState;
+		Player::EItemSlot			mUseItemSlot;
+
+		Intention() 
+			: mMovement			(0, 0)
+			, mFacingDirection	(Player::EFacingDirection_Count)
+			, mState			(Player::EState_Idle)
+			, mUseItemSlot		(Player::EItemSlot_None)
+		{
+		}
+	};
 }

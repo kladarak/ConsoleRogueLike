@@ -20,16 +20,15 @@ static const char		kBowIcon[]	= { 'D', ' ', 26 };
 static const ItemData	kBowData	= { "Bow", AsciiMesh(kBowIcon, gElemCount(kBowIcon), 1) };
 static const float		kAnimTime	= 0.5f;
 
+using namespace Player;
+
 Bow::Bow() 
 	: ItemBase(kBowData)
-	, mAnimTimeElapsed(0.0f)
 {
 }
 
-void Bow::OnStartUsing(Entity inPlayer)
+void BowPlayerBehaviour::OnStart(Entity inPlayer)
 {
-	using namespace Player;
-	
 	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( BowAnimations::Generate() );
 
 	auto playerPos			= inPlayer.GetComponent<PositionComponent>()->GetPosition();
@@ -51,13 +50,22 @@ void Bow::OnStartUsing(Entity inPlayer)
 	mAnimTimeElapsed = 0.0f;
 }
 
-bool Bow::UpdateUsing(Entity /*inPlayer*/, float inFrameTime)
+void BowPlayerBehaviour::OnRestart(Entity inPlayer)
 {
-	mAnimTimeElapsed += inFrameTime;
-
-	return mAnimTimeElapsed > kAnimTime;
+	// For now do this, but really we need to filter how frequently arrows can be fired.
+	OnStart(inPlayer);
 }
 
-void Bow::OnStoppedUsing(Entity /*inPlayer*/)
+void BowPlayerBehaviour::Update(Entity /*inPlayer*/, float inFrameTime)
 {
+	mAnimTimeElapsed += inFrameTime;
+}
+
+void BowPlayerBehaviour::OnFinish(Entity /*inPlayer*/)
+{
+}
+
+bool BowPlayerBehaviour::IsFinished() const
+{ 
+	return mAnimTimeElapsed > kAnimTime;
 }

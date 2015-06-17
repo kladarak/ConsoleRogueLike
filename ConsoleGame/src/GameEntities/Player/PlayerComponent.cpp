@@ -1,7 +1,5 @@
 #include <EntityComponent/Components/PlayerComponent.h>
 
-#include <Core/Messaging/MessageBroadcaster.h>
-
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/HealthComponent.h>
@@ -19,8 +17,8 @@
 #include <Messages/Messages.h>
 
 #include "Items/ItemBase.h"
-#include "PlayerBehaviours/PlayerBehaviourBase.h"
 #include "PlayerMeshes.h"
+#include "PlayerBehaviours/PlayerBehaviourBase.h"
 
 using namespace Player;
 
@@ -31,10 +29,11 @@ PlayerComponent::PlayerComponent(Player::EFacingDirection inDirection)
 	: mFacingDirection				(inDirection)
 	, mState						(Player::EState_Idle)
 	, mUsingItemSlot				(EItemSlot_None)
-	, mCurrentBehaviour				(new PlayerIdleBehaviour())
+	, mIdleBehaviour				(new PlayerIdleBehaviour())
+	, mCurrentBehaviour				(nullptr)
 	, mLastFacingDirection			(inDirection)
-	, mDamagedFlashTimeRemaining	(0.0f)
 	, mLastSafePosition				(0, 0)
+	, mDamagedFlashTimeRemaining	(0.0f)
 {
 	memset(mItemSlot, 0, sizeof(mItemSlot));
 }
@@ -44,21 +43,23 @@ PlayerComponent::PlayerComponent(PlayerComponent&& inRHS)
 	, mFacingDirection				(inRHS.mFacingDirection)
 	, mState						(inRHS.mState)
 	, mUsingItemSlot				(inRHS.mUsingItemSlot)
+	, mIdleBehaviour				(inRHS.mIdleBehaviour)
 	, mCurrentBehaviour				(inRHS.mCurrentBehaviour)
 	, mLastFacingDirection			(inRHS.mLastFacingDirection)
-	, mDamagedFlashTimeRemaining	(inRHS.mDamagedFlashTimeRemaining)
 	, mLastSafePosition				(inRHS.mLastSafePosition)
+	, mDamagedFlashTimeRemaining	(inRHS.mDamagedFlashTimeRemaining)
 	, mInventory					(std::move(inRHS.mInventory))
 {
 	memcpy(mItemSlot, inRHS.mItemSlot, sizeof(mItemSlot));
 
+	inRHS.mIdleBehaviour	= nullptr;
 	inRHS.mCurrentBehaviour = nullptr;
 }
 
 PlayerComponent::~PlayerComponent()
 {
-	delete mCurrentBehaviour;
-	mCurrentBehaviour = nullptr;
+	delete mIdleBehaviour;
+	mIdleBehaviour = nullptr;
 }
 
 void PlayerComponent::HandleInput(const InputBuffer& inBuffer)
@@ -87,12 +88,12 @@ void PlayerComponent::HandleInput(const InputBuffer& inBuffer)
 		intention.mFacingDirection	= EFacingDirection_Down;
 	}
 	
-	if (inBuffer.IsPressed(' '))
+	if ( inBuffer.IsPressed(' ') )
 	{
 		intention.mState		= EState_UseItem;
 		intention.mUseItemSlot	= EItemSlot_Slot0;
 	}
-	else if (inBuffer.IsPressed('e'))
+	else if ( inBuffer.IsPressed('e') )
 	{
 		intention.mState		= EState_UseItem;
 		intention.mUseItemSlot	= EItemSlot_Slot1;
@@ -103,41 +104,98 @@ void PlayerComponent::HandleInput(const InputBuffer& inBuffer)
 
 void PlayerComponent::Update(Entity inPlayer, float inFrameTime)
 {
-	CheckAndHandleIfInDamageZone(inPlayer);
+	UpdateState(inPlayer);
+	UpdateOrientation(inPlayer);
 	UpdatePosition(inPlayer);
-	UpdateState(inPlayer, inFrameTime);
+	UpdateBehaviour(inPlayer, inFrameTime);
 	UpdateAnimation(inPlayer, inFrameTime);
 }
 
-void PlayerComponent::CheckAndHandleIfInDamageZone(Entity inPlayer)
+void PlayerComponent::UpdateState(Entity inPlayer)
 {
-	auto posComp		= inPlayer.GetComponent<PositionComponent>();
-
-	auto position		= posComp->GetPosition();
-	bool isInDamageZone = DamageZoneSystem::IsDamageZone(*inPlayer.GetWorld(), inPlayer, position);
-	if (isInDamageZone)
+	if (nullptr != mCurrentBehaviour && mCurrentBehaviour->IsFinished())
 	{
-		TakeDamage(inPlayer);
-		
-		// Go back to previous position
-		posComp->SetPosition( mLastSafePosition );
+		mCurrentBehaviour->OnFinish(inPlayer);
+		mCurrentBehaviour = nullptr;
+	}
+	
+	if (nullptr == mCurrentBehaviour)
+	{
+		mState				= EState_Idle;
+		mCurrentBehaviour	= mIdleBehaviour;
+		mCurrentBehaviour->OnStart(inPlayer);
+	}
+
+	PlayerBehaviourBase* newBehaviour = nullptr;
+
+	switch (mIntention.mState)
+	{
+		case EState_UseItem:
+		{
+			auto item = GetItemInSlot(mIntention.mUseItemSlot);
+			if (nullptr != item)
+			{
+				newBehaviour	= item->GetPlayerBehaviour();
+				mUsingItemSlot	= mIntention.mUseItemSlot;
+				mState			= mIntention.mState;
+			}
+			break;
+		}
+
+		case EState_Idle:
+		default:
+			break;
+	}
+
+	if (nullptr != newBehaviour)
+	{
+		if (newBehaviour == mCurrentBehaviour)
+		{
+			mCurrentBehaviour->OnRestart(inPlayer);
+		}
+		else
+		{
+			mCurrentBehaviour->OnFinish(inPlayer);
+			mCurrentBehaviour = newBehaviour;
+			mCurrentBehaviour->OnStart(inPlayer);
+		}
 	}
 }
 
-void PlayerComponent::TakeDamage(Entity inPlayer)
+//void PlayerComponent::CheckAndHandleIfInDamageZone(Entity inPlayer)
+//{
+	// TODO: Turn this into a trigger box.
+	// TODO: Restore triggers back to how they were before, i.e., using a list of entities from last frame and this frame.
+	// TODO: Restore trigger update to be before ProgramUpdate (it's intended for control logic, after all).
+	// TODO: Add "OnEntitiesDestroyed" type function to Triggers.
+
+	//auto posComp		= inPlayer.GetComponent<PositionComponent>();
+	//
+	//auto position		= posComp->GetPosition();
+	//bool isInDamageZone = DamageZoneSystem::IsDamageZone(*inPlayer.GetWorld(), inPlayer, position);
+	//if (isInDamageZone)
+	//{
+	//	TakeDamage(inPlayer);
+	//	
+	//	// Go back to previous position
+	//	posComp->SetPosition( mLastSafePosition );
+	//}
+//}
+
+void PlayerComponent::UpdateOrientation(Entity /*inPlayer*/)
 {
-	if (mDamagedFlashTimeRemaining <= 0.0f)
+	mLastFacingDirection = mFacingDirection;
+	if (mIntention.mFacingDirection != EFacingDirection_Count)
 	{
-		mDamagedFlashTimeRemaining = kDamagedFlashDuration;
-		inPlayer.GetComponent<HealthComponent>()->DecHealth();
+		mFacingDirection = mIntention.mFacingDirection;
 	}
 }
 
 void PlayerComponent::UpdatePosition(Entity inPlayer)
 {
-	auto& intendedMovement = mIntention.mMovement;
+	auto& movement = mIntention.mMovement;
 
-	if (intendedMovement == IVec2(0, 0))
+	if (movement == IVec2(0, 0))
 	{
 		return;
 	}
@@ -146,12 +204,12 @@ void PlayerComponent::UpdatePosition(Entity inPlayer)
 	const IVec2	currentPos		= positionComp->GetPosition();
 	IVec2		newPos			= currentPos;
 
-	if (intendedMovement.mX != 0 && intendedMovement.mY != 0)
+	if (movement.mX != 0 && movement.mY != 0)
 	{
 		// attempt to move diagonally.
-		IVec2 stepXAxis		= currentPos + IVec2(intendedMovement.mX, 0);
-		IVec2 stepYAxis		= currentPos + IVec2(0, intendedMovement.mY);
-		IVec2 intendedPos	= currentPos + intendedMovement;
+		IVec2 stepXAxis		= currentPos + IVec2(movement.mX, 0);
+		IVec2 stepYAxis		= currentPos + IVec2(0, movement.mY);
+		IVec2 intendedPos	= currentPos + movement;
 
 		bool collidesInX	= !mCurrentBehaviour->CanMoveToPosition(inPlayer, stepXAxis);
 		bool collidesInY	= !mCurrentBehaviour->CanMoveToPosition(inPlayer, stepYAxis);
@@ -176,7 +234,7 @@ void PlayerComponent::UpdatePosition(Entity inPlayer)
 	}
 	else
 	{
-		IVec2 intendedPos = currentPos + intendedMovement;
+		IVec2 intendedPos = currentPos + movement;
 
 		if ( mCurrentBehaviour->CanMoveToPosition(inPlayer, intendedPos) )
 		{
@@ -188,71 +246,9 @@ void PlayerComponent::UpdatePosition(Entity inPlayer)
 	mLastSafePosition = currentPos;
 }
 
-static void SetPlayerToIdleState(Entity inPlayer)
+void PlayerComponent::UpdateBehaviour(Entity inPlayer, float inFrameTime)
 {
-	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( GetIdleAnimations() );
-	inPlayer.GetComponent<CollisionComponent>()->SetCollisionMesh( kIdleCollisionMesh );
-	inPlayer.GetComponent<PlayerComponent>()->SetUsingItemSlot( EItemSlot_None );
-}
-
-void PlayerComponent::UpdateState(Entity inPlayer, float inFrameTime)
-{
-	// Facing direction
-	{
-		mLastFacingDirection = mFacingDirection;
-		if (mIntention.mFacingDirection != EFacingDirection_Count)
-		{
-			mFacingDirection = mIntention.mFacingDirection;
-		}
-	}
-	
-	EState currentState		= mState;
-	EState intendedState	= mIntention.mState;
-	EState nextState		= EState_Idle;
-
-	if (intendedState == EState_UseItem)
-	{
-		SetPlayerToIdleState(inPlayer);
-		
-		auto prevItem	= GetUsingItem();
-		auto newItem	= GetItemInSlot(mIntention.mUseItemSlot);
-
-		if (nullptr != prevItem && newItem != prevItem)
-		{
-			prevItem->OnStoppedUsing(inPlayer);
-		}
-
-		if (nullptr != newItem)
-		{
-			SetUsingItemSlot(mIntention.mUseItemSlot);
-			newItem->OnStartUsing(inPlayer);
-			nextState = intendedState;
-		}
-		else if (currentState != EState_Idle)
-		{
-			nextState = EState_Idle;
-		}
-	}
-	else if (currentState == EState_UseItem)
-	{
-		auto item			= GetUsingItem();
-		bool resetToIdle	= (nullptr == item);
-
-		if (!resetToIdle)
-		{
-			bool isFinished = item->UpdateUsing(inPlayer, inFrameTime);
-			resetToIdle		= isFinished;
-			nextState		= currentState;
-		}
-
-		if (resetToIdle)
-		{
-			SetPlayerToIdleState(inPlayer);
-			nextState = EState_Idle;
-		}
-	}
-
-	mState = nextState;
+	mCurrentBehaviour->Update(inPlayer, inFrameTime);
 }
 
 void PlayerComponent::UpdateAnimation(Entity inPlayer, float inFrameTime)
@@ -282,28 +278,15 @@ void PlayerComponent::UpdateAnimation(Entity inPlayer, float inFrameTime)
 // Message handling
 void PlayerComponent::OnAttacked(Entity inPlayer, const AttackMsg& inAttackMsg)
 {
-	TakeDamage(inPlayer);
-	
-	// Move to random position away from direction of attack
-	auto posComp = inPlayer.GetComponent<PositionComponent>();
-	auto currPos = posComp->GetPosition();
-
-	auto preferredPos = currPos + inAttackMsg.mAttackDirection;
-	if ( mCurrentBehaviour->CanMoveToPosition(inPlayer, preferredPos) )
+	if (mDamagedFlashTimeRemaining <= 0.0f)
 	{
-		posComp->SetPosition(preferredPos);
-	}
-	else 
-	{
-		static const IVec2 kRecoveryPositions[] = { IVec2(0, 1), IVec2(0, -1), IVec2(1, 0), IVec2(-1, 0) };
+		// TODO: Return an enum, e.g., EOnAttackResult_Injured, or something?
+		bool wasInjured = mCurrentBehaviour->OnAttacked(inPlayer, inAttackMsg);
 
-		for (size_t i = 0; i < gElemCount(kRecoveryPositions); ++i)
+		if (wasInjured)
 		{
-			IVec2 testPos = currPos + kRecoveryPositions[i];
-			if ( !CollisionSystem::CollidesWithAnyEntity(*inPlayer.GetWorld(), inPlayer, testPos) )
-			{
-				posComp->SetPosition(testPos);
-			}
+			mDamagedFlashTimeRemaining = kDamagedFlashDuration;
+			inPlayer.GetComponent<HealthComponent>()->DecHealth();
 		}
 	}
 }

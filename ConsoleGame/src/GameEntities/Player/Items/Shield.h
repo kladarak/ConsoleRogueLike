@@ -2,15 +2,28 @@
 
 #include "ItemBase.h"
 
+class ShieldPlayerBehaviour : public PlayerBehaviourBase
+{
+public:
+	ShieldPlayerBehaviour() : mHeldUp(false) { }
+	virtual void OnStart(Entity inPlayer);
+	virtual void OnRestart(Entity inPlayer);
+	virtual void Update(Entity inPlayer, float inFrameTime);
+	virtual void OnFinish(Entity inPlayer);
+	virtual bool IsFinished() const;
+
+private:
+	bool mHeldUp;
+};
+
 class Shield : public ItemBase
 {
 public:
 	Shield();
 	
-	virtual void OnStartUsing(Entity inPlayer);
-	virtual bool UpdateUsing(Entity inPlayer, float inFrameTime);
-	virtual void OnStoppedUsing(Entity inPlayer);
+	virtual PlayerBehaviourBase*	GetPlayerBehaviour() { return &mBehaviour; }
 
 private:
-	bool mHeldUp;
+	ShieldPlayerBehaviour			mBehaviour;
+
 };

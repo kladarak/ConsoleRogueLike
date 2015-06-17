@@ -18,31 +18,27 @@ static const char		kSwordIcon[]	= {	'-','|','-','-','-' };
 static const ItemData	kSwordData		= { "Sword", AsciiMesh(kSwordIcon, gElemCount(kSwordIcon), 1) };
 static const float		kSwipeTime		= 0.5f;
 
+using namespace Player;
+
 Sword::Sword() 
 	:	ItemBase(kSwordData)
-	,	mSwipeTimeElapsed(0.0f)
 {
 }
 
-void Sword::OnStartUsing(Entity inPlayer)
+void SwordPlayerBehaviour::OnStart(Entity inPlayer)
 {
-	using namespace Player;
-	
 	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( SwordAnimations::Generate() );
 	mSwipeTimeElapsed = 0.0f;
-
-	UpdateUsing(inPlayer, 0.0f);
 }
 
-bool Sword::UpdateUsing(Entity inPlayer, float inFrameTime)
+void SwordPlayerBehaviour::OnRestart(Entity inPlayer)
 {
-	using namespace Player;
+	OnStart(inPlayer);
+}
 
+void SwordPlayerBehaviour::Update(Entity inPlayer, float inFrameTime)
+{
 	mSwipeTimeElapsed += inFrameTime;
-	if (mSwipeTimeElapsed > kSwipeTime)
-	{
-		return true;
-	}
 
 	auto playerPos			= inPlayer.GetComponent<PositionComponent>()->GetPosition();
 	auto facingDirection	= inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
@@ -59,10 +55,13 @@ bool Sword::UpdateUsing(Entity inPlayer, float inFrameTime)
 	IVec2		attackPos = playerPos + attackDir;
 	AttackMsg	attackMsg(inPlayer, attackPos, attackDir);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, attackPos, attackMsg);
-
-	return false;
 }
 
-void Sword::OnStoppedUsing(Entity /*inPlayer*/)
+void SwordPlayerBehaviour::OnFinish(Entity /*inPlayer*/)
 {
+}
+
+bool SwordPlayerBehaviour::IsFinished() const
+{ 
+	return (mSwipeTimeElapsed > kSwipeTime);
 }

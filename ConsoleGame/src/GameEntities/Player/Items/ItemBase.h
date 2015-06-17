@@ -6,20 +6,20 @@
 
 #include "ItemData.h"
 
+#include <GameEntities/Player/PlayerBehaviours/PlayerBehaviourBase.h>
+
 class ItemBase
 {
 public:
 	ItemBase(const ItemData& inData) : mData(inData)	{ }
 	virtual ~ItemBase()									{ }
 
-	const std::string&				GetName() const			{ return mData.mName;		}
-	const AsciiMesh&				GetHUDIcon() const		{ return mData.mHUDIcon;	}
+	const std::string&				GetName() const		{ return mData.mName;		}
+	const AsciiMesh&				GetHUDIcon() const	{ return mData.mHUDIcon;	}
 
-	virtual void					OnStartUsing(Entity inPlayer)					= 0;
-	virtual bool					UpdateUsing(Entity inPlayer, float inFrameTime)	= 0;
-	virtual void					OnStoppedUsing(Entity inPlayer)					= 0;
+	virtual PlayerBehaviourBase*	GetPlayerBehaviour() = 0;
 
 private:
-	ItemData mData;
+	ItemData						mData;
 
 };

@@ -38,38 +38,24 @@ public:
 private:
 	static bool					IsItemSlotInRange(Player::EItemSlot inSlot)						{ return (inSlot >= Player::EItemSlot_Slot0 && inSlot < Player::EItemSlot_SlotCount); }
 	
-	void TakeDamage(Entity inPlayer);
-	void CheckAndHandleIfInDamageZone(Entity inPlayer);
-	void UpdatePosition(Entity inPlayer);
-	void UpdateState(Entity inPlayer, float inFrameTime);
-	void UpdateAnimation(Entity inPlayer, float inFrameTime);
+	void						UpdateState(Entity inPlayer);
+	void						UpdateOrientation(Entity inPlayer);
+	void						UpdatePosition(Entity inPlayer);
+	void						UpdateBehaviour(Entity inPlayer, float inFrameTime);
+	void						UpdateAnimation(Entity inPlayer, float inFrameTime);
 
-	struct Intention
-	{
-		IVec2						mMovement;
-		Player::EFacingDirection	mFacingDirection;
-		Player::EState				mState;
-		Player::EItemSlot			mUseItemSlot;
-
-		Intention() 
-			: mMovement			(0, 0)
-			, mFacingDirection	(Player::EFacingDirection_Count)
-			, mState			(Player::EState_Idle)
-			, mUseItemSlot		(Player::EItemSlot_None)
-		{
-		}
-	};
-
-	Intention					mIntention;
+	Player::Intention			mIntention;
 
 	Player::EFacingDirection	mFacingDirection;
 	Player::EState				mState;
 	Player::EItemSlot			mUsingItemSlot;
+	
+	PlayerBehaviourBase*		mIdleBehaviour;
 	PlayerBehaviourBase*		mCurrentBehaviour;
 
 	Player::EFacingDirection	mLastFacingDirection;
-	float						mDamagedFlashTimeRemaining;
 	IVec2						mLastSafePosition;
+	float						mDamagedFlashTimeRemaining;
 	
 	Inventory					mInventory;
 	ItemBase*					mItemSlot[Player::EItemSlot_SlotCount];

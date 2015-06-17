@@ -2,16 +2,28 @@
 
 #include "ItemBase.h"
 
+class BowPlayerBehaviour : public PlayerBehaviourBase
+{
+public:
+	BowPlayerBehaviour() : mAnimTimeElapsed(0.0f) { }
+	virtual void OnStart(Entity inPlayer);
+	virtual void OnRestart(Entity inPlayer);
+	virtual void Update(Entity inPlayer, float inFrameTime);
+	virtual void OnFinish(Entity inPlayer);
+	virtual bool IsFinished() const;
+
+private:
+	float mAnimTimeElapsed;
+};
+
 class Bow : public ItemBase
 {
 public:
 	Bow();
 	
-	virtual void OnStartUsing(Entity inPlayer);
-	virtual bool UpdateUsing(Entity inPlayer, float inFrameTime);
-	virtual void OnStoppedUsing(Entity inPlayer);
+	virtual PlayerBehaviourBase*	GetPlayerBehaviour() { return &mBehaviour; }
 
 private:
-	float mAnimTimeElapsed;
+	BowPlayerBehaviour				mBehaviour;
 
 };
