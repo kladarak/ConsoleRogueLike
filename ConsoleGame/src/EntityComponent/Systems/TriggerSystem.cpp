@@ -78,7 +78,7 @@ void Update(World& inWorld)
 		{
 			auto pos = triggerer.GetComponent<PositionComponent>()->GetPosition();
 
-			if (triggerBoxComp->IsInBounds(triggerBox, pos))
+			if (triggerer != triggerBox && triggerBoxComp->IsInBounds(triggerBox, pos))
 			{
 				entitiesInBounds.push_back(triggerer);
 			}

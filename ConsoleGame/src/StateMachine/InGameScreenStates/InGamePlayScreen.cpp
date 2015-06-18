@@ -41,7 +41,7 @@ void InGamePlayScreen::Update(float inFrameTime, const InputBuffer& inInput)
 	InputHandlerSystem::Update(mWorld, inInput);
 
 	ProgramSystem::Update(mWorld, inFrameTime);
-
+	
 	TriggerSystem::Update(mWorld);
 
 	AnimationSystem::Update(mWorld, inFrameTime);

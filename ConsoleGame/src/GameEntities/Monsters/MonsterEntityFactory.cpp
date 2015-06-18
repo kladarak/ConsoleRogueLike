@@ -4,7 +4,6 @@
 
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
-#include <EntityComponent/Components/DamageZoneComponent.h>
 #include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Components/MonsterComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
@@ -14,7 +13,6 @@
 #include <EntityComponent/Components/TriggerBoxComponent.h>
 
 #include <EntityComponent/Systems/CollisionSystem.h>
-#include <EntityComponent/Systems/DamageZoneSystem.h>
 
 #include <GameEntities/CoinEntity.h>
 #include <GameEntities/HealthEntity.h>
@@ -100,7 +98,6 @@ static void TakeDamage(Entity inMonster)
 	monsterState->mTimeUntilDeath	= kDeathAnimationDuration;
 
 	inMonster.GetComponent<AnimationComponent>()->SetSelectedAnimation( MonsterAnimation::EDeathAnimation, true );
-	inMonster.RemoveComponent<DamageZoneComponent>();
 }
 
 static void OnAttacked(Entity inMonster, const AttackMsg&)
@@ -156,23 +153,9 @@ static void Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBr
 		return;
 	}
 
-	// Check if in danger zone.
-	// If so, take damage.
-	// If not, get intended movement
+	// Get intended movement
 	// If moving, attack in intended direction.
 	// If it's not collidable, or is monster or player, then move there.
-
-	auto posComp = inThis.GetComponent<PositionComponent>();
-	auto position = posComp->GetPosition();
-
-	{
-		bool isInDamageZone = DamageZoneSystem::IsDamageZone(*inThis.GetWorld(), inThis, position);
-		if (isInDamageZone)
-		{
-			TakeDamage(inThis);
-			return;
-		}
-	}
 
 	IVec2 intendedMovement = GetIntendedMovement(inThis, inFrameTime);
 	if (intendedMovement == IVec2(0, 0))
@@ -180,7 +163,9 @@ static void Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBr
 		return;
 	}
 
-	auto newPos = position + intendedMovement;
+	auto posComp	= inThis.GetComponent<PositionComponent>();
+	auto position	= posComp->GetPosition();
+	auto newPos		= position + intendedMovement;
 
 	AttackMsg attackMsg(inThis, newPos, intendedMovement);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, newPos, attackMsg);
@@ -199,11 +184,11 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 	
 	entity.AddComponent<AnimationComponent>( MonsterAnimation::kAnimations, gElemCount(MonsterAnimation::kAnimations) );
 	entity.AddComponent<CollisionComponent>()->SetCollidableAt(0, 0);
-	entity.AddComponent<DamageZoneComponent>()->SetDamageZoneAt(0, 0);
 	entity.AddComponent<MonsterComponent>();
 	entity.AddComponent<MonsterState>();
 	entity.AddComponent<PositionComponent>(inPosition);
 	entity.AddComponent<RenderableComponent>( MonsterAnimation::kIdleFrames[0] );
+	entity.AddComponent<TriggererComponent>();
 
 	entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>(
 		[entity, &inMsgBroadcaster] (const AttackMsg& inAttackMsg)
@@ -211,6 +196,23 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 			OnAttacked(entity, inAttackMsg); 
 		} );
 	
+	entity.AddComponent<TriggerBoxComponent>(IRect(0, 0, 1, 1))->RegisterOnEnterCallback(
+		[] (const Entity& inMonster, const Entity& inTriggerer)
+		{
+			if (inMonster.GetComponent<MonsterState>()->mIsDying)
+			{
+				return;
+			}
+
+			auto msgRecComp = inTriggerer.GetComponent<MessageReceiverComponent>();
+			if (nullptr != msgRecComp)
+			{
+				auto position = inMonster.GetComponent<PositionComponent>()->GetPosition();
+				AttackMsg attackMsg(inMonster, position, IVec2(0, 0));
+				msgRecComp->Broadcast( attackMsg );
+			}
+		} );
+
 	entity.AddComponent<ProgramComponent>()->RegisterProgram(
 		[&inMsgBroadcaster] (const Entity& inThis, float inFrameTime)
 		{

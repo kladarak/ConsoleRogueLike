@@ -6,10 +6,10 @@ class PositionComponent
 {
 public:
 	PositionComponent()		{ }
-	PositionComponent(int inX, int inY)					: mPosition( inX, inY )						{ }
-	PositionComponent(const IVec2& inPosition)			: mPosition( inPosition )					{ }
-	PositionComponent(PositionComponent&& inRHS)		: mPosition( std::move(inRHS.mPosition) )	{ }
-	PositionComponent(const PositionComponent& inRHS)	: mPosition( inRHS.mPosition )				{ }
+	PositionComponent(int inX, int inY)					: mPosition( inX, inY ),		mPrevPosition( inX, inY )				{ }
+	PositionComponent(const IVec2& inPosition)			: mPosition( inPosition ),		mPrevPosition( inPosition )				{ }
+	PositionComponent(PositionComponent&& inRHS)		: mPosition( inRHS.mPosition ), mPrevPosition( inRHS.mPrevPosition )	{ }
+	PositionComponent(const PositionComponent& inRHS)	: mPosition( inRHS.mPosition ), mPrevPosition( inRHS.mPrevPosition )	{ }
 	~PositionComponent()	{ }
 
 	const IVec2&	GetPosition() const						{ return mPosition; }

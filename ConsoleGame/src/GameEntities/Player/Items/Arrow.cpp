@@ -2,10 +2,10 @@
 
 #include <EntityComponentSystem/World/World.h>
 
-#include <EntityComponent/Components/DamageZoneComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
+#include <EntityComponent/Components/TriggerBoxComponent.h>
 
 #include <EntityComponent/Systems/CollisionSystem.h>
 
@@ -77,9 +77,22 @@ void Create(World& inWorld, const IVec2& inPosition, const IVec2& inDirection)
 
 	entity.AddComponent<ArrowUpdateState>(inDirection);
 	entity.AddComponent<PositionComponent>(inPosition);
-	entity.AddComponent<DamageZoneComponent>()->SetDamageZoneAt(0, 0);
 	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Update );
 	entity.AddComponent<RenderableComponent>( kMeshes[meshIndex] );
+
+	entity.AddComponent<TriggerBoxComponent>( IRect(0, 0, 1, 1) )->RegisterOnEnterCallback( 
+		[] (Entity inArrow, const Entity& inTriggerer)
+		{
+			auto msgRecComp = inTriggerer.GetComponent<MessageReceiverComponent>();
+			if (nullptr != msgRecComp)
+			{
+				auto position = inArrow.GetComponent<PositionComponent>()->GetPosition();
+				auto direction = inArrow.GetComponent<ArrowUpdateState>()->mDirection;
+				msgRecComp->Broadcast( AttackMsg(inArrow, position, direction) );
+			}
+
+			inArrow.Kill();
+		} );
 }
 
 }

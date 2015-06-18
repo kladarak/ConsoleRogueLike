@@ -9,7 +9,6 @@
 #include <EntityComponent/Components/RenderableComponent.h>
 
 #include <EntityComponent/Systems/CollisionSystem.h>
-#include <EntityComponent/Systems/DamageZoneSystem.h>
 #include <EntityComponent/Systems/PositionSystem.h>
 
 #include <Input/InputBuffer.h>
