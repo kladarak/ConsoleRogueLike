@@ -53,7 +53,7 @@ void SwordPlayerBehaviour::Update(Entity inPlayer, float inFrameTime)
 	}
 
 	IVec2		attackPos = playerPos + attackDir;
-	AttackMsg	attackMsg(inPlayer, attackPos, attackDir);
+	AttackMsg	attackMsg(inPlayer, attackPos, attackDir, AttackMsg::EEffect_None);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, attackPos, attackMsg);
 }
 

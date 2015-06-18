@@ -11,12 +11,19 @@ class CoinCollectedMessage { };
 class AttackMsg
 {
 public:
-	AttackMsg(Entity inAttacker, const IVec2& inAttackPosition, const IVec2& inAttackDirection)
-		: mAttacker(inAttacker), mAttackPosition(inAttackPosition), mAttackDirection(inAttackDirection) { }
+	enum EEffect
+	{
+		EEffect_None,
+		EEffect_PushBack,
+	};
+
+	AttackMsg(Entity inAttacker, const IVec2& inAttackPosition, const IVec2& inAttackDirection, EEffect inEffect)
+		: mAttacker(inAttacker), mAttackPosition(inAttackPosition), mAttackDirection(inAttackDirection), mEffect(inEffect) { }
 
 	Entity	mAttacker;
 	IVec2	mAttackPosition;
 	IVec2	mAttackDirection;
+	EEffect	mEffect;
 };
 
 

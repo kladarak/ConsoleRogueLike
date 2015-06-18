@@ -161,26 +161,6 @@ void PlayerComponent::UpdateState(Entity inPlayer)
 	}
 }
 
-//void PlayerComponent::CheckAndHandleIfInDamageZone(Entity inPlayer)
-//{
-	// TODO: Turn this into a trigger box.
-	// TODO: Restore triggers back to how they were before, i.e., using a list of entities from last frame and this frame.
-	// TODO: Restore trigger update to be before ProgramUpdate (it's intended for control logic, after all).
-	// TODO: Add "OnEntitiesDestroyed" type function to Triggers.
-
-	//auto posComp		= inPlayer.GetComponent<PositionComponent>();
-	//
-	//auto position		= posComp->GetPosition();
-	//bool isInDamageZone = DamageZoneSystem::IsDamageZone(*inPlayer.GetWorld(), inPlayer, position);
-	//if (isInDamageZone)
-	//{
-	//	TakeDamage(inPlayer);
-	//	
-	//	// Go back to previous position
-	//	posComp->SetPosition( mLastSafePosition );
-	//}
-//}
-
 void PlayerComponent::UpdateOrientation(Entity /*inPlayer*/)
 {
 	mLastFacingDirection = mFacingDirection;
@@ -277,15 +257,12 @@ void PlayerComponent::UpdateAnimation(Entity inPlayer, float inFrameTime)
 // Message handling
 void PlayerComponent::OnAttacked(Entity inPlayer, const AttackMsg& inAttackMsg)
 {
-	if (mDamagedFlashTimeRemaining <= 0.0f)
-	{
-		// TODO: Return an enum, e.g., EOnAttackResult_Injured, or something?
-		bool wasInjured = mCurrentBehaviour->OnAttacked(inPlayer, inAttackMsg);
+	// TODO: Return an enum, e.g., EOnAttackResult_Injured, or something?
+	bool wasInjured = mCurrentBehaviour->OnAttacked(inPlayer, inAttackMsg);
 
-		if (wasInjured)
-		{
-			mDamagedFlashTimeRemaining = kDamagedFlashDuration;
-			inPlayer.GetComponent<HealthComponent>()->DecHealth();
-		}
+	if (mDamagedFlashTimeRemaining <= 0.0f && wasInjured)
+	{
+		mDamagedFlashTimeRemaining = kDamagedFlashDuration;
+		inPlayer.GetComponent<HealthComponent>()->DecHealth();
 	}
 }

@@ -15,6 +15,8 @@ public:
 
 	int mX;
 	int mY;
+
+	static const IVec2& sZero() { static const IVec2 sZeroInstance(0, 0); return sZeroInstance; }
 };
 
 inline IVec2 operator+(const IVec2& inLHS, const IVec2& inRHS) { IVec2 copy = inLHS; copy += inRHS; return copy; }

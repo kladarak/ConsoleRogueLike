@@ -167,7 +167,7 @@ static void Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBr
 	auto position	= posComp->GetPosition();
 	auto newPos		= position + intendedMovement;
 
-	AttackMsg attackMsg(inThis, newPos, intendedMovement);
+	AttackMsg attackMsg(inThis, newPos, intendedMovement, AttackMsg::EEffect_None);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, newPos, attackMsg);
 
 	bool isValidPos = !CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, newPos);
@@ -208,7 +208,7 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 			if (nullptr != msgRecComp)
 			{
 				auto position = inMonster.GetComponent<PositionComponent>()->GetPosition();
-				AttackMsg attackMsg(inMonster, position, IVec2(0, 0));
+				AttackMsg attackMsg(inMonster, position, IVec2(0, 0), AttackMsg::EEffect_PushBack);
 				msgRecComp->Broadcast( attackMsg );
 			}
 		} );

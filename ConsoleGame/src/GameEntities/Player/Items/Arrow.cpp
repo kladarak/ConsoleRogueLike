@@ -53,7 +53,7 @@ static void Update(Entity inThis, float inFrameTime)
 		position += state->mDirection;
 		posComp->SetPosition(position);
 		
-		AttackMsg attackMsg(inThis, position, state->mDirection);
+		AttackMsg attackMsg(inThis, position, state->mDirection, AttackMsg::EEffect_None);
 		MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, position, attackMsg);
 
 		bool collides = CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, position);
@@ -88,7 +88,7 @@ void Create(World& inWorld, const IVec2& inPosition, const IVec2& inDirection)
 			{
 				auto position = inArrow.GetComponent<PositionComponent>()->GetPosition();
 				auto direction = inArrow.GetComponent<ArrowUpdateState>()->mDirection;
-				msgRecComp->Broadcast( AttackMsg(inArrow, position, direction) );
+				msgRecComp->Broadcast( AttackMsg(inArrow, position, direction, AttackMsg::EEffect_None) );
 			}
 
 			inArrow.Kill();
