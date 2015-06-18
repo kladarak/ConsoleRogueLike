@@ -2,7 +2,9 @@
 
 #include <EntityComponentSystem/World/World.h>
 
+class MessageBroadcaster;
+
 namespace PlayerEntity
 {
-	Entity Create(World& inWorld);
+	Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster);
 }

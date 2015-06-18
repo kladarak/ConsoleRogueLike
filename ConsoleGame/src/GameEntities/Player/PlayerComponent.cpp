@@ -18,7 +18,8 @@
 
 #include "Items/ItemBase.h"
 #include "PlayerMeshes.h"
-#include "PlayerBehaviours/PlayerBehaviourBase.h"
+#include "PlayerBehaviours/PlayerIdleBehaviour.h"
+#include "PlayerBehaviours/PlayerDeadBehaviour.h"
 
 using namespace Player;
 
@@ -26,9 +27,10 @@ static const float kDamagedFlashDuration	= 2.0f;
 static const float kDamageFlashRate			= 10.0f;
 
 PlayerComponent::PlayerComponent() 
-	: mState						(Player::EState_Idle)
+	: mState						(EState_Idle)
 	, mUsingItemSlot				(EItemSlot_None)
 	, mIdleBehaviour				(new PlayerIdleBehaviour())
+	, mDeadBehaviour				(new PlayerDeadBehaviour())
 	, mCurrentBehaviour				(nullptr)
 	, mLastSafePosition				(0, 0)
 	, mDamagedFlashTimeRemaining	(0.0f)
@@ -41,6 +43,7 @@ PlayerComponent::PlayerComponent(PlayerComponent&& inRHS)
 	, mState						(inRHS.mState)
 	, mUsingItemSlot				(inRHS.mUsingItemSlot)
 	, mIdleBehaviour				(inRHS.mIdleBehaviour)
+	, mDeadBehaviour				(inRHS.mDeadBehaviour)
 	, mCurrentBehaviour				(inRHS.mCurrentBehaviour)
 	, mLastSafePosition				(inRHS.mLastSafePosition)
 	, mDamagedFlashTimeRemaining	(inRHS.mDamagedFlashTimeRemaining)
@@ -49,13 +52,16 @@ PlayerComponent::PlayerComponent(PlayerComponent&& inRHS)
 	memcpy(mItemSlot, inRHS.mItemSlot, sizeof(mItemSlot));
 
 	inRHS.mIdleBehaviour	= nullptr;
+	inRHS.mDeadBehaviour = nullptr;
 	inRHS.mCurrentBehaviour = nullptr;
 }
 
 PlayerComponent::~PlayerComponent()
 {
 	delete mIdleBehaviour;
+	delete mDeadBehaviour;
 	mIdleBehaviour = nullptr;
+	mDeadBehaviour = nullptr;
 }
 
 void PlayerComponent::HandleInput(const InputBuffer& inBuffer)
@@ -122,6 +128,11 @@ void PlayerComponent::UpdateState(Entity inPlayer)
 		mCurrentBehaviour->OnStart(inPlayer);
 	}
 
+	if (inPlayer.GetComponent<HealthComponent>()->IsDead())
+	{
+		mIntention.mState = EState_Dead;
+	}
+
 	PlayerBehaviourBase* newBehaviour = nullptr;
 
 	switch (mIntention.mState)
@@ -135,6 +146,13 @@ void PlayerComponent::UpdateState(Entity inPlayer)
 				mUsingItemSlot	= mIntention.mUseItemSlot;
 				mState			= mIntention.mState;
 			}
+			break;
+		}
+
+		case EState_Dead:
+		{
+			newBehaviour	= mDeadBehaviour;
+			mIntention		= Intention();
 			break;
 		}
 
@@ -249,14 +267,28 @@ void PlayerComponent::UpdateAnimation(Entity inPlayer, float inFrameTime)
 }
 
 // Message handling
-void PlayerComponent::OnAttacked(Entity inPlayer, const AttackMsg& inAttackMsg)
+void PlayerComponent::OnAttacked(Entity inPlayer, const AttackMsg& inAttackMsg, MessageBroadcaster& inMsgBroadcaster)
 {
+	auto healthComp = inPlayer.GetComponent<HealthComponent>();
+	if (healthComp->IsDead())
+	{
+		return;
+	}
+
 	// TODO: Return an enum, e.g., EOnAttackResult_Injured, or something?
 	bool wasInjured = mCurrentBehaviour->OnAttacked(inPlayer, inAttackMsg);
 
 	if (mDamagedFlashTimeRemaining <= 0.0f && wasInjured)
 	{
-		mDamagedFlashTimeRemaining = kDamagedFlashDuration;
-		inPlayer.GetComponent<HealthComponent>()->DecHealth();
+		healthComp->DecHealth();
+
+		if (healthComp->IsDead())
+		{
+			inMsgBroadcaster.Broadcast( PlayerIsDeadMsg() );
+		}
+		else
+		{
+			mDamagedFlashTimeRemaining = kDamagedFlashDuration;
+		}
 	}
 }

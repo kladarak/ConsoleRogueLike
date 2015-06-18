@@ -190,6 +190,12 @@
     <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp">
       <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\PlayerBehaviours\PlayerIdleBehaviour.cpp">
+      <Filter>Source Files\GameEntities\Player\PlayerBehaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\PlayerBehaviours\PlayerDeadBehaviour.cpp">
+      <Filter>Source Files\GameEntities\Player\PlayerBehaviour</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -383,6 +389,12 @@
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Components\EOrientation.h">
       <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerIdleBehaviour.h">
+      <Filter>Source Files\GameEntities\Player\PlayerBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerDeadBehaviour.h">
+      <Filter>Source Files\GameEntities\Player\PlayerBehaviour</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

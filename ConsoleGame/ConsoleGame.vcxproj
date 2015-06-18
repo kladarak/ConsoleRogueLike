@@ -37,6 +37,8 @@
     <ClCompile Include="src\GameEntities\Player\Items\Sword.cpp" />
     <ClCompile Include="src\GameEntities\Player\Items\SwordAnimations.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerBehaviours\PlayerBehaviourBase.cpp" />
+    <ClCompile Include="src\GameEntities\Player\PlayerBehaviours\PlayerDeadBehaviour.cpp" />
+    <ClCompile Include="src\GameEntities\Player\PlayerBehaviours\PlayerIdleBehaviour.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerEntity.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerComponent.cpp" />
     <ClCompile Include="src\GameEntities\RoomEntity.cpp" />
@@ -97,6 +99,8 @@
     <ClInclude Include="src\GameEntities\Player\Items\Sword.h" />
     <ClInclude Include="src\GameEntities\Player\Items\SwordAnimations.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerBehaviourBase.h" />
+    <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerDeadBehaviour.h" />
+    <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerIdleBehaviour.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerEntity.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerEnums.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerMeshes.h" />

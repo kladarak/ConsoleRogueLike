@@ -27,7 +27,7 @@
 namespace PlayerEntity
 {
 
-Entity Create(World& inWorld)
+Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster)
 {
 	Entity entity = inWorld.CreateEntity();
 	
@@ -58,9 +58,9 @@ Entity Create(World& inWorld)
 
 	entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>
 	(
-		[entity] (const AttackMsg& inAttackMsg)
+		[entity, &inMsgBroadcaster] (const AttackMsg& inAttackMsg)
 		{
-			entity.GetComponent<PlayerComponent>()->OnAttacked(entity, inAttackMsg);
+			entity.GetComponent<PlayerComponent>()->OnAttacked(entity, inAttackMsg, inMsgBroadcaster);
 		}
 	);
 	

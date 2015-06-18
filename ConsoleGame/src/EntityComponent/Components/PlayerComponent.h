@@ -11,6 +11,7 @@
 class AttackMsg;
 class InputBuffer;
 class PlayerBehaviourBase;
+class MessageBroadcaster;
 
 class PlayerComponent
 {
@@ -22,9 +23,7 @@ public:
 	
 	void						HandleInput(const InputBuffer& inBuffer);
 	void						Update(Entity inPlayer, float inFrameTime);
-	void						OnAttacked(Entity inPlayer, const AttackMsg& inAttackMsg);
-
-	Player::EState				GetState() const												{ return mState; }
+	void						OnAttacked(Entity inPlayer, const AttackMsg& inAttackMsg, MessageBroadcaster& inBroadcaster);
 
 	Player::EItemSlot			GetUsingItemSlot() const										{ return mUsingItemSlot; }
 	void						SetUsingItemSlot(Player::EItemSlot inSlot) 						{ mUsingItemSlot = inSlot; }
@@ -42,13 +41,37 @@ private:
 	void						UpdatePosition(Entity inPlayer);
 	void						UpdateBehaviour(Entity inPlayer, float inFrameTime);
 	void						UpdateAnimation(Entity inPlayer, float inFrameTime);
+	
+	enum EState
+	{
+		EState_Idle,
+		EState_UseItem,
+		EState_Dead
+	};
+	
+	struct Intention
+	{
+		IVec2				mMovement;
+		EOrientation		mFacingDirection;
+		EState				mState;
+		Player::EItemSlot	mUseItemSlot;
 
-	Player::Intention			mIntention;
+		Intention() 
+			: mMovement			(0, 0)
+			, mFacingDirection	(EOrientation_Count)
+			, mState			(EState_Idle)
+			, mUseItemSlot		(Player::EItemSlot_None)
+		{
+		}
+	};
 
-	Player::EState				mState;
+	Intention					mIntention;
+
+	EState						mState;
 	Player::EItemSlot			mUsingItemSlot;
 	
 	PlayerBehaviourBase*		mIdleBehaviour;
+	PlayerBehaviourBase*		mDeadBehaviour;
 	PlayerBehaviourBase*		mCurrentBehaviour;
 
 	IVec2						mLastSafePosition;

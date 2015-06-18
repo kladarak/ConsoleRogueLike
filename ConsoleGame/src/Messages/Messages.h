@@ -6,7 +6,8 @@
 #include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Systems/PositionSystem.h>
 
-class CoinCollectedMessage { };
+class CoinCollectedMessage	{ };
+class PlayerIsDeadMsg		{ };
 
 class AttackMsg
 {

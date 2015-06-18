@@ -26,7 +26,7 @@ void InGamePlayScreen::Init()
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
 
-	mPlayer = PlayerEntity::Create(mWorld);
+	mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster);
 
 	mHUD.Init(mMessageBroadcaster, mPlayer);
 }
