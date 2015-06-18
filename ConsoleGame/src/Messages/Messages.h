@@ -33,6 +33,7 @@ namespace MessageHelpers
 template<typename TMessage>
 void BroadcastMessageToEntitiesAtPosition(World& inWorld, Entity inExceptThis, const IVec2& inPos, const TMessage& inMsg)
 {
+	// TODO: Check collision meshes too.
 	auto attackedEntities = PositionSystem::GetListOfEntitiesAtPosition(inWorld, inExceptThis, inPos);
 	for (auto entity : attackedEntities)
 	{

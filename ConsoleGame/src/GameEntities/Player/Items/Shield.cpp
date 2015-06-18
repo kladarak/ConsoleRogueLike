@@ -11,6 +11,8 @@
 
 #include <EntityComponent/Systems/CollisionSystem.h>
 
+#include <Messages/Messages.h>
+
 //--------------------------------------------------------------------
 
 static const char kShieldFaceUp[] =
@@ -100,4 +102,27 @@ void ShieldPlayerBehaviour::OnFinish(Entity /*inPlayer*/)
 bool ShieldPlayerBehaviour::IsFinished() const
 {
 	return !mHeldUp;
+}
+
+bool ShieldPlayerBehaviour::CanMoveToPosition(Entity inPlayer, const IVec2& inPosition) const
+{
+	auto& playerCollisionMesh = inPlayer.GetComponent<CollisionComponent>()->GetCollisionMesh();
+	auto entitiesCollidedWith = CollisionSystem::GetListofCollidablesCollidedWith(*inPlayer.GetWorld(), playerCollisionMesh, inPosition);
+
+	for (auto& collidable : entitiesCollidedWith)
+	{
+		if (collidable != inPlayer)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool ShieldPlayerBehaviour::OnAttacked(Entity inPlayer, const AttackMsg& inAttackMsg)
+{
+	// If it hits the player, then it injures it. Otherwise the shield was hit, and so it doesn't injure the player.
+	auto position = inPlayer.GetComponent<PositionComponent>()->GetPosition();
+	return (position == inAttackMsg.mAttackPosition);
 }

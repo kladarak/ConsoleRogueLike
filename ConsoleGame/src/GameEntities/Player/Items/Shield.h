@@ -11,6 +11,9 @@ public:
 	virtual void Update(Entity inPlayer, float inFrameTime);
 	virtual void OnFinish(Entity inPlayer);
 	virtual bool IsFinished() const;
+	
+	virtual bool OnAttacked(Entity inPlayer, const AttackMsg& inAttackMsg);
+	virtual bool CanMoveToPosition(Entity inPlayer, const IVec2& inPosition) const;
 
 private:
 	bool mHeldUp;
