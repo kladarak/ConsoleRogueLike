@@ -25,13 +25,11 @@ using namespace Player;
 static const float kDamagedFlashDuration	= 2.0f;
 static const float kDamageFlashRate			= 10.0f;
 
-PlayerComponent::PlayerComponent(Player::EFacingDirection inDirection) 
-	: mFacingDirection				(inDirection)
-	, mState						(Player::EState_Idle)
+PlayerComponent::PlayerComponent() 
+	: mState						(Player::EState_Idle)
 	, mUsingItemSlot				(EItemSlot_None)
 	, mIdleBehaviour				(new PlayerIdleBehaviour())
 	, mCurrentBehaviour				(nullptr)
-	, mLastFacingDirection			(inDirection)
 	, mLastSafePosition				(0, 0)
 	, mDamagedFlashTimeRemaining	(0.0f)
 {
@@ -40,12 +38,10 @@ PlayerComponent::PlayerComponent(Player::EFacingDirection inDirection)
 
 PlayerComponent::PlayerComponent(PlayerComponent&& inRHS)
 	: mIntention					(inRHS.mIntention)
-	, mFacingDirection				(inRHS.mFacingDirection)
 	, mState						(inRHS.mState)
 	, mUsingItemSlot				(inRHS.mUsingItemSlot)
 	, mIdleBehaviour				(inRHS.mIdleBehaviour)
 	, mCurrentBehaviour				(inRHS.mCurrentBehaviour)
-	, mLastFacingDirection			(inRHS.mLastFacingDirection)
 	, mLastSafePosition				(inRHS.mLastSafePosition)
 	, mDamagedFlashTimeRemaining	(inRHS.mDamagedFlashTimeRemaining)
 	, mInventory					(std::move(inRHS.mInventory))
@@ -69,23 +65,23 @@ void PlayerComponent::HandleInput(const InputBuffer& inBuffer)
 	if ( inBuffer.IsPressed('a') )
 	{
 		intention.mMovement.mX		= -1;
-		intention.mFacingDirection	= EFacingDirection_Left;
+		intention.mFacingDirection	= EOrientation_FaceLeft;
 	}
 	else if ( inBuffer.IsPressed('d') )
 	{
 		intention.mMovement.mX		= 1;
-		intention.mFacingDirection	= EFacingDirection_Right;
+		intention.mFacingDirection	= EOrientation_FaceRight;
 	}
 	
 	if ( inBuffer.IsPressed('w') )
 	{
 		intention.mMovement.mY		= -1;
-		intention.mFacingDirection	= EFacingDirection_Up;
+		intention.mFacingDirection	= EOrientation_FaceUp;
 	}
 	else if ( inBuffer.IsPressed('s') )
 	{
 		intention.mMovement.mY		= 1;
-		intention.mFacingDirection	= EFacingDirection_Down;
+		intention.mFacingDirection	= EOrientation_FaceDown;
 	}
 	
 	if ( inBuffer.IsPressed(' ') )
@@ -164,14 +160,10 @@ void PlayerComponent::UpdateState(Entity inPlayer)
 
 void PlayerComponent::UpdateOrientation(Entity inPlayer)
 {
-	// TODO: Remove facing directon completely.
-	mLastFacingDirection = mFacingDirection;
-	if (mIntention.mFacingDirection != EFacingDirection_Count)
+	if (mIntention.mFacingDirection != EOrientation_Count)
 	{
-		mFacingDirection = mIntention.mFacingDirection;
+		inPlayer.GetComponent<OrientationComponent>()->SetOrientation( mIntention.mFacingDirection );
 	}
-	
-	inPlayer.GetComponent<OrientationComponent>()->SetOrientation( (EOrientation) mFacingDirection );
 }
 
 void PlayerComponent::UpdatePosition(Entity inPlayer)
@@ -237,12 +229,10 @@ void PlayerComponent::UpdateBehaviour(Entity inPlayer, float inFrameTime)
 void PlayerComponent::UpdateAnimation(Entity inPlayer, float inFrameTime)
 {
 	auto animationComp		= inPlayer.GetComponent<AnimationComponent>();
+	auto orientationComp	= inPlayer.GetComponent<OrientationComponent>();
 	auto renderableComp		= inPlayer.GetComponent<RenderableComponent>();
 
-	if (mFacingDirection != mLastFacingDirection)
-	{
-		animationComp->SetSelectedAnimation( mFacingDirection, false /*ResetAnimation*/ );
-	}
+	animationComp->SetSelectedAnimation( orientationComp->GetOrientation(), false /*ResetAnimation*/ );
 
 	if (mDamagedFlashTimeRemaining > 0.0f)
 	{

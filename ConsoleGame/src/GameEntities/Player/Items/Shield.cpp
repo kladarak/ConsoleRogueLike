@@ -31,7 +31,7 @@ static const char kShieldFaceDown[] =
 static const char kShieldFaceLeft[]	= { '|','O' };
 static const char kShieldFaceRight[] = { 'O','|' };
 
-static const AsciiMesh kShieldRenderMeshes[Player::EFacingDirection_Count] =
+static const AsciiMesh kShieldRenderMeshes[EOrientation_Count] =
 {
 	AsciiMesh( kShieldFaceUp,		1, 2, IVec2( 0, -1) ),
 	AsciiMesh( kShieldFaceDown,		1, 2, IVec2( 0,  0) ),
@@ -96,16 +96,8 @@ void ShieldPlayerBehaviour::Update(Entity inPlayer, float /*inFrameTime*/)
 
 		if (CollisionSystem::CollidesWithAnyEntity(*inPlayer.GetWorld(), inPlayer))
 		{
-			auto pushBackVector = IVec2::sZero();
-
-			auto orientation = inPlayer.GetComponent<OrientationComponent>()->GetOrientation();
-			switch (orientation)
-			{
-				case EOrientation_FaceUp:		pushBackVector.mY =  1; break;
-				case EOrientation_FaceDown:		pushBackVector.mY = -1; break;
-				case EOrientation_FaceLeft:		pushBackVector.mX =  1; break;
-				case EOrientation_FaceRight:	pushBackVector.mX = -1; break;
-			}
+			auto orientation	= inPlayer.GetComponent<OrientationComponent>()->GetOrientation();
+			auto pushBackVector = -gGetOrientationVector(orientation);
 
 			auto pushedBackPos = position + pushBackVector;
 

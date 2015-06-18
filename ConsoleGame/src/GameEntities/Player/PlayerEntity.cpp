@@ -34,7 +34,7 @@ Entity Create(World& inWorld)
 	entity.AddComponent<AnimationComponent>( Player::kIdleAnimations, gElemCount(Player::kIdleAnimations) );
 	entity.AddComponent<CollisionComponent>( CollisionMesh(0, 0) );
 	entity.AddComponent<HealthComponent>(3);
-	entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
+	entity.AddComponent<PlayerComponent>();
 	entity.AddComponent<OrientationComponent>( EOrientation_FaceDown );
 	entity.AddComponent<PositionComponent>(10, 10);
 	entity.AddComponent<RenderableComponent>( Player::kIdleRenderMesh );

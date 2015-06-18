@@ -3,8 +3,7 @@
 #include <Containers/ContainerMacros.h>
 
 #include <EntityComponent/Components/AnimationComponent.h>
-#include <EntityComponent/Components/MessageReceiverComponent.h>
-#include <EntityComponent/Components/PlayerComponent.h>
+#include <EntityComponent/Components/OrientationComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 
 #include <EntityComponent/Systems/PositionSystem.h>
@@ -31,19 +30,11 @@ void BowPlayerBehaviour::OnStart(Entity inPlayer)
 {
 	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( BowAnimations::Generate() );
 
-	auto playerPos			= inPlayer.GetComponent<PositionComponent>()->GetPosition();
-	auto facingDirection	= inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
-
-	IVec2 attackDir(0, 0);
-	switch (facingDirection)
-	{
-		case EFacingDirection_Left:		attackDir.mX = -1; break;
-		case EFacingDirection_Right:	attackDir.mX =  1; break;
-		case EFacingDirection_Up:		attackDir.mY = -1; break;
-		case EFacingDirection_Down:		attackDir.mY =  1; break;
-	}
-
-	IVec2 attackPos = playerPos + attackDir;
+	auto playerPos		= inPlayer.GetComponent<PositionComponent>()->GetPosition();
+	auto orientation	= inPlayer.GetComponent<OrientationComponent>()->GetOrientation();
+	
+	IVec2 attackDir		= gGetOrientationVector(orientation);
+	IVec2 attackPos		= playerPos + attackDir;
 	
 	Arrow::Create(*inPlayer.GetWorld(), attackPos, attackDir);
 

@@ -15,7 +15,7 @@ class PlayerBehaviourBase;
 class PlayerComponent
 {
 public:
-	PlayerComponent(Player::EFacingDirection inDirection);
+	PlayerComponent();
 	PlayerComponent(PlayerComponent&& inRHS);
 
 	~PlayerComponent();
@@ -24,7 +24,6 @@ public:
 	void						Update(Entity inPlayer, float inFrameTime);
 	void						OnAttacked(Entity inPlayer, const AttackMsg& inAttackMsg);
 
-	Player::EFacingDirection	GetFacingDirection() const										{ return mFacingDirection; }
 	Player::EState				GetState() const												{ return mState; }
 
 	Player::EItemSlot			GetUsingItemSlot() const										{ return mUsingItemSlot; }
@@ -46,14 +45,12 @@ private:
 
 	Player::Intention			mIntention;
 
-	Player::EFacingDirection	mFacingDirection;
 	Player::EState				mState;
 	Player::EItemSlot			mUsingItemSlot;
 	
 	PlayerBehaviourBase*		mIdleBehaviour;
 	PlayerBehaviourBase*		mCurrentBehaviour;
 
-	Player::EFacingDirection	mLastFacingDirection;
 	IVec2						mLastSafePosition;
 	float						mDamagedFlashTimeRemaining;
 	

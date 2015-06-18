@@ -1,17 +1,9 @@
 #pragma once
 
+#include <EntityComponent/Components/EOrientation.h>
+
 namespace Player
 {
-	enum EFacingDirection
-	{
-		EFacingDirection_Up,
-		EFacingDirection_Down,
-		EFacingDirection_Left,
-		EFacingDirection_Right,
-
-		EFacingDirection_Count
-	};
-
 	enum EState
 	{
 		EState_Idle,
@@ -29,14 +21,14 @@ namespace Player
 	
 	struct Intention
 	{
-		IVec2						mMovement;
-		Player::EFacingDirection	mFacingDirection;
-		Player::EState				mState;
-		Player::EItemSlot			mUseItemSlot;
+		IVec2				mMovement;
+		EOrientation		mFacingDirection;
+		Player::EState		mState;
+		Player::EItemSlot	mUseItemSlot;
 
 		Intention() 
 			: mMovement			(0, 0)
-			, mFacingDirection	(Player::EFacingDirection_Count)
+			, mFacingDirection	(EOrientation_Count)
 			, mState			(Player::EState_Idle)
 			, mUseItemSlot		(Player::EItemSlot_None)
 		{
