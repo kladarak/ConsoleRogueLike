@@ -49,7 +49,7 @@ static const Animation kAnimations[] =
 	Animation( &kShieldRenderMeshes[3], 1, 0.0f, Animation::EPlaybackStyle_Once ),
 };
 
-static const char		kShieldIcon[]	= {	'[',254,']' };
+static const char		kShieldIcon[]	= {	'[', gCastUCharToChar(254) ,']' };
 static const ItemData	kShieldData		= { "Shield", AsciiMesh(kShieldIcon, gElemCount(kShieldIcon), 1) };
 
 //--------------------------------------------------------------------

@@ -38,9 +38,9 @@ namespace MonsterAnimation
 
 	static const Animation kIdle(kIdleFrames, gElemCount(kIdleFrames), kAnimationDuration, Animation::EPlaybackStyle_Loop);
 	
-	static const char kDeathKF0 = 178;
-	static const char kDeathKF1 = 177;
-	static const char kDeathKF2 = 176;
+	static const char kDeathKF0 = gCastUCharToChar(178);
+	static const char kDeathKF1 = gCastUCharToChar(177);
+	static const char kDeathKF2 = gCastUCharToChar(176);
 
 	static const AsciiMesh kDeathFrames[] =
 	{

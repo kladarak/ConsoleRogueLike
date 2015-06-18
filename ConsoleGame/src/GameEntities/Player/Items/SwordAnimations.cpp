@@ -59,7 +59,7 @@ namespace SwordFaceLeft
 {
 	static const char kSwordFaceLeft0[]	= { '|','O' };
 	static const char kSwordFaceLeft1[]	= { '/','O' };
-	static const char kSwordFaceLeft2[]	= { 238,'O' }; // should be "overscore" / "macron"
+	static const char kSwordFaceLeft2[]	= { gCastUCharToChar(238),'O' }; // should be "overscore" / "macron"
 
 	static const AsciiMesh kSwordFaceLeftKeyFrames[] =
 	{
