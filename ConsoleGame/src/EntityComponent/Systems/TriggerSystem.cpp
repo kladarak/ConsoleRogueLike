@@ -22,23 +22,61 @@ void Update(World& inWorld)
 	for (auto& triggerBox : triggerBoxes)
 	{
 		auto triggerBoxComp = triggerBox.GetComponent<TriggerBoxComponent>();
+
+		std::vector<Entity> entitiesInBounds;
 		
 		for (auto& triggerer : triggerers)
 		{
-			auto posComp		= triggerer.GetComponent<PositionComponent>();
-			auto newPos			= posComp->GetPosition();
-			auto oldPos			= posComp->GetPreviousPosition();
+			auto posComp = triggerer.GetComponent<PositionComponent>();
 
-			bool wasInTrigger	= triggerBoxComp->IsInBounds(triggerBox, oldPos);
-			bool isInTrigger	= triggerBoxComp->IsInBounds(triggerBox, newPos);
-
-			if (isInTrigger && !wasInTrigger)
+			if (triggerBoxComp->IsInBounds(triggerBox, posComp->GetPosition()))
 			{
-				triggerBoxComp->OnEntered(triggerBox, triggerer);
+				entitiesInBounds.push_back(triggerer);
 			}
-			else if (!isInTrigger && wasInTrigger)
+		}
+		
+		// Swap vectors
+		auto entitiesInBoundsLastFrame = triggerBoxComp->GetEntitiesInBoundsLastFrame();
+		triggerBoxComp->SetEntitiesInBoundsLastFrame(entitiesInBounds);
+		
+		// Now do callbacks.
+		// Entity IDs should be in order, so walk over both lists, incrementing as we go.
+		auto thisFrameBegin = entitiesInBounds.begin();
+		auto thisFrameEnd	= entitiesInBounds.end();
+		auto lastFrameBegin = entitiesInBoundsLastFrame.begin();
+		auto lastFrameEnd	= entitiesInBoundsLastFrame.end();
+
+		while (thisFrameBegin != thisFrameEnd || lastFrameBegin != lastFrameEnd)
+		{
+			if (thisFrameBegin != thisFrameEnd && lastFrameBegin != lastFrameEnd)
 			{
-				triggerBoxComp->OnExited(triggerBox, triggerer);
+				auto& entityThis = *thisFrameBegin;
+				auto& entityLast = *lastFrameBegin;
+				if (entityThis == entityLast)
+				{
+					++thisFrameBegin;
+					++lastFrameBegin;
+				}
+				else if (entityThis.GetID() < entityLast.GetID())
+				{
+					triggerBoxComp->OnEntered(triggerBox, entityThis);
+					++thisFrameBegin;
+				}
+				else // if (entityThis.GetID() > entityLast.GetID())
+				{
+					triggerBoxComp->OnExited(triggerBox, entityLast);
+					++lastFrameBegin;
+				}
+			}
+			else if (thisFrameBegin != thisFrameEnd)
+			{
+				triggerBoxComp->OnEntered(triggerBox, *thisFrameBegin);
+				++thisFrameBegin;
+			}
+			else //if (lastFrameBegin != lastFrameEnd)
+			{
+				triggerBoxComp->OnExited(triggerBox, *lastFrameBegin);
+				++lastFrameBegin;
 			}
 		}
 	}

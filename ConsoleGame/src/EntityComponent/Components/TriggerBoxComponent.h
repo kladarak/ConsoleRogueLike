@@ -18,19 +18,24 @@ public:
 	typedef std::function<void (const Entity& inTriggerBox, const Entity& inTriggerer)> TriggerCallback;
 
 	// TODO: Handle unregistering.
-	void							RegisterOnEnterCallback(const TriggerCallback& inOnEnter)				{ mOnEnterCallbacks.push_back(inOnEnter);	}
-	void							RegisterOnExitCallback(const TriggerCallback& inOnExit)					{ mOnExitCallbacks.push_back(inOnExit);		}
+	void							RegisterOnEnterCallback(const TriggerCallback& inOnEnter)						{ mOnEnterCallbacks.push_back(inOnEnter);	}
+	void							RegisterOnExitCallback(const TriggerCallback& inOnExit)							{ mOnExitCallbacks.push_back(inOnExit);		}
 	
 	bool							IsInBounds(const Entity& inThis, const IVec2& inPosition) const;
 	
 	void							OnEntered(const Entity& inThis, const Entity& inTriggerer);
 	void							OnExited(const Entity& inThis, const Entity& inTriggerer);
 	
+	const std::vector<Entity>&		GetEntitiesInBoundsLastFrame() const											{ return mEntitiesInBoundsLastFrame; }
+	void							SetEntitiesInBoundsLastFrame(const std::vector<Entity>& inEntitiesInBounds)		{ mEntitiesInBoundsLastFrame = inEntitiesInBounds; }
+
 private:
 	IRect							mBounds;
 
 	std::vector<TriggerCallback>	mOnEnterCallbacks;
 	std::vector<TriggerCallback>	mOnExitCallbacks;
+
+	std::vector<Entity>				mEntitiesInBoundsLastFrame;
 };
 
 class TriggererComponent
