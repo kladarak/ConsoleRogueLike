@@ -6,6 +6,7 @@
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/MonsterComponent.h>
+#include <EntityComponent/Components/OrientationComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 
@@ -55,7 +56,7 @@ static const ItemData	kShieldData		= { "Shield", AsciiMesh(kShieldIcon, gElemCou
 
 static const bool kShieldCollisionData[] = { true, true };
 
-static const CollisionMesh kShieldCollisionMeshes[Player::EFacingDirection_Count] =
+static const CollisionMesh kShieldCollisionMeshes[EOrientation_Count] =
 {
 	CollisionMesh( kShieldCollisionData,	1, 2, IVec2( 0, -1) ),
 	CollisionMesh( kShieldCollisionData,	1, 2, IVec2( 0,  0) ),
@@ -78,6 +79,7 @@ void ShieldPlayerBehaviour::OnStart(Entity inPlayer)
 
 	mHeldUp = true;
 	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( gCArrayToVector(kAnimations, gElemCount(kAnimations)) );
+	inPlayer.GetComponent<CollisionComponent>()->SetCollisionMeshes( kShieldCollisionMeshes );
 }
 
 void ShieldPlayerBehaviour::OnRestart(Entity /*inPlayer*/)
@@ -89,8 +91,29 @@ void ShieldPlayerBehaviour::Update(Entity inPlayer, float /*inFrameTime*/)
 {
 	if (mHeldUp)
 	{
-		auto facingDirection = inPlayer.GetComponent<PlayerComponent>()->GetFacingDirection();
-		inPlayer.GetComponent<CollisionComponent>()->SetCollisionMesh( kShieldCollisionMeshes[facingDirection] );
+		auto	posComp		= inPlayer.GetComponent<PositionComponent>();
+		auto&	position	= posComp->GetPosition();
+
+		if (CollisionSystem::CollidesWithAnyEntity(*inPlayer.GetWorld(), inPlayer))
+		{
+			auto pushBackVector = IVec2::sZero();
+
+			auto orientation = inPlayer.GetComponent<OrientationComponent>()->GetOrientation();
+			switch (orientation)
+			{
+				case EOrientation_FaceUp:		pushBackVector.mY =  1; break;
+				case EOrientation_FaceDown:		pushBackVector.mY = -1; break;
+				case EOrientation_FaceLeft:		pushBackVector.mX =  1; break;
+				case EOrientation_FaceRight:	pushBackVector.mX = -1; break;
+			}
+
+			auto pushedBackPos = position + pushBackVector;
+
+			if (!CollisionSystem::CollidesWithAnyEntity(*inPlayer.GetWorld(), inPlayer, pushedBackPos))
+			{
+				posComp->SetPosition(pushedBackPos);
+			}
+		}
 	}
 }
 
@@ -106,9 +129,9 @@ bool ShieldPlayerBehaviour::IsFinished() const
 
 bool ShieldPlayerBehaviour::CanMoveToPosition(Entity inPlayer, const IVec2& inPosition) const
 {
-	auto& playerCollisionMesh = inPlayer.GetComponent<CollisionComponent>()->GetCollisionMesh();
+	auto& playerCollisionMesh = CollisionSystem::GetActiveCollisionMesh(inPlayer);
 	auto entitiesCollidedWith = CollisionSystem::GetListofCollidablesCollidedWith(*inPlayer.GetWorld(), playerCollisionMesh, inPosition);
-
+	
 	for (auto& collidable : entitiesCollidedWith)
 	{
 		if (collidable != inPlayer)

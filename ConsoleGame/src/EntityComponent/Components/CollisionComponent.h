@@ -1,5 +1,6 @@
 #pragma once
 
+#include "EOrientation.h"
 #include "CollisionMesh.h"
 
 class Entity;
@@ -7,26 +8,22 @@ class Entity;
 class CollisionComponent
 {
 public:
-	CollisionComponent()	{ }
-	CollisionComponent(CollisionComponent&& inRHS)		: mCollisionMesh( std::move(inRHS.mCollisionMesh) )	{ }
-	CollisionComponent(const CollisionComponent& inRHS) : mCollisionMesh( inRHS.mCollisionMesh )			{ }
-	CollisionComponent(const CollisionMesh& inRHS)		: mCollisionMesh( inRHS )							{ }
+	CollisionComponent();
+	CollisionComponent(CollisionComponent&& inRHS);
+	CollisionComponent(const CollisionComponent& inRHS);
+	CollisionComponent(const CollisionMesh& inDefaultMesh);
+	CollisionComponent(const CollisionMesh inMeshes[EOrientation_Count]);
 	~CollisionComponent()	{ }
 	
-	void					SetCollisionMesh(const CollisionMesh& iMesh)		{ mCollisionMesh = iMesh; }
-	const CollisionMesh&	GetCollisionMesh() const							{ return mCollisionMesh; }
-
-	void					SetCollidableAt(int inX, int inY)							{ mCollisionMesh.Set(inX, inY, true); }
+	void					SetDefaultCollisionMesh(const CollisionMesh& inMesh);
+	const CollisionMesh&	GetDefaultCollisionMesh() const;
 	
-	void					SetCentreOffset(const IVec2& inOffset)						{ mCollisionMesh.SetCentreOffset(inOffset);	}
-	const IVec2&			GetCentreOffset() const										{ return mCollisionMesh.GetCentreOffset();	}
-
-	template<typename TFunctor>
-	void					ForEachCollidablePosition(const TFunctor& inFunctor) const	{ mCollisionMesh.ForEachCollidablePosition( inFunctor ); }
-
-	bool					CollidesWith(const IVec2& inPos) const						{ return mCollisionMesh.CollidesWith(inPos); }
+	void					SetCollisionMesh(EOrientation inOrientation, const CollisionMesh& inMesh);
+	const CollisionMesh&	GetCollisionMesh(EOrientation inOrientation) const;
+	
+	void					SetCollisionMeshes(const CollisionMesh inMeshes[EOrientation_Count]);
 
 private:
-	CollisionMesh			mCollisionMesh;
+	CollisionMesh			mCollisionMesh[EOrientation_Count];
 
 };

@@ -9,6 +9,7 @@
 #include <EntityComponent/Components/HealthComponent.h>
 #include <EntityComponent/Components/InputHandlerComponent.h>
 #include <EntityComponent/Components/MessageReceiverComponent.h>
+#include <EntityComponent/Components/OrientationComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
@@ -31,9 +32,10 @@ Entity Create(World& inWorld)
 	Entity entity = inWorld.CreateEntity();
 	
 	entity.AddComponent<AnimationComponent>( Player::kIdleAnimations, gElemCount(Player::kIdleAnimations) );
-	entity.AddComponent<CollisionComponent>()->SetCollidableAt(0, 0);
+	entity.AddComponent<CollisionComponent>( CollisionMesh(0, 0) );
 	entity.AddComponent<HealthComponent>(3);
 	entity.AddComponent<PlayerComponent>(Player::EFacingDirection_Down);
+	entity.AddComponent<OrientationComponent>( EOrientation_FaceDown );
 	entity.AddComponent<PositionComponent>(10, 10);
 	entity.AddComponent<RenderableComponent>( Player::kIdleRenderMesh );
 	entity.AddComponent<TriggererComponent>();

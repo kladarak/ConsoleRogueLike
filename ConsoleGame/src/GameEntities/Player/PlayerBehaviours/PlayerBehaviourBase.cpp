@@ -16,7 +16,7 @@ using namespace Player;
 
 bool PlayerBehaviourBase::CanMoveToPosition(Entity inPlayer, const IVec2& inPosition) const
 {
-	auto& playerCollisionMesh = inPlayer.GetComponent<CollisionComponent>()->GetCollisionMesh();
+	auto& playerCollisionMesh = inPlayer.GetComponent<CollisionComponent>()->GetDefaultCollisionMesh();
 	auto entitiesCollidedWith = CollisionSystem::GetListofCollidablesCollidedWith(*inPlayer.GetWorld(), playerCollisionMesh, inPosition);
 
 	for (auto& collidable : entitiesCollidedWith)
@@ -80,7 +80,7 @@ bool PlayerBehaviourBase::OnAttacked(Entity inPlayer, const AttackMsg& inAttackM
 void PlayerIdleBehaviour::OnStart(Entity inPlayer)
 {
 	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( GetIdleAnimations() );
-	inPlayer.GetComponent<CollisionComponent>()->SetCollisionMesh( kIdleCollisionMesh );
+	inPlayer.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh( kIdleCollisionMesh );
 	inPlayer.GetComponent<PlayerComponent>()->SetUsingItemSlot( EItemSlot_None );
 }
 

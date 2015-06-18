@@ -5,6 +5,7 @@
 #include <EntityComponent/Components/HealthComponent.h>
 #include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Components/MonsterComponent.h>
+#include <EntityComponent/Components/OrientationComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
 
@@ -161,13 +162,16 @@ void PlayerComponent::UpdateState(Entity inPlayer)
 	}
 }
 
-void PlayerComponent::UpdateOrientation(Entity /*inPlayer*/)
+void PlayerComponent::UpdateOrientation(Entity inPlayer)
 {
+	// TODO: Remove facing directon completely.
 	mLastFacingDirection = mFacingDirection;
 	if (mIntention.mFacingDirection != EFacingDirection_Count)
 	{
 		mFacingDirection = mIntention.mFacingDirection;
 	}
+	
+	inPlayer.GetComponent<OrientationComponent>()->SetOrientation( (EOrientation) mFacingDirection );
 }
 
 void PlayerComponent::UpdatePosition(Entity inPlayer)

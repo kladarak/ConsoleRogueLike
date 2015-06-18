@@ -40,7 +40,8 @@ void Create(World& inWorld)
 
 	positionComp->SetPosition( IVec2(0, 0) );
 	
-	AsciiMesh mesh;
+	AsciiMesh		renderMesh;
+	CollisionMesh	collisionMesh;
 
 	for (int row = 0; row < ScreenConstants::EMapRows; ++row)
 	{
@@ -49,14 +50,14 @@ void Create(World& inWorld)
 			char c = kRoomMesh[row][col];
 			if (c != ' ')
 			{
-				mesh.SetCharAtPosition( col, row, c );
-				collisionComp->SetCollidableAt( col, row );
+				renderMesh.SetCharAtPosition( col, row, c );
+				collisionMesh.SetCollidableAt( col, row );
 			}
 		}
 	}
 
-	renderableComp->SetMesh(mesh);
+	renderableComp->SetMesh(renderMesh);
+	collisionComp->SetDefaultCollisionMesh(collisionMesh);
 }
-
 
 }

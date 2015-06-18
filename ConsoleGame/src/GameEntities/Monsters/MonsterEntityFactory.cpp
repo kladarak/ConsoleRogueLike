@@ -183,7 +183,7 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 	auto entity = inWorld.CreateEntity();
 	
 	entity.AddComponent<AnimationComponent>( MonsterAnimation::kAnimations, gElemCount(MonsterAnimation::kAnimations) );
-	entity.AddComponent<CollisionComponent>()->SetCollidableAt(0, 0);
+	entity.AddComponent<CollisionComponent>( CollisionMesh(0, 0) );
 	entity.AddComponent<MonsterComponent>();
 	entity.AddComponent<MonsterState>();
 	entity.AddComponent<PositionComponent>(inPosition);

@@ -133,16 +133,20 @@ static Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPo
 	auto collisionComp	= entity.AddComponent<CollisionComponent>();
 	auto renderableComp	= entity.AddComponent<RenderableComponent>();
 	
-	AsciiMesh mesh = gGenerateRoom(inDoorMask);
-	renderableComp->SetMesh(mesh);
+	AsciiMesh renderMesh = gGenerateRoom(inDoorMask);
+	renderableComp->SetMesh(renderMesh);
 
-	mesh.ForEachFrag( [&] (int inX, int inY, char inChar)
+	CollisionMesh collisionMesh;
+
+	renderMesh.ForEachFrag( [&] (int inX, int inY, char inChar)
 	{
 		if ( kWhiteSpace.find( inChar ) == std::string::npos )
 		{
-			collisionComp->SetCollidableAt( inX, inY );
+			collisionMesh.SetCollidableAt( inX, inY );
 		}
 	} );
+
+	collisionComp->SetDefaultCollisionMesh(collisionMesh);
 
 	return entity;
 }
