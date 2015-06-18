@@ -78,7 +78,7 @@ void ShieldPlayerBehaviour::OnStart(Entity inPlayer)
 	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( gCArrayToVector(kAnimations, gElemCount(kAnimations)) );
 }
 
-void ShieldPlayerBehaviour::OnRestart(Entity inPlayer)
+void ShieldPlayerBehaviour::OnRestart(Entity /*inPlayer*/)
 {
 	mHeldUp = false;
 }

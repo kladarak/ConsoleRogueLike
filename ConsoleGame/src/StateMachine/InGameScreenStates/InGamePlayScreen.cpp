@@ -33,6 +33,7 @@ void InGamePlayScreen::Init()
 
 void InGamePlayScreen::Update(float inFrameTime, const InputBuffer& inInput)
 {
+	TriggerSystem::HandleDestroyedEntities(mWorld);
 	mWorld.FlushDestroyedEntities();
 
 	PositionSystem::SwapPositionBuffers(mWorld);

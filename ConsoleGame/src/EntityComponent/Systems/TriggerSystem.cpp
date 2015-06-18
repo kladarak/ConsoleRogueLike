@@ -9,6 +9,55 @@
 namespace TriggerSystem
 {
 
+template<typename TInBothFunc, typename TInLeftOnlyFunc, typename TInRightOnlyFunc>
+static void WalkSortedVectors(const std::vector<Entity>&	inLHS,
+							  const std::vector<Entity>&	inRHS,
+							  const TInBothFunc&			inBothFunc,
+							  const TInLeftOnlyFunc&		inInLeftOnlyFunc,
+							  const TInRightOnlyFunc&		inInRightOnlyFunc)
+{
+	// Entity IDs should be in order, so walk over both lists, incrementing as we go.
+	auto lhsBegin	= inLHS.begin();
+	auto lhsEnd		= inLHS.end();
+	auto rhsBegin	= inRHS.begin();
+	auto rhsEnd		= inRHS.end();
+
+	while (lhsBegin != lhsEnd || rhsBegin != rhsEnd)
+	{
+		if (lhsBegin != lhsEnd && rhsBegin != rhsEnd)
+		{
+			auto& left = *lhsBegin;
+			auto& right = *rhsBegin;
+			if (left == right)
+			{
+				inBothFunc(left);
+				++lhsBegin;
+				++rhsBegin;
+			}
+			else if (left.GetID() < right.GetID())
+			{
+				inInLeftOnlyFunc(left);
+				++lhsBegin;
+			}
+			else // if (left.GetID() > right.GetID())
+			{
+				inInRightOnlyFunc(right);
+				++rhsBegin;
+			}
+		}
+		else if (lhsBegin != lhsEnd)
+		{
+			inInLeftOnlyFunc(*lhsBegin);
+			++lhsBegin;
+		}
+		else //if (rhsBegin != rhsEnd)
+		{
+			inInRightOnlyFunc(*rhsBegin);
+			++rhsBegin;
+		}
+	}
+}
+
 void Update(World& inWorld)
 {
 	std::vector<Entity> triggerers = inWorld.GetEntities( EntityFilter().MustHave<TriggererComponent>().MustHave<PositionComponent>() );
@@ -22,14 +71,14 @@ void Update(World& inWorld)
 	for (auto& triggerBox : triggerBoxes)
 	{
 		auto triggerBoxComp = triggerBox.GetComponent<TriggerBoxComponent>();
-
+	
 		std::vector<Entity> entitiesInBounds;
 		
 		for (auto& triggerer : triggerers)
 		{
-			auto posComp = triggerer.GetComponent<PositionComponent>();
+			auto pos = triggerer.GetComponent<PositionComponent>()->GetPosition();
 
-			if (triggerBoxComp->IsInBounds(triggerBox, posComp->GetPosition()))
+			if (triggerBoxComp->IsInBounds(triggerBox, pos))
 			{
 				entitiesInBounds.push_back(triggerer);
 			}
@@ -41,44 +90,31 @@ void Update(World& inWorld)
 		
 		// Now do callbacks.
 		// Entity IDs should be in order, so walk over both lists, incrementing as we go.
-		auto thisFrameBegin = entitiesInBounds.begin();
-		auto thisFrameEnd	= entitiesInBounds.end();
-		auto lastFrameBegin = entitiesInBoundsLastFrame.begin();
-		auto lastFrameEnd	= entitiesInBoundsLastFrame.end();
+		WalkSortedVectors( entitiesInBounds, entitiesInBoundsLastFrame,
+						  [] (const Entity& /*inEntity*/)	{  },
+						  [&] (const Entity& inEntity)	{ triggerBoxComp->OnEntered(triggerBox, inEntity);	},
+						  [&] (const Entity& inEntity)	{ triggerBoxComp->OnExited(triggerBox, inEntity);	} );
+	}
+}
 
-		while (thisFrameBegin != thisFrameEnd || lastFrameBegin != lastFrameEnd)
-		{
-			if (thisFrameBegin != thisFrameEnd && lastFrameBegin != lastFrameEnd)
-			{
-				auto& entityThis = *thisFrameBegin;
-				auto& entityLast = *lastFrameBegin;
-				if (entityThis == entityLast)
-				{
-					++thisFrameBegin;
-					++lastFrameBegin;
-				}
-				else if (entityThis.GetID() < entityLast.GetID())
-				{
-					triggerBoxComp->OnEntered(triggerBox, entityThis);
-					++thisFrameBegin;
-				}
-				else // if (entityThis.GetID() > entityLast.GetID())
-				{
-					triggerBoxComp->OnExited(triggerBox, entityLast);
-					++lastFrameBegin;
-				}
-			}
-			else if (thisFrameBegin != thisFrameEnd)
-			{
-				triggerBoxComp->OnEntered(triggerBox, *thisFrameBegin);
-				++thisFrameBegin;
-			}
-			else //if (lastFrameBegin != lastFrameEnd)
-			{
-				triggerBoxComp->OnExited(triggerBox, *lastFrameBegin);
-				++lastFrameBegin;
-			}
-		}
+void HandleDestroyedEntities(World& inWorld)
+{
+	std::vector<Entity> destroyedEntities	= inWorld.GetEntitiesQueuedForDestruction();
+	std::vector<Entity> triggerBoxes		= inWorld.GetEntities( EntityFilter().MustHave<TriggerBoxComponent>() );
+
+	for (auto& triggerBox : triggerBoxes)
+	{
+		auto triggerBoxComp				= triggerBox.GetComponent<TriggerBoxComponent>();
+		auto& entitiesInBoundsLastFrame	= triggerBoxComp->GetEntitiesInBoundsLastFrame();
+
+		std::vector<Entity> remainingEntitiesInBounds;
+
+		WalkSortedVectors( destroyedEntities, entitiesInBoundsLastFrame,
+						  [&] (const Entity& inEntity) { triggerBoxComp->OnExited(triggerBox, inEntity); },
+						  [&] (const Entity& /*inEntity*/) { },
+						  [&] (const Entity& inEntity) { remainingEntitiesInBounds.push_back(inEntity); } );
+
+		triggerBoxComp->SetEntitiesInBoundsLastFrame(remainingEntitiesInBounds);
 	}
 }
 
