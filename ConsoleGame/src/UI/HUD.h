@@ -4,6 +4,7 @@
 
 #include "HealthBarUI.h"
 #include "EquippedBarUI.h"
+#include "YouAreDeadDisplay.h"
 
 class MessageBroadcaster;
 
@@ -12,17 +13,27 @@ class HUD
 public:
 	HUD();
 
-	void			Init(MessageBroadcaster& inMessageBroadcaster, Entity inPlayer);
+	void				Init(MessageBroadcaster& inMessageBroadcaster, Entity inPlayer);
+	
+	void				Update(float inFrameTime);
 
-	std::string		GetTopBarRenderBuffer() const;
-	std::string		GetBottomBarRenderBuffer() const;
+	std::string			GetTopBarRenderBuffer() const;
+	std::string			GetBottomBarRenderBuffer() const;
+	std::string			GetOverlayBuffer() const;
+
+	int					GetTopBarHeight() const;
+	int					GetBottomBarHeight() const;
 
 private:
-	void			OnCoinCollected();
+	void				OnCoinCollected();
+	void				OnPlayerIsDead();
 	
-	HealthBarUI		mHealthBar;
-	EquippedBarUI	mEquippedBar;
+	MessageBroadcaster* mMessageBroadcaster;
 
-	Entity			mPlayer;
-	int				mMoneyCollected;
+	HealthBarUI			mHealthBar;
+	EquippedBarUI		mEquippedBar;
+	YouAreDeadDisplay	mYouAreDeadDisplay;
+
+	Entity				mPlayer;
+	int					mMoneyCollected;
 };

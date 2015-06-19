@@ -202,6 +202,9 @@
     <ClCompile Include="src\UI\EquippedBarUI.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="src\UI\YouAreDeadDisplay.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -406,6 +409,9 @@
       <Filter>Source Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="src\UI\EquippedBarUI.h">
+      <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\YouAreDeadDisplay.h">
       <Filter>Source Files\UI</Filter>
     </ClInclude>
   </ItemGroup>

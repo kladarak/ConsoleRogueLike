@@ -57,6 +57,7 @@
     <ClCompile Include="src\UI\EquippedBarUI.cpp" />
     <ClCompile Include="src\UI\HealthBarUI.cpp" />
     <ClCompile Include="src\UI\HUD.cpp" />
+    <ClCompile Include="src\UI\YouAreDeadDisplay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Animations\Animation.h" />
@@ -127,6 +128,7 @@
     <ClInclude Include="src\UI\EquippedBarUI.h" />
     <ClInclude Include="src\UI\HealthBarUI.h" />
     <ClInclude Include="src\UI\HUD.h" />
+    <ClInclude Include="src\UI\YouAreDeadDisplay.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5E0F6BF6-0B60-46EB-87BD-FD1037141483}</ProjectGuid>

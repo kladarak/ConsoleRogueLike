@@ -14,12 +14,18 @@
 #include <EntityComponent/Systems/TriggerSystem.h>
 
 #include <Input/InputBuffer.h>
+
 #include <Renderer/RenderTarget.h>
+#include <Renderer/RenderTargetWriter.h>
+
+#include <Messages/Messages.h>
 
 #include "ScreenConstants.h"
 
 void InGamePlayScreen::Init()
 {
+	mRunning = true;
+
 	auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
 	
 	mDungeonMap.Init(rooms);
@@ -29,9 +35,11 @@ void InGamePlayScreen::Init()
 	mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster);
 
 	mHUD.Init(mMessageBroadcaster, mPlayer);
+
+	mMessageBroadcaster.Register<BackToStartMenuMsg>( [&] (const BackToStartMenuMsg&) { mRunning = false; } );
 }
 
-void InGamePlayScreen::Update(float inFrameTime, const InputBuffer& inInput)
+bool InGamePlayScreen::Update(float inFrameTime, const InputBuffer& inInput)
 {
 	TriggerSystem::HandleDestroyedEntities(mWorld);
 	mWorld.FlushDestroyedEntities();
@@ -45,23 +53,37 @@ void InGamePlayScreen::Update(float inFrameTime, const InputBuffer& inInput)
 	TriggerSystem::Update(mWorld);
 
 	AnimationSystem::Update(mWorld, inFrameTime);
+
+	mHUD.Update(inFrameTime);
+
+	return mRunning;
 }
 
 std::string InGamePlayScreen::GetRenderBuffer()
 {
 	using namespace ScreenConstants;
+	
+	const int width		= EMapCols+1;
+	const int height	= mHUD.GetTopBarHeight() + EMapRows + mHUD.GetBottomBarHeight();
 
-	std::string outBuffer;
+	int y = 0;
 
-	outBuffer += mHUD.GetTopBarRenderBuffer();
+	RenderTargetWriter renderTargetWriter(width, height);
+
+	renderTargetWriter.Write( mHUD.GetTopBarRenderBuffer(), 0, y );
+	y += mHUD.GetTopBarHeight();
 	
 	RenderTarget renderTarget(EMapCols+1, EMapRows);
 	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
 	RenderSystem::Render(mWorld, cameraPosition, renderTarget);
 
-	outBuffer += renderTarget.GetBuffer();
+	renderTargetWriter.Write( renderTarget.GetBuffer(), 0, y );
+	y += EMapRows;
+	
+	renderTargetWriter.Write( mHUD.GetBottomBarRenderBuffer(), 0, y );
 
-	outBuffer += mHUD.GetBottomBarRenderBuffer();
+	int halfHeight = height / 2;
+	renderTargetWriter.Write( mHUD.GetOverlayBuffer(), 10, halfHeight );
 
-	return outBuffer;
+	return renderTargetWriter.GetRenderBuffer();
 }

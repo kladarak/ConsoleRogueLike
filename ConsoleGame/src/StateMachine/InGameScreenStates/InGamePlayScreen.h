@@ -12,7 +12,7 @@ class InGamePlayScreen
 {
 public:
 	void				Init();
-	void				Update(float inFrameTime, const InputBuffer& inInput);
+	bool				Update(float inFrameTime, const InputBuffer& inInput);
 	std::string			GetRenderBuffer();
 
 	Entity				GetPlayer() const { return mPlayer; }
@@ -24,4 +24,5 @@ private:
 	HUD					mHUD;
 	MessageBroadcaster	mMessageBroadcaster;
 	Entity				mPlayer;
+	bool				mRunning;
 };

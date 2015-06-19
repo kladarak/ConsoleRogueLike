@@ -8,6 +8,7 @@
 
 class CoinCollectedMessage	{ };
 class PlayerIsDeadMsg		{ };
+class BackToStartMenuMsg	{ };
 
 class AttackMsg
 {

@@ -31,13 +31,15 @@ EGameState InGameState::Update(float inFrameTime, const InputBuffer& inInput)
 		}
 	}
 
+	bool running = true;
+
 	switch (mCurrentScreen)
 	{	
-		case EGameScreen_PlayScreen:		mPlayScreen.Update(inFrameTime, inInput);		break;
-		case EGameScreen_InventoryScreen:	mInventoryScreen.Update(inFrameTime, inInput);	break;
+		case EGameScreen_PlayScreen:		running = mPlayScreen.Update(inFrameTime, inInput);	break;
+		case EGameScreen_InventoryScreen:	mInventoryScreen.Update(inFrameTime, inInput);		break;
 	}
 
-	return EGameState_InGame;
+	return running ? EGameState_InGame : EGameState_StartMenu;
 }
 
 std::string InGameState::GetRenderBuffer()
