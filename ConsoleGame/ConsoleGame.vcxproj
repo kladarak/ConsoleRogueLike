@@ -54,6 +54,8 @@
     <ClCompile Include="src\StateMachine\InGameScreenStates\InventoryScreen.cpp" />
     <ClCompile Include="src\StateMachine\InGameState.cpp" />
     <ClCompile Include="src\StateMachine\StartMenuState.cpp" />
+    <ClCompile Include="src\UI\EquippedBarUI.cpp" />
+    <ClCompile Include="src\UI\HealthBarUI.cpp" />
     <ClCompile Include="src\UI\HUD.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +124,8 @@
     <ClInclude Include="src\StateMachine\StartMenuState.h" />
     <ClInclude Include="src\StateMachine\StateBase.h" />
     <ClInclude Include="src\StateMachine\EGameState.h" />
+    <ClInclude Include="src\UI\EquippedBarUI.h" />
+    <ClInclude Include="src\UI\HealthBarUI.h" />
     <ClInclude Include="src\UI\HUD.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

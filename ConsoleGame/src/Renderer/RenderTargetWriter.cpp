@@ -26,7 +26,7 @@ void RenderTargetWriter::Write(const std::string& inString, int inX, int inY)
 		}
 		else
 		{
-			mRenderTarget.Set(x, inY, inString[i]);
+			mRenderTarget.Set(x, y, inString[i]);
 			x++;
 		}
 	}

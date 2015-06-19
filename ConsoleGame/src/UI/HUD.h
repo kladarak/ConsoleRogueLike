@@ -2,6 +2,9 @@
 
 #include <EntityComponentSystem/World/World.h>
 
+#include "HealthBarUI.h"
+#include "EquippedBarUI.h"
+
 class MessageBroadcaster;
 
 class HUD
@@ -9,14 +12,17 @@ class HUD
 public:
 	HUD();
 
-	void		Init(MessageBroadcaster& inMessageBroadcaster, Entity inPlayer);
+	void			Init(MessageBroadcaster& inMessageBroadcaster, Entity inPlayer);
 
-	std::string	GetTopBarRenderBuffer() const;
-	std::string	GetBottomBarRenderBuffer() const;
+	std::string		GetTopBarRenderBuffer() const;
+	std::string		GetBottomBarRenderBuffer() const;
 
 private:
-	void		OnCoinCollected();
+	void			OnCoinCollected();
+	
+	HealthBarUI		mHealthBar;
+	EquippedBarUI	mEquippedBar;
 
-	Entity		mPlayer;
-	int			mMoneyCollected;
+	Entity			mPlayer;
+	int				mMoneyCollected;
 };

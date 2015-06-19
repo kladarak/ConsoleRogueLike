@@ -196,6 +196,12 @@
     <ClCompile Include="src\GameEntities\Player\PlayerBehaviours\PlayerDeadBehaviour.cpp">
       <Filter>Source Files\GameEntities\Player\PlayerBehaviour</Filter>
     </ClCompile>
+    <ClCompile Include="src\UI\HealthBarUI.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\EquippedBarUI.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -395,6 +401,12 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerDeadBehaviour.h">
       <Filter>Source Files\GameEntities\Player\PlayerBehaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\HealthBarUI.h">
+      <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\EquippedBarUI.h">
+      <Filter>Source Files\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
