@@ -15,6 +15,7 @@
 #include <GameEntities/SpinnerEntity.h>
 #include <GameEntities/Monsters/MonsterEntityFactory.h>
 #include <GameEntities/Obstacles/LockedDoor.h>
+#include <GameEntities/Obstacles/DoorConstants.h>
 
 #include "ScreenConstants.h"
 
@@ -25,10 +26,8 @@ enum
 {
 	ROOM_WIDTH	= ScreenConstants::EMapCols+1,
 	ROOM_HEIGHT	= ScreenConstants::EMapRows,
-	DOOR_WIDTH	= 7,
-	DOOR_HEIGHT = 5,
-	DOOR_HORIZ_OFFSET = (ROOM_WIDTH - DOOR_WIDTH) / 2,
-	DOOR_VERTI_OFFSET = ((ROOM_HEIGHT - DOOR_HEIGHT) / 2) + 1,
+	DOOR_HORIZ_OFFSET = (ROOM_WIDTH - EDoorSize_Width) / 2,
+	DOOR_VERTI_OFFSET = ((ROOM_HEIGHT - EDoorSize_Height) / 2) + 1,
 
 	ROOM_COL_COUNT = 3,
 	ROOM_ROW_COUNT = 3,
@@ -54,20 +53,6 @@ static const char kRoomWallVerti[ROOM_HEIGHT] =
 	'|'
 };
 
-static const char kRoomDoorHoriz[DOOR_WIDTH+1] = //+1 for terminating character...
-{
-	"|     |",
-};
-
-static const char kRoomDoorVerti[DOOR_HEIGHT] = 
-{
-	'_',
-	' ',
-	' ',
-	' ',
-	gCastUCharToChar(238),
-};
-
 enum EDoorMask
 {
 	EDoorMask_None		= 0,
@@ -77,42 +62,71 @@ enum EDoorMask
 	EDoorMask_Right		= 1 << 3,
 };
 
-static AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
+struct RoomLink
+{
+	IVec2 mRoomIndex0;
+	IVec2 mRoomIndex1;
+};
+
+static AsciiMesh sGenerateRoom()
 {
 	AsciiMesh mesh(' ', ROOM_HEIGHT, ROOM_WIDTH);
 	
-	// Walls
 	for (int i = 0; i < ROOM_WIDTH; ++i)	{ mesh.SetCharAtPosition(i,				0,				kRoomWallHoriz[i]); }
 	for (int i = 0; i < ROOM_WIDTH; ++i)	{ mesh.SetCharAtPosition(i,				ROOM_HEIGHT-1, 	kRoomWallHoriz[i]); }
 	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ mesh.SetCharAtPosition(0,				i,				kRoomWallVerti[i]); }
 	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ mesh.SetCharAtPosition(ROOM_WIDTH-1,	i,				kRoomWallVerti[i]); }
 
-	// Doors
-	if ( (inDoorMask & EDoorMask_Top) > 0 )
+	return mesh;
+}
+
+static std::vector<RoomLink> sGenerateRoomLinks()
+{
+	std::vector<RoomLink> links;
+
+	for (int col = 0; col < ROOM_COL_COUNT; ++col)
 	{
-		for (int i = 0; i < DOOR_WIDTH; ++i)	{ mesh.SetCharAtPosition(DOOR_HORIZ_OFFSET + i, 0, ' '); } // remove wall
-		//for (int i = 0; i < DOOR_WIDTH; ++i)	{ mesh.SetCharAtPosition(DOOR_HORIZ_OFFSET + i, 1, kRoomDoorHoriz[i]); }
-	}
-	
-	if ( (inDoorMask & EDoorMask_Bottom) > 0 )
-	{
-		for (int i = 0; i < DOOR_WIDTH; ++i)	{ mesh.SetCharAtPosition(DOOR_HORIZ_OFFSET + i, ROOM_HEIGHT-1, ' '); } // remove wall
-		//for (int i = 0; i < DOOR_WIDTH; ++i)	{ mesh.SetCharAtPosition(DOOR_HORIZ_OFFSET + i, ROOM_HEIGHT-1, kRoomDoorHoriz[i]); }
-	}
-	
-	if ( (inDoorMask & EDoorMask_Left) > 0 )
-	{
-		for (int i = 1; i < DOOR_HEIGHT-1; ++i)	{ mesh.SetCharAtPosition(0, DOOR_VERTI_OFFSET + i, ' '); } // remove wall, but not the first or last bits.
-		//for (int i = 0; i < DOOR_HEIGHT; ++i)	{ mesh.SetCharAtPosition(1, DOOR_VERTI_OFFSET + i, kRoomDoorVerti[i]); }
-	}
-	
-	if ( (inDoorMask & EDoorMask_Right) > 0 )
-	{
-		for (int i = 1; i < DOOR_HEIGHT-1; ++i)	{ mesh.SetCharAtPosition(ROOM_WIDTH-1, DOOR_VERTI_OFFSET + i, ' '); } // remove wall, but not the first or last bits.
-		//for (int i = 0; i < DOOR_HEIGHT; ++i)	{ mesh.SetCharAtPosition(ROOM_WIDTH-2, DOOR_VERTI_OFFSET + i, kRoomDoorVerti[i]); }
+		for (int row = 0; row < ROOM_ROW_COUNT-1; ++row)
+		{
+			RoomLink link;
+			link.mRoomIndex0 = IVec2(col, row);
+			link.mRoomIndex1 = IVec2(col, row+1);
+			links.push_back(link);
+		}
 	}
 
-	return mesh;
+	for (int col = 0; col < ROOM_COL_COUNT-1; ++col)
+	{
+		for (int row = 0; row < ROOM_ROW_COUNT; ++row)
+		{
+			RoomLink link;
+			link.mRoomIndex0 = IVec2(col, row);
+			link.mRoomIndex1 = IVec2(col+1, row);
+			links.push_back(link);
+		}
+	}
+
+	return links;
+}
+
+static void sSetupDoors(AsciiMesh& inMesh, EDoorMask inDoorMask)
+{
+	auto clearPositions = [&] (EDoorMask inMask, size_t inLoopCount, const std::function<IVec2 (size_t)>& inPosGetter)
+	{
+		if ( (inDoorMask & inMask) > 0 )
+		{
+			for (size_t i = 0; i < inLoopCount; ++i)
+			{
+				IVec2 pos = inPosGetter(i);
+				inMesh.SetCharAtPosition(pos.mX, pos.mY, ' ');
+			}
+		}
+	};
+
+	clearPositions(EDoorMask_Top,		EDoorSize_Width,	[] (size_t i) { return IVec2(DOOR_HORIZ_OFFSET + i, 0); } );
+	clearPositions(EDoorMask_Bottom,	EDoorSize_Width,	[] (size_t i) { return IVec2(DOOR_HORIZ_OFFSET + i, ROOM_HEIGHT-1); } );
+	clearPositions(EDoorMask_Left,		EDoorSize_Height-2, [] (size_t i) { return IVec2(0, DOOR_VERTI_OFFSET+i+1); } );
+	clearPositions(EDoorMask_Right,		EDoorSize_Height-2, [] (size_t i) { return IVec2(ROOM_WIDTH-1, DOOR_VERTI_OFFSET+i+1); } );
 }
 
 static Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
@@ -125,7 +139,8 @@ static Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPo
 	auto collisionComp	= entity.AddComponent<CollisionComponent>();
 	auto renderableComp	= entity.AddComponent<RenderableComponent>();
 	
-	AsciiMesh renderMesh = gGenerateRoom(inDoorMask);
+	AsciiMesh renderMesh = sGenerateRoom();
+	sSetupDoors(renderMesh, inDoorMask);
 	renderableComp->SetMesh(renderMesh);
 
 	CollisionMesh collisionMesh;

@@ -211,6 +211,9 @@
     <ClCompile Include="src\GameEntities\Obstacles\LockedDoor.cpp">
       <Filter>Source Files\GameEntities\Obstacles</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Obstacles\OpenDoor.cpp">
+      <Filter>Source Files\GameEntities\Obstacles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -421,6 +424,12 @@
       <Filter>Source Files\GameEntities\Player\Items</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEntities\Obstacles\LockedDoor.h">
+      <Filter>Source Files\GameEntities\Obstacles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Obstacles\OpenDoor.h">
+      <Filter>Source Files\GameEntities\Obstacles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Obstacles\DoorConstants.h">
       <Filter>Source Files\GameEntities\Obstacles</Filter>
     </ClInclude>
   </ItemGroup>
