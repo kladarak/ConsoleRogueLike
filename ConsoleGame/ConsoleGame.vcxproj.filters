@@ -112,9 +112,6 @@
     <ClCompile Include="src\GameSystems\CameraSystem.cpp">
       <Filter>Source Files\GameSystems</Filter>
     </ClCompile>
-    <ClCompile Include="src\Dungeon\DungeonMap.cpp">
-      <Filter>Source Files\Dungeon</Filter>
-    </ClCompile>
     <ClCompile Include="src\GameEntities\CoinEntity.cpp">
       <Filter>Source Files\GameEntities</Filter>
     </ClCompile>

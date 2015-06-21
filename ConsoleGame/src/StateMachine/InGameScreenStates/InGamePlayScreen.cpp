@@ -26,9 +26,7 @@ void InGamePlayScreen::Init()
 {
 	mRunning = true;
 
-	auto rooms = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
-	
-	mDungeonMap.Init(rooms);
+	mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
 

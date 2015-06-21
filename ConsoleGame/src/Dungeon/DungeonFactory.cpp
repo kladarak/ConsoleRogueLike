@@ -79,51 +79,40 @@ enum EDoorMask
 
 static AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 {
-	char scratchRoom[ROOM_HEIGHT][ROOM_WIDTH];
-	memset(scratchRoom, ' ', ROOM_HEIGHT*ROOM_WIDTH);
+	AsciiMesh mesh(' ', ROOM_HEIGHT, ROOM_WIDTH);
 	
 	// Walls
-	for (int i = 0; i < ROOM_WIDTH; ++i)	{ scratchRoom[0][i]				= kRoomWallHoriz[i]; }
-	for (int i = 0; i < ROOM_WIDTH; ++i)	{ scratchRoom[ROOM_HEIGHT-1][i]	= kRoomWallHoriz[i]; }
-	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ scratchRoom[i][0]				= kRoomWallVerti[i]; }
-	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ scratchRoom[i][ROOM_WIDTH-1]	= kRoomWallVerti[i]; }
+	for (int i = 0; i < ROOM_WIDTH; ++i)	{ mesh.SetCharAtPosition(i,				0,				kRoomWallHoriz[i]); }
+	for (int i = 0; i < ROOM_WIDTH; ++i)	{ mesh.SetCharAtPosition(i,				ROOM_HEIGHT-1, 	kRoomWallHoriz[i]); }
+	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ mesh.SetCharAtPosition(0,				i,				kRoomWallVerti[i]); }
+	for (int i = 0; i < ROOM_HEIGHT; ++i)	{ mesh.SetCharAtPosition(ROOM_WIDTH-1,	i,				kRoomWallVerti[i]); }
 
 	// Doors
 	if ( (inDoorMask & EDoorMask_Top) > 0 )
 	{
-		for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[0][DOOR_HORIZ_OFFSET + i]	= ' '; } // remove wall
-		//for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[1][DOOR_HORIZ_OFFSET + i]	= kRoomDoorHoriz[i]; }
+		for (int i = 0; i < DOOR_WIDTH; ++i)	{ mesh.SetCharAtPosition(DOOR_HORIZ_OFFSET + i, 0, ' '); } // remove wall
+		//for (int i = 0; i < DOOR_WIDTH; ++i)	{ mesh.SetCharAtPosition(DOOR_HORIZ_OFFSET + i, 1, kRoomDoorHoriz[i]); }
 	}
 	
 	if ( (inDoorMask & EDoorMask_Bottom) > 0 )
 	{
-		for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[ROOM_HEIGHT-1][DOOR_HORIZ_OFFSET + i]	= ' '; } // remove wall
-		//for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[ROOM_HEIGHT-1][DOOR_HORIZ_OFFSET + i]	= kRoomDoorHoriz[i]; }
+		for (int i = 0; i < DOOR_WIDTH; ++i)	{ mesh.SetCharAtPosition(DOOR_HORIZ_OFFSET + i, ROOM_HEIGHT-1, ' '); } // remove wall
+		//for (int i = 0; i < DOOR_WIDTH; ++i)	{ mesh.SetCharAtPosition(DOOR_HORIZ_OFFSET + i, ROOM_HEIGHT-1, kRoomDoorHoriz[i]); }
 	}
 	
 	if ( (inDoorMask & EDoorMask_Left) > 0 )
 	{
-		for (int i = 1; i < DOOR_HEIGHT-1; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][0]	= ' '; } // remove wall, but not the first or last bits.
-		//for (int i = 0; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][1]	= kRoomDoorVerti[i]; }
+		for (int i = 1; i < DOOR_HEIGHT-1; ++i)	{ mesh.SetCharAtPosition(0, DOOR_VERTI_OFFSET + i, ' '); } // remove wall, but not the first or last bits.
+		//for (int i = 0; i < DOOR_HEIGHT; ++i)	{ mesh.SetCharAtPosition(1, DOOR_VERTI_OFFSET + i, kRoomDoorVerti[i]); }
 	}
 	
 	if ( (inDoorMask & EDoorMask_Right) > 0 )
 	{
-		for (int i = 1; i < DOOR_HEIGHT-1; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][ROOM_WIDTH-1]	= ' '; } // remove wall, but not the first or last bits.
-		//for (int i = 0; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][ROOM_WIDTH-2]	= kRoomDoorVerti[i]; }
+		for (int i = 1; i < DOOR_HEIGHT-1; ++i)	{ mesh.SetCharAtPosition(ROOM_WIDTH-1, DOOR_VERTI_OFFSET + i, ' '); } // remove wall, but not the first or last bits.
+		//for (int i = 0; i < DOOR_HEIGHT; ++i)	{ mesh.SetCharAtPosition(ROOM_WIDTH-2, DOOR_VERTI_OFFSET + i, kRoomDoorVerti[i]); }
 	}
 
-	AsciiMesh outMesh;
-
-	for (int y = 0; y < ROOM_HEIGHT; ++y)
-	{
-		for (int x = 0; x < ROOM_WIDTH; ++x)
-		{
-			outMesh.SetCharAtPosition( x, y, scratchRoom[y][x] );
-		}
-	}
-
-	return std::move(outMesh);
+	return mesh;
 }
 
 static Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPosition)
@@ -193,9 +182,9 @@ static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
 	SpawnRandomEntities(world, roomPos, rand()%5, [&] (const IVec2& inPos) { CoinEntity::Create(world, inMessageBroadcaster, inPos); } );
 }
 
-std::vector<Entity> Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
+DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 {
-	std::vector<Entity> rooms;
+	DungeonMap dungeon(ROOM_COL_COUNT, ROOM_ROW_COUNT);
 
 	for (int col = 0; col < ROOM_COL_COUNT; ++col)
 	{
@@ -210,7 +199,7 @@ std::vector<Entity> Generate(World& inWorld, MessageBroadcaster& inMessageBroadc
 			doorMask |= (row != (ROOM_ROW_COUNT-1)) ? EDoorMask_Bottom	: EDoorMask_None;
 
 			auto room = CreateRoom(inWorld, (EDoorMask) doorMask, pos);
-			rooms.push_back(room);
+			dungeon.Set(col, row, room);
 		}
 	}
 
@@ -218,12 +207,12 @@ std::vector<Entity> Generate(World& inWorld, MessageBroadcaster& inMessageBroadc
 	// A better way would be to either have an initial clearing screen pass then skip rendering any whitespace,
 	// or render white space only if no other character has been written to a fragment yet,
 	// or sort the renderables based on some sort of mark up on each renderable.
-	for (auto& room : rooms)
+	dungeon.ForEach( [&] (size_t, size_t, const Entity& inRoom)
 	{
-		FillRoom(room, inMessageBroadcaster);
-	}
+		FillRoom(inRoom, inMessageBroadcaster);
+	} );
 
-	return rooms;
+	return dungeon;
 }
 
 }

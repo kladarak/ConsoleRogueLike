@@ -2,9 +2,11 @@
 
 #include <EntityComponentSystem/World/World.h>
 
+#include "DungeonMap.h"
+
 class MessageBroadcaster;
 
 namespace DungeonFactory
 {
-	std::vector<Entity> Generate(World& inGlobalSystems, MessageBroadcaster& inMessageBroadcaster);
+	DungeonMap Generate(World& inGlobalSystems, MessageBroadcaster& inMessageBroadcaster);
 }

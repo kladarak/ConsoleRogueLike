@@ -19,12 +19,11 @@ void CameraSystem::Init(World& inWorld, const DungeonMap& inDungeonMap)
 	mCameraEntity.AddComponent<CameraComponent>();
 	mCameraEntity.AddComponent<PositionComponent>( IVec2(0, 0) );
 
-	auto& rooms = inDungeonMap.GetRooms();
-	for (auto& room : rooms)
+	inDungeonMap.ForEach( [&] (size_t, size_t, const Entity& inRoom)
 	{
-		auto triggerBox = room.GetComponent<TriggerBoxComponent>();
+		auto triggerBox = inRoom.GetComponent<TriggerBoxComponent>();
 		triggerBox->RegisterOnEnterCallback( [this] (const Entity& inRoom, const Entity& inTriggerer) { OnEntityEnteredRoom(inRoom, inTriggerer); } );
-	}
+	} );
 }
 
 void CameraSystem::OnEntityEnteredRoom(const Entity& inRoom, const Entity& inTriggerer)

@@ -2,8 +2,7 @@
 
 #include <Maths/IVec2.h>
 #include <EntityComponentSystem/World/World.h>
-
-class DungeonMap;
+#include <Dungeon/DungeonMap.h>
 
 class CameraSystem
 {

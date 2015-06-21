@@ -13,7 +13,6 @@
   <ItemGroup>
     <ClCompile Include="src\Animations\Animation.cpp" />
     <ClCompile Include="src\Dungeon\DungeonFactory.cpp" />
-    <ClCompile Include="src\Dungeon\DungeonMap.cpp" />
     <ClCompile Include="src\EntityComponent\Components\AnimationComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Components\CollisionMesh.cpp" />

@@ -10,12 +10,13 @@ public:
 	AsciiMesh(const AsciiMesh& inRHS)	: Dynamic2DVectorWithOffset<char>( inRHS )			{ }
 	AsciiMesh(char inChar)				: Dynamic2DVectorWithOffset<char>( 1, 1, inChar )	{ }
 	AsciiMesh(const char* inChars, size_t inCols, size_t inRows, const IVec2& inCentreOffset = IVec2(0, 0));
+	AsciiMesh(char inClearChar, size_t inCols, size_t inRows, const IVec2& inCentreOffset = IVec2(0, 0)) : Dynamic2DVectorWithOffset<char>( inCols, inRows, inClearChar, inCentreOffset ) { }
 
-	void							SetCharAtPosition(int inX, int inY, char inChar)	{ Set(inX, inY, inChar); }
+	void SetCharAtPosition(int inX, int inY, char inChar)	{ Set(inX, inY, inChar); }
 
 	template<typename TFunctor>
-	void							ForEachFrag(const TFunctor& inFunctor) const		{ ForEach(inFunctor); }
+	void ForEachFrag(const TFunctor& inFunctor) const		{ ForEach(inFunctor); }
 
 };
 
-static inline char gCastUCharToChar(unsigned char inChar) { return -128+(inChar%128); }
+static inline char gCastUCharToChar(unsigned char inChar)	{ return -128+(inChar%128); }
