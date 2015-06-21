@@ -22,8 +22,6 @@
 #include "Items/Bow.h"
 #include "Items/Shield.h"
 
-#include "PlayerMeshes.h"
-
 namespace PlayerEntity
 {
 
@@ -31,13 +29,13 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster)
 {
 	Entity entity = inWorld.CreateEntity();
 	
-	entity.AddComponent<AnimationComponent>( Player::kIdleAnimations, gElemCount(Player::kIdleAnimations) );
-	entity.AddComponent<CollisionComponent>( CollisionMesh(0, 0) );
+	entity.AddComponent<AnimationComponent>();
+	entity.AddComponent<CollisionComponent>();
 	entity.AddComponent<HealthComponent>(3);
 	entity.AddComponent<PlayerComponent>();
 	entity.AddComponent<OrientationComponent>( EOrientation_FaceDown );
 	entity.AddComponent<PositionComponent>(10, 10);
-	entity.AddComponent<RenderableComponent>( Player::kIdleRenderMesh );
+	entity.AddComponent<RenderableComponent>();
 	entity.AddComponent<TriggererComponent>();
 	
 	entity.AddComponent<InputHandlerComponent>()->RegisterHandler

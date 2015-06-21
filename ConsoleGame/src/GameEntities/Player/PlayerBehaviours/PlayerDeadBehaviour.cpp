@@ -1,10 +1,10 @@
 #include "PlayerDeadBehaviour.h"
 
+#include <Containers/ContainerMacros.h>
+
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
-
-#include <GameEntities/Player/PlayerMeshes.h>
 
 	
 static const AsciiMesh		kDeadRenderMesh( 'X' );

@@ -5,6 +5,7 @@
 class AnimationComponent
 {
 public:
+	AnimationComponent() : mSelectedAnimation(0) { }
 	AnimationComponent(AnimationComponent&& inRHS);
 	AnimationComponent(const AnimationComponent& inRHS);
 	AnimationComponent(const Animation& inAnimation);

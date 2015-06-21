@@ -17,7 +17,6 @@
 #include <Messages/Messages.h>
 
 #include "Items/ItemBase.h"
-#include "PlayerMeshes.h"
 #include "PlayerBehaviours/PlayerIdleBehaviour.h"
 #include "PlayerBehaviours/PlayerDeadBehaviour.h"
 

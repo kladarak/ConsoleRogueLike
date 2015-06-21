@@ -300,9 +300,6 @@
     <ClInclude Include="src\GameEntities\Player\PlayerEnums.h">
       <Filter>Source Files\GameEntities\Player</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameEntities\Player\PlayerMeshes.h">
-      <Filter>Source Files\GameEntities\Player</Filter>
-    </ClInclude>
     <ClInclude Include="src\GameEntities\Monsters\MonsterEntityFactory.h">
       <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClInclude>
