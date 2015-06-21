@@ -21,6 +21,7 @@
 #include "Items/Sword.h"
 #include "Items/Bow.h"
 #include "Items/Shield.h"
+#include "Items/DoorKey.h"
 
 namespace PlayerEntity
 {
@@ -71,6 +72,7 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster)
 		inventory.AddItem( sword );
 		inventory.AddItem( bow );
 		inventory.AddItem( new Shield() );
+		inventory.AddItem( new DoorKey() );
 
 		playerComp->SetItemInSlot( sword,	Player::EItemSlot_Slot0 );
 		playerComp->SetItemInSlot( bow,		Player::EItemSlot_Slot1 );

@@ -28,6 +28,12 @@ public:
 	EEffect	mEffect;
 };
 
+class UnlockDoorMsg
+{
+public:
+	UnlockDoorMsg(const IVec2& inPosition) : mPosition(inPosition) { }
+	IVec2 mPosition;
+};
 
 namespace MessageHelpers
 {

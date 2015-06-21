@@ -205,6 +205,9 @@
     <ClCompile Include="src\UI\YouAreDeadDisplay.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Player\Items\DoorKey.cpp">
+      <Filter>Source Files\GameEntities\Player\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -410,6 +413,9 @@
     </ClInclude>
     <ClInclude Include="src\UI\YouAreDeadDisplay.h">
       <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\Items\DoorKey.h">
+      <Filter>Source Files\GameEntities\Player\Items</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
