@@ -62,6 +62,9 @@
     <Filter Include="Source Files\GameEntities\Player\PlayerBehaviour">
       <UniqueIdentifier>{7480d6d3-9941-4973-8441-ff1118aa1ace}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameEntities\Obstacles">
+      <UniqueIdentifier>{6655dfa6-a0e9-4032-8814-359588317b5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -207,6 +210,9 @@
     </ClCompile>
     <ClCompile Include="src\GameEntities\Player\Items\DoorKey.cpp">
       <Filter>Source Files\GameEntities\Player\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEntities\Obstacles\LockedDoor.cpp">
+      <Filter>Source Files\GameEntities\Obstacles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -416,6 +422,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Player\Items\DoorKey.h">
       <Filter>Source Files\GameEntities\Player\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Obstacles\LockedDoor.h">
+      <Filter>Source Files\GameEntities\Obstacles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

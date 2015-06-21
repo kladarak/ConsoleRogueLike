@@ -6,57 +6,10 @@
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/TriggerBoxComponent.h>
 
+#include <Containers/ContainerMacros.h>
+
 namespace TriggerSystem
 {
-
-template<typename TInBothFunc, typename TInLeftOnlyFunc, typename TInRightOnlyFunc>
-static void WalkSortedVectors(const std::vector<Entity>&	inLHS,
-							  const std::vector<Entity>&	inRHS,
-							  const TInBothFunc&			inBothFunc,
-							  const TInLeftOnlyFunc&		inInLeftOnlyFunc,
-							  const TInRightOnlyFunc&		inInRightOnlyFunc)
-{
-	// Entity IDs should be in order, so walk over both lists, incrementing as we go.
-	auto lhsBegin	= inLHS.begin();
-	auto lhsEnd		= inLHS.end();
-	auto rhsBegin	= inRHS.begin();
-	auto rhsEnd		= inRHS.end();
-
-	while (lhsBegin != lhsEnd || rhsBegin != rhsEnd)
-	{
-		if (lhsBegin != lhsEnd && rhsBegin != rhsEnd)
-		{
-			auto& left = *lhsBegin;
-			auto& right = *rhsBegin;
-			if (left == right)
-			{
-				inBothFunc(left);
-				++lhsBegin;
-				++rhsBegin;
-			}
-			else if (left.GetID() < right.GetID())
-			{
-				inInLeftOnlyFunc(left);
-				++lhsBegin;
-			}
-			else // if (left.GetID() > right.GetID())
-			{
-				inInRightOnlyFunc(right);
-				++rhsBegin;
-			}
-		}
-		else if (lhsBegin != lhsEnd)
-		{
-			inInLeftOnlyFunc(*lhsBegin);
-			++lhsBegin;
-		}
-		else //if (rhsBegin != rhsEnd)
-		{
-			inInRightOnlyFunc(*rhsBegin);
-			++rhsBegin;
-		}
-	}
-}
 
 void Update(World& inWorld)
 {

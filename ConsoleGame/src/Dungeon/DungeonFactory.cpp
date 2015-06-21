@@ -14,6 +14,7 @@
 #include <GameEntities/CoinEntity.h>
 #include <GameEntities/SpinnerEntity.h>
 #include <GameEntities/Monsters/MonsterEntityFactory.h>
+#include <GameEntities/Obstacles/LockedDoor.h>
 
 #include "ScreenConstants.h"
 
@@ -24,10 +25,10 @@ enum
 {
 	ROOM_WIDTH	= ScreenConstants::EMapCols+1,
 	ROOM_HEIGHT	= ScreenConstants::EMapRows,
-	DOOR_WIDTH	= 6,
-	DOOR_HEIGHT = 4,
+	DOOR_WIDTH	= 7,
+	DOOR_HEIGHT = 5,
 	DOOR_HORIZ_OFFSET = (ROOM_WIDTH - DOOR_WIDTH) / 2,
-	DOOR_VERTI_OFFSET = (ROOM_HEIGHT - DOOR_HEIGHT) / 2,
+	DOOR_VERTI_OFFSET = ((ROOM_HEIGHT - DOOR_HEIGHT) / 2) + 1,
 
 	ROOM_COL_COUNT = 3,
 	ROOM_ROW_COUNT = 3,
@@ -50,12 +51,12 @@ static const char kRoomWallVerti[ROOM_HEIGHT] =
 	'|',
 	'|',
 	'|',
-	'|',
+	'|'
 };
 
 static const char kRoomDoorHoriz[DOOR_WIDTH+1] = //+1 for terminating character...
 {
-	"|    |",
+	"|     |",
 };
 
 static const char kRoomDoorVerti[DOOR_HEIGHT] = 
@@ -63,7 +64,8 @@ static const char kRoomDoorVerti[DOOR_HEIGHT] =
 	'_',
 	' ',
 	' ',
-	'_',
+	' ',
+	gCastUCharToChar(238),
 };
 
 enum EDoorMask
@@ -90,24 +92,25 @@ static AsciiMesh gGenerateRoom(EDoorMask inDoorMask)
 	if ( (inDoorMask & EDoorMask_Top) > 0 )
 	{
 		for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[0][DOOR_HORIZ_OFFSET + i]	= ' '; } // remove wall
-		for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[1][DOOR_HORIZ_OFFSET + i]	= kRoomDoorHoriz[i]; }
+		//for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[1][DOOR_HORIZ_OFFSET + i]	= kRoomDoorHoriz[i]; }
 	}
 	
 	if ( (inDoorMask & EDoorMask_Bottom) > 0 )
 	{
-		for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[ROOM_HEIGHT-1][DOOR_HORIZ_OFFSET + i]	= kRoomDoorHoriz[i]; }
+		for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[ROOM_HEIGHT-1][DOOR_HORIZ_OFFSET + i]	= ' '; } // remove wall
+		//for (int i = 0; i < DOOR_WIDTH; ++i)	{ scratchRoom[ROOM_HEIGHT-1][DOOR_HORIZ_OFFSET + i]	= kRoomDoorHoriz[i]; }
 	}
 	
 	if ( (inDoorMask & EDoorMask_Left) > 0 )
 	{
-		for (int i = 1; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][0]	= ' '; } // remove wall, but not the first bit.
-		for (int i = 0; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][1]	= kRoomDoorVerti[i]; }
+		for (int i = 1; i < DOOR_HEIGHT-1; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][0]	= ' '; } // remove wall, but not the first or last bits.
+		//for (int i = 0; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][1]	= kRoomDoorVerti[i]; }
 	}
 	
 	if ( (inDoorMask & EDoorMask_Right) > 0 )
 	{
-		for (int i = 1; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][ROOM_WIDTH-1]	= ' '; } // remove wall, but not the first bit.
-		for (int i = 0; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][ROOM_WIDTH-2]	= kRoomDoorVerti[i]; }
+		for (int i = 1; i < DOOR_HEIGHT-1; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][ROOM_WIDTH-1]	= ' '; } // remove wall, but not the first or last bits.
+		//for (int i = 0; i < DOOR_HEIGHT; ++i)	{ scratchRoom[DOOR_VERTI_OFFSET + i][ROOM_WIDTH-2]	= kRoomDoorVerti[i]; }
 	}
 
 	AsciiMesh outMesh;
@@ -147,6 +150,19 @@ static Entity CreateRoom(World& inWorld, EDoorMask inDoorMask, const IVec2& inPo
 	} );
 
 	collisionComp->SetDefaultCollisionMesh(collisionMesh);
+
+	auto createLockedDoorIfFlagSet = [&] (EDoorMask inMask, int inX, int inY, EOrientation inOrientation)
+	{
+		if ( (inDoorMask & inMask) > 0 )
+		{
+			LockedDoor::Create(inWorld, inPosition + IVec2(inX, inY), inOrientation);
+		}
+	};
+	
+	createLockedDoorIfFlagSet(EDoorMask_Top,	DOOR_HORIZ_OFFSET,	1,					EOrientation_FaceUp);
+	createLockedDoorIfFlagSet(EDoorMask_Bottom, DOOR_HORIZ_OFFSET,	ROOM_HEIGHT-1,		EOrientation_FaceDown);
+	createLockedDoorIfFlagSet(EDoorMask_Left,	1,					DOOR_VERTI_OFFSET,	EOrientation_FaceLeft);
+	createLockedDoorIfFlagSet(EDoorMask_Right,	ROOM_WIDTH-2,		DOOR_VERTI_OFFSET,	EOrientation_FaceRight);
 
 	return entity;
 }

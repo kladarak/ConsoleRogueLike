@@ -52,7 +52,7 @@ static const CollisionMesh	kDoorKeyCollisionMesh( 0, 0 );
 
 static const char			kDoorKeyIcon[]	= { '0', '-', 'm' };
 static const ItemData		kDoorKeyData	= { "Key", AsciiMesh(kDoorKeyIcon, gElemCount(kDoorKeyIcon), 1) };
-static const float			kAnimTime	= 0.5f;
+static const float			kAnimTime	= 0.15f;
 
 using namespace Player;
 

@@ -14,10 +14,10 @@ static const float kStateChangeRate = 0.05f; // seconds
 
 static const AsciiMesh kSpinnerFrames[] =
 {
-	AsciiMesh( "|", 1, 1 ),
-	AsciiMesh( "/", 1, 1 ),
-	AsciiMesh( "-", 1, 1 ),
-	AsciiMesh( "\\", 1, 1 ),
+	AsciiMesh( '|' ),
+	AsciiMesh( '/' ),
+	AsciiMesh( '-' ),
+	AsciiMesh( '\\' ),
 };
 
 static const Animation kSpinnerAnimation(kSpinnerFrames, sizeof(kSpinnerFrames)/sizeof(AsciiMesh), kStateChangeRate, Animation::EPlaybackStyle_Loop);

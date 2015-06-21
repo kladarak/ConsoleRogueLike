@@ -29,6 +29,7 @@
     <ClCompile Include="src\GameEntities\CoinEntity.cpp" />
     <ClCompile Include="src\GameEntities\HealthEntity.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\MonsterEntityFactory.cpp" />
+    <ClCompile Include="src\GameEntities\Obstacles\LockedDoor.cpp" />
     <ClCompile Include="src\GameEntities\Player\Items\Arrow.cpp" />
     <ClCompile Include="src\GameEntities\Player\Items\Bow.cpp" />
     <ClCompile Include="src\GameEntities\Player\Items\BowAnimations.cpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="src\GameEntities\CoinEntity.h" />
     <ClInclude Include="src\GameEntities\HealthEntity.h" />
     <ClInclude Include="src\GameEntities\Monsters\MonsterEntityFactory.h" />
+    <ClInclude Include="src\GameEntities\Obstacles\LockedDoor.h" />
     <ClInclude Include="src\GameEntities\Player\Items\Arrow.h" />
     <ClInclude Include="src\GameEntities\Player\Items\Bow.h" />
     <ClInclude Include="src\GameEntities\Player\Items\BowAnimations.h" />

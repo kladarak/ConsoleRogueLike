@@ -1,10 +1,14 @@
 #pragma once
 
 #include <EntityComponentSystem/World/World.h>
+
 #include <Maths/IVec2.h>
+#include <Containers/ContainerMacros.h>
 
 #include <EntityComponent/Components/MessageReceiverComponent.h>
+
 #include <EntityComponent/Systems/PositionSystem.h>
+#include <EntityComponent/Systems/CollisionSystem.h>
 
 class CoinCollectedMessage	{ };
 class PlayerIsDeadMsg		{ };
@@ -41,12 +45,14 @@ namespace MessageHelpers
 template<typename TMessage>
 void BroadcastMessageToEntitiesAtPosition(World& inWorld, Entity inExceptThis, const IVec2& inPos, const TMessage& inMsg)
 {
-	// TODO: Check collision meshes too.
-	auto attackedEntities = PositionSystem::GetListOfEntitiesAtPosition(inWorld, inExceptThis, inPos);
-	for (auto entity : attackedEntities)
+	auto entitiesCollidedWith	= CollisionSystem::GetListofCollidablesAtPosition(inWorld, inPos);
+	auto entitiesAtPosition		= PositionSystem::GetListOfEntitiesAtPosition(inWorld, inExceptThis, inPos);
+	auto interestedEntities		= MergeSortedVectors(entitiesCollidedWith, entitiesAtPosition);
+
+	for (auto entity : interestedEntities)
 	{
 		auto msgRecComp = entity.GetComponent<MessageReceiverComponent>();
-		if (nullptr != msgRecComp)
+		if (entity != inExceptThis && nullptr != msgRecComp)
 		{
 			msgRecComp->Broadcast( inMsg );
 		}
