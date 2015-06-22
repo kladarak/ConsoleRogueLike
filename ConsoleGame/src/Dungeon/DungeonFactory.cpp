@@ -17,7 +17,7 @@
 #include <GameEntities/Obstacles/LockedDoor.h>
 #include <GameEntities/Obstacles/DoorConstants.h>
 
-#include "RoomEntityBuilder.h"
+#include "RoomEntity.h"
 #include "ScreenConstants.h"
 
 namespace DungeonFactory
@@ -31,8 +31,10 @@ enum
 
 struct RoomLink
 {
-	IVec2 mRoomIndex0;
-	IVec2 mRoomIndex1;
+	IVec2		mRoomIndex0;
+	IVec2		mRoomIndex1;
+	EDoorSide	mRoomSide0;
+	EDoorSide	mRoomSide1;
 };
 
 static std::vector<RoomLink> sGenerateRoomLinks()
@@ -44,8 +46,10 @@ static std::vector<RoomLink> sGenerateRoomLinks()
 		for (int row = 0; row < ROOM_ROW_COUNT-1; ++row)
 		{
 			RoomLink link;
-			link.mRoomIndex0 = IVec2(col, row);
-			link.mRoomIndex1 = IVec2(col, row+1);
+			link.mRoomIndex0	= IVec2(col, row);
+			link.mRoomIndex1	= IVec2(col, row+1);
+			link.mRoomSide0		= EDoorSide_Bottom;
+			link.mRoomSide1		= EDoorSide_Top;
 			links.push_back(link);
 		}
 	}
@@ -55,8 +59,10 @@ static std::vector<RoomLink> sGenerateRoomLinks()
 		for (int row = 0; row < ROOM_ROW_COUNT; ++row)
 		{
 			RoomLink link;
-			link.mRoomIndex0 = IVec2(col, row);
-			link.mRoomIndex1 = IVec2(col+1, row);
+			link.mRoomIndex0	= IVec2(col, row);
+			link.mRoomIndex1	= IVec2(col+1, row);
+			link.mRoomSide0		= EDoorSide_Right;
+			link.mRoomSide1		= EDoorSide_Left;
 			links.push_back(link);
 		}
 	}
@@ -92,40 +98,55 @@ static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
 
 DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 {
-	DungeonMap			dungeon(ROOM_COL_COUNT, ROOM_ROW_COUNT);
-	RoomEntityBuilder	roomBuilder(inWorld);
+	DungeonMap dungeon(ROOM_COL_COUNT, ROOM_ROW_COUNT);
 
 	for (int col = 0; col < ROOM_COL_COUNT; ++col)
 	{
 		for (int row = 0; row < ROOM_ROW_COUNT; ++row)
 		{
 			IVec2 pos( col * ERoomDimensions_Width, row * ERoomDimensions_Height );
-
-			int doorMask = EDoorMask_None;
-			doorMask |= (col != 0)					? EDoorMask_Left	: EDoorMask_None;
-			doorMask |= (row != 0)					? EDoorMask_Top		: EDoorMask_None;
-			doorMask |= (col != (ROOM_COL_COUNT-1)) ? EDoorMask_Right	: EDoorMask_None;
-			doorMask |= (row != (ROOM_ROW_COUNT-1)) ? EDoorMask_Bottom	: EDoorMask_None;
-
-			auto room = roomBuilder.SetDoorMask((EDoorMask) doorMask).SetPosition(pos).Create();
+			auto room = RoomEntity::Create(inWorld, pos);
 			dungeon.Set(col, row, room);
-			
-			// Test locked doors
-			auto createLockedDoorIfFlagSet = [&] (EDoorMask inMask, int inX, int inY, EOrientation inOrientation)
-			{
-				if ( (doorMask & inMask) > 0 )
-				{
-					LockedDoor::Create(inWorld, pos + IVec2(inX, inY), inOrientation);
-				}
-			};
-	
-			createLockedDoorIfFlagSet(EDoorMask_Top,	ERoomDimensions_DoorHorizOffset,	1,									EOrientation_FaceUp);
-			createLockedDoorIfFlagSet(EDoorMask_Bottom, ERoomDimensions_DoorHorizOffset,	ERoomDimensions_Height-1,			EOrientation_FaceDown);
-			createLockedDoorIfFlagSet(EDoorMask_Left,	1,									ERoomDimensions_DoorVertiOffset,	EOrientation_FaceLeft);
-			createLockedDoorIfFlagSet(EDoorMask_Right,	ERoomDimensions_Width-2,			ERoomDimensions_DoorVertiOffset,	EOrientation_FaceRight);
 		}
 	}
+	
+	struct DoorConstructInfo
+	{
+		IVec2			mLocalPosition;
+		EOrientation	mOrientation;
+	};
 
+	static const DoorConstructInfo kDoorConstructInfo[] =
+	{
+		{ IVec2(ERoomDimensions_DoorHorizOffset,	1),									EOrientation_FaceUp		},
+		{ IVec2(ERoomDimensions_DoorHorizOffset,	ERoomDimensions_Height-1),			EOrientation_FaceDown	},
+		{ IVec2(1,									ERoomDimensions_DoorVertiOffset),	EOrientation_FaceLeft	},
+		{ IVec2(ERoomDimensions_Width-2,			ERoomDimensions_DoorVertiOffset),	EOrientation_FaceRight	},
+	};
+	
+	// Test locked doors
+	{
+		auto constructLockedDoor = [&] (const IVec2& inRoomIndex, EDoorSide inSide)
+		{
+			auto	room			= dungeon.Get(inRoomIndex.mX, inRoomIndex.mY);
+			auto&	roomPos			= room.GetComponent<PositionComponent>()->GetPosition();
+			auto&	constructInfo	= kDoorConstructInfo[inSide];
+			auto	doorPos			= roomPos + constructInfo.mLocalPosition;
+
+			RoomEntity::EraseWallForDoor(room, inSide);
+			return LockedDoor::Create(inWorld, doorPos, constructInfo.mOrientation);
+		};
+
+		auto doorLinks = sGenerateRoomLinks();
+
+		for (auto& link : doorLinks)
+		{
+			auto door0 = constructLockedDoor(link.mRoomIndex0, link.mRoomSide0);
+			auto door1 = constructLockedDoor(link.mRoomIndex1, link.mRoomSide1);
+
+			LockedDoor::BindDoors(door0, door1);
+		}
+	}
 
 	// Fill rooms after creating all rooms, to fix draw order problems.
 	// A better way would be to either have an initial clearing screen pass then skip rendering any whitespace,

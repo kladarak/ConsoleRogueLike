@@ -82,9 +82,6 @@
     <ClCompile Include="src\Input\InputMonitor.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameEntities\RoomEntity.cpp">
-      <Filter>Source Files\GameEntities</Filter>
-    </ClCompile>
     <ClCompile Include="src\GameEntities\SpinnerEntity.cpp">
       <Filter>Source Files\GameEntities</Filter>
     </ClCompile>
@@ -214,7 +211,7 @@
     <ClCompile Include="src\GameEntities\Obstacles\OpenDoor.cpp">
       <Filter>Source Files\GameEntities\Obstacles</Filter>
     </ClCompile>
-    <ClCompile Include="src\Dungeon\RoomEntityBuilder.cpp">
+    <ClCompile Include="src\Dungeon\RoomEntity.cpp">
       <Filter>Source Files\Dungeon</Filter>
     </ClCompile>
   </ItemGroup>
@@ -239,9 +236,6 @@
     </ClInclude>
     <ClInclude Include="src\Input\InputMonitor.h">
       <Filter>Source Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameEntities\RoomEntity.h">
-      <Filter>Source Files\GameEntities</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEntities\SpinnerEntity.h">
       <Filter>Source Files\GameEntities</Filter>
@@ -435,7 +429,7 @@
     <ClInclude Include="src\GameEntities\Obstacles\DoorConstants.h">
       <Filter>Source Files\GameEntities\Obstacles</Filter>
     </ClInclude>
-    <ClInclude Include="src\Dungeon\RoomEntityBuilder.h">
+    <ClInclude Include="src\Dungeon\RoomEntity.h">
       <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
   </ItemGroup>

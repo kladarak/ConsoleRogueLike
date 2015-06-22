@@ -60,3 +60,19 @@ void CollisionComponent::SetCollisionMeshes(const CollisionMesh inMeshes[EOrient
 		SetCollisionMesh( (EOrientation) i, inMeshes[i] );
 	}
 }
+
+void CollisionComponent::SetDefaultMeshCollidableAt(int inX, int inY)
+{
+	for (int i = 0; i < EOrientation_Count; ++i)
+	{
+		mCollisionMesh[i].SetCollidableAt(inX, inY);
+	}
+}
+
+void CollisionComponent::ClearDefaultMeshCollidableAt(int inX, int inY)
+{
+	for (int i = 0; i < EOrientation_Count; ++i)
+	{
+		mCollisionMesh[i].ClearCollidableAt(inX, inY);
+	}
+}

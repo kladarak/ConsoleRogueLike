@@ -23,6 +23,9 @@ public:
 	
 	void					SetCollisionMeshes(const CollisionMesh inMeshes[EOrientation_Count]);
 
+	void					SetDefaultMeshCollidableAt(int inX, int inY);
+	void					ClearDefaultMeshCollidableAt(int inX, int inY);
+
 private:
 	CollisionMesh			mCollisionMesh[EOrientation_Count];
 

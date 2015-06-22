@@ -1,6 +1,6 @@
 #include "LockedDoor.h"
 
-#include <EntityComponentSystem/World/World.h>
+#include <Core/Debug/Assert.h>
 
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
@@ -108,7 +108,26 @@ namespace FaceLeftRight
 	static const CollisionMesh	kOpenCollisionMesh(kOpenCollisionMeshData,	1, 5);
 }
 
-void Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation)
+class LockedDoorProperties
+{
+public:
+	LockedDoorProperties(bool inIsLeftRightFacing) : mIsLeftRightFacing(inIsLeftRightFacing) { }
+	~LockedDoorProperties() { }
+
+	Entity	mOtherDoorBoundTo;
+	bool	mIsLeftRightFacing;
+};
+
+static void sUnlockDoor(Entity inEntity)
+{
+	bool	isLeftRightFacing	= inEntity.GetComponent<LockedDoorProperties>()->mIsLeftRightFacing;
+	auto&	openCollision		= isLeftRightFacing ? FaceLeftRight::kOpenCollisionMesh : FaceUpDown::kOpenCollisionMesh;
+
+	inEntity.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh(openCollision);
+	inEntity.GetComponent<AnimationComponent>()->SetSelectedAnimation(EAnimationSlot_Open, false);
+}
+
+Entity Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation)
 {
 	auto entity = inWorld.CreateEntity();
 
@@ -116,12 +135,12 @@ void Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation)
 	
 	auto&	animations		= isLeftRight ? FaceLeftRight::kAnimations			: FaceUpDown::kAnimations;
 	auto&	idleCollision	= isLeftRight ? FaceLeftRight::kIdleCollisionMesh	: FaceUpDown::kIdleCollisionMesh;
-	auto&	openCollision	= isLeftRight ? FaceLeftRight::kOpenCollisionMesh	: FaceUpDown::kOpenCollisionMesh;
 	
 	entity.AddComponent<AnimationComponent>(animations, gElemCount(animations))->SetSelectedAnimation(EAnimationSlot_Idle);
 	entity.AddComponent<CollisionComponent>(idleCollision);
 	entity.AddComponent<PositionComponent>(inPosition);
 	entity.AddComponent<RenderableComponent>();
+	entity.AddComponent<LockedDoorProperties>(isLeftRight);
 
 	IVec2 keyHolePosition = inPosition + (isLeftRight ? IVec2(0, 2) : IVec2(3, 0));
 
@@ -129,10 +148,29 @@ void Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation)
 	{
 		if (inMsg.mPosition == keyHolePosition)
 		{
-			entity.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh(openCollision);
-			entity.GetComponent<AnimationComponent>()->SetSelectedAnimation(EAnimationSlot_Open, false);
+			sUnlockDoor(entity);
+
+			auto properties = entity.GetComponent<LockedDoorProperties>();
+			if (properties->mOtherDoorBoundTo.IsValid())
+			{
+				sUnlockDoor(properties->mOtherDoorBoundTo);
+			}
 		}
 	} );
+
+	return entity;
+}
+
+void BindDoors(const Entity& inEntity0, const Entity& inEntity1)
+{
+	assert( inEntity0.IsValid() && inEntity1.IsValid() && inEntity0 != inEntity1 );
+	assert( inEntity0.HasComponent<LockedDoorProperties>() );
+	assert( inEntity1.HasComponent<LockedDoorProperties>() );
+	assert( inEntity0.GetComponent<LockedDoorProperties>()->mOtherDoorBoundTo.IsValid() == false );
+	assert( inEntity1.GetComponent<LockedDoorProperties>()->mOtherDoorBoundTo.IsValid() == false );
+
+	inEntity0.GetComponent<LockedDoorProperties>()->mOtherDoorBoundTo = inEntity1;
+	inEntity1.GetComponent<LockedDoorProperties>()->mOtherDoorBoundTo = inEntity0;
 }
 
 }

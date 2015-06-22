@@ -14,11 +14,13 @@ public:
 	RenderableComponent(const RenderableComponent& inRHS)	: mMesh( inRHS.mMesh ),				mVisible(inRHS.mVisible)	{ }
 	~RenderableComponent()	{ }
 
-	void				SetMesh(const AsciiMesh& inMesh)	{ mMesh = inMesh;	}
-	const AsciiMesh&	GetMesh() const						{ return mMesh;		}
+	void				SetMesh(const AsciiMesh& inMesh)					{ mMesh = inMesh;	}
+	const AsciiMesh&	GetMesh() const										{ return mMesh;		}
 
-	void				SetVisible(bool inVisible)			{ mVisible = inVisible; }
-	bool				IsVisible() const					{ return mVisible;		}
+	void				SetCharAtPosition(int inX, int inY, char inChar)	{ mMesh.Set(inX, inY, inChar); }
+
+	void				SetVisible(bool inVisible)							{ mVisible = inVisible; }
+	bool				IsVisible() const									{ return mVisible;		}
 
 private:
 	AsciiMesh			mMesh;

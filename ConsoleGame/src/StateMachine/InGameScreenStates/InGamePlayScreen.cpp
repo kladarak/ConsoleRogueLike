@@ -1,7 +1,5 @@
 #include "InGamePlayScreen.h"
 
-
-#include <GameEntities/RoomEntity.h>
 #include <GameEntities/Player/PlayerEntity.h>
 #include <GameEntities/SpinnerEntity.h>
 #include <Dungeon/DungeonFactory.h>
