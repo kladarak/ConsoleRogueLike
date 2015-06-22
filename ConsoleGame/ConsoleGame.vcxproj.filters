@@ -214,6 +214,9 @@
     <ClCompile Include="src\GameEntities\Obstacles\OpenDoor.cpp">
       <Filter>Source Files\GameEntities\Obstacles</Filter>
     </ClCompile>
+    <ClCompile Include="src\Dungeon\RoomEntityBuilder.cpp">
+      <Filter>Source Files\Dungeon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -431,6 +434,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Obstacles\DoorConstants.h">
       <Filter>Source Files\GameEntities\Obstacles</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dungeon\RoomEntityBuilder.h">
+      <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

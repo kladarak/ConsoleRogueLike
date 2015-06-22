@@ -21,6 +21,6 @@ public:
 	bool				IsVisible() const					{ return mVisible;		}
 
 private:
-	AsciiMesh	mMesh;
-	bool		mVisible;
+	AsciiMesh			mMesh;
+	bool				mVisible;
 };
