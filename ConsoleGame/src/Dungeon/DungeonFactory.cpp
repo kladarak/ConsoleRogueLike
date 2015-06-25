@@ -14,9 +14,11 @@
 #include <GameEntities/CoinEntity.h>
 #include <GameEntities/SpinnerEntity.h>
 #include <GameEntities/Monsters/MonsterEntityFactory.h>
+
+#include <GameEntities/Obstacles/DoorConstants.h>
 #include <GameEntities/Obstacles/LockedDoor.h>
 #include <GameEntities/Obstacles/OpenDoor.h>
-#include <GameEntities/Obstacles/DoorConstants.h>
+#include <GameEntities/Obstacles/Stairs.h>
 
 #include "RoomEntity.h"
 #include "ScreenConstants.h"
@@ -130,7 +132,7 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 	
 	// Addd doors
 	{
-		auto constructDoor = [&] (const IVec2& inRoomIndex, EDoorSide inSide)
+		auto constructDoor = [&] (const IVec2& inRoomIndex, EDoorSide inSide, const std::function<Entity (const IVec2&, EOrientation)>& inCreateDoorFunc)
 		{
 			auto	room			= dungeon.Get(inRoomIndex.mX, inRoomIndex.mY);
 			auto&	roomPos			= room.GetComponent<PositionComponent>()->GetPosition();
@@ -138,15 +140,22 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 			auto	doorPos			= roomPos + constructInfo.mLocalPosition;
 
 			RoomEntity::EraseWallForDoor(room, inSide);
-			return OpenDoor::Create(inWorld, doorPos, constructInfo.mOrientation);
+			return inCreateDoorFunc(doorPos, constructInfo.mOrientation);
 		};
-
-		auto doorLinks = sGenerateRoomLinks(layout);
-
-		for (auto& link : doorLinks)
+		
 		{
-			constructDoor(link.mRoomIndex0, link.mRoomSide0);
-			constructDoor(link.mRoomIndex1, link.mRoomSide1);
+
+			auto constructOpenDoor = [&] (const IVec2& inRoomIndex, EDoorSide inSide)
+			{
+				constructDoor(inRoomIndex, inSide, [&] (const IVec2& inPosition, EOrientation inOrientation) { return OpenDoor::Create(inWorld, inPosition, inOrientation); } );
+			};
+
+			auto doorLinks = sGenerateRoomLinks(layout);
+			for (auto& link : doorLinks)
+			{
+				constructOpenDoor(link.mRoomIndex0, link.mRoomSide0);
+				constructOpenDoor(link.mRoomIndex1, link.mRoomSide1);
+			}
 		}
 	}
 

@@ -13,6 +13,7 @@
 class CoinCollectedMessage	{ };
 class PlayerIsDeadMsg		{ };
 class BackToStartMenuMsg	{ };
+class PlayerWentDownStairs	{ };
 
 class AttackMsg
 {

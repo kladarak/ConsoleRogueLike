@@ -1,7 +1,5 @@
 #include "OpenDoor.h"
 
-#include <EntityComponentSystem/World/World.h>
-
 #include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
@@ -40,7 +38,7 @@ namespace FaceLeftRight
 	static const CollisionMesh	kCollisionMesh(kCollisionMeshData,	1, 5);
 }
 
-void Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation)
+Entity Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation)
 {
 	auto entity = inWorld.CreateEntity();
 
@@ -52,6 +50,8 @@ void Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation)
 	entity.AddComponent<PositionComponent>(inPosition);
 	entity.AddComponent<RenderableComponent>(renderMesh);
 	entity.AddComponent<CollisionComponent>(collisionMesh);
+
+	return entity;
 }
 
 }

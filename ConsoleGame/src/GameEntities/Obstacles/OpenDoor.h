@@ -1,10 +1,9 @@
 #pragma once
 
+#include <EntityComponentSystem/World/World.h>
 #include <EntityComponent/Components/EOrientation.h>
-
-class World;
 
 namespace OpenDoor
 {
-	void Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation);
+	Entity Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation);
 }
