@@ -15,6 +15,7 @@
 #include <GameEntities/SpinnerEntity.h>
 #include <GameEntities/Monsters/MonsterEntityFactory.h>
 #include <GameEntities/Obstacles/LockedDoor.h>
+#include <GameEntities/Obstacles/OpenDoor.h>
 #include <GameEntities/Obstacles/DoorConstants.h>
 
 #include "RoomEntity.h"
@@ -127,9 +128,9 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 		{ IVec2(ERoomDimensions_Width-2,			ERoomDimensions_DoorVertiOffset),	EOrientation_FaceRight	},
 	};
 	
-	// Test locked doors
+	// Addd doors
 	{
-		auto constructLockedDoor = [&] (const IVec2& inRoomIndex, EDoorSide inSide)
+		auto constructDoor = [&] (const IVec2& inRoomIndex, EDoorSide inSide)
 		{
 			auto	room			= dungeon.Get(inRoomIndex.mX, inRoomIndex.mY);
 			auto&	roomPos			= room.GetComponent<PositionComponent>()->GetPosition();
@@ -137,17 +138,15 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 			auto	doorPos			= roomPos + constructInfo.mLocalPosition;
 
 			RoomEntity::EraseWallForDoor(room, inSide);
-			return LockedDoor::Create(inWorld, doorPos, constructInfo.mOrientation);
+			return OpenDoor::Create(inWorld, doorPos, constructInfo.mOrientation);
 		};
 
 		auto doorLinks = sGenerateRoomLinks(layout);
 
 		for (auto& link : doorLinks)
 		{
-			auto door0 = constructLockedDoor(link.mRoomIndex0, link.mRoomSide0);
-			auto door1 = constructLockedDoor(link.mRoomIndex1, link.mRoomSide1);
-
-			LockedDoor::BindDoors(door0, door1);
+			constructDoor(link.mRoomIndex0, link.mRoomSide0);
+			constructDoor(link.mRoomIndex1, link.mRoomSide1);
 		}
 	}
 
