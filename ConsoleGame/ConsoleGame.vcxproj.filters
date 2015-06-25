@@ -214,6 +214,9 @@
     <ClCompile Include="src\Dungeon\RoomEntity.cpp">
       <Filter>Source Files\Dungeon</Filter>
     </ClCompile>
+    <ClCompile Include="src\Dungeon\DungeonLayoutGenerator.cpp">
+      <Filter>Source Files\Dungeon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -430,6 +433,9 @@
       <Filter>Source Files\GameEntities\Obstacles</Filter>
     </ClInclude>
     <ClInclude Include="src\Dungeon\RoomEntity.h">
+      <Filter>Source Files\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dungeon\DungeonLayoutGenerator.h">
       <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
   </ItemGroup>

@@ -28,7 +28,7 @@ void InGamePlayScreen::Init()
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
 
-	mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster);
+	mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster, mDungeonMap);
 
 	mHUD.Init(mMessageBroadcaster, mPlayer);
 
@@ -59,26 +59,28 @@ std::string InGamePlayScreen::GetRenderBuffer()
 {
 	using namespace ScreenConstants;
 	
-	const int width		= EMapCols+1;
-	const int height	= mHUD.GetTopBarHeight() + EMapRows + mHUD.GetBottomBarHeight();
+	const int gameWidth		= (EMapCols+1);
+	const int gameHeight	= EMapRows;
+	const int screenWidth	= gameWidth;
+	const int screenHeight	= mHUD.GetTopBarHeight() + gameHeight + mHUD.GetBottomBarHeight();
 
 	int y = 0;
 
-	RenderTargetWriter renderTargetWriter(width, height);
+	RenderTargetWriter renderTargetWriter(screenWidth, screenHeight);
 
 	renderTargetWriter.Write( mHUD.GetTopBarRenderBuffer(), 0, y );
 	y += mHUD.GetTopBarHeight();
 	
-	RenderTarget renderTarget(EMapCols+1, EMapRows);
+	RenderTarget renderTarget(gameWidth, gameHeight);
 	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
 	RenderSystem::Render(mWorld, cameraPosition, renderTarget);
 
 	renderTargetWriter.Write( renderTarget.GetBuffer(), 0, y );
-	y += EMapRows;
+	y += gameHeight;
 	
 	renderTargetWriter.Write( mHUD.GetBottomBarRenderBuffer(), 0, y );
 
-	int halfHeight = height / 2;
+	int halfHeight = screenHeight / 2;
 	renderTargetWriter.Write( mHUD.GetOverlayBuffer(), 10, halfHeight );
 
 	return renderTargetWriter.GetRenderBuffer();

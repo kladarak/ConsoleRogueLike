@@ -26,16 +26,30 @@
 namespace PlayerEntity
 {
 
-Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster)
+Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const DungeonMap& inDungeonMap)
 {
 	Entity entity = inWorld.CreateEntity();
+
+	IVec2 roomPosition(-1, -1);
+
+	while (roomPosition.mX < 0)
+	{
+		size_t randomX = rand() % inDungeonMap.GetColCount();
+		size_t randomY = rand() % inDungeonMap.GetRowCount();
+
+		Entity room = inDungeonMap.Get(randomX, randomY);
+		if (room.IsValid())
+		{
+			roomPosition = room.GetComponent<PositionComponent>()->GetPosition();
+		}
+	}
 	
 	entity.AddComponent<AnimationComponent>();
 	entity.AddComponent<CollisionComponent>();
 	entity.AddComponent<HealthComponent>(3);
 	entity.AddComponent<PlayerComponent>();
 	entity.AddComponent<OrientationComponent>( EOrientation_FaceDown );
-	entity.AddComponent<PositionComponent>(10, 10);
+	entity.AddComponent<PositionComponent>( roomPosition + IVec2(10, 10) );
 	entity.AddComponent<RenderableComponent>();
 	entity.AddComponent<TriggererComponent>();
 	

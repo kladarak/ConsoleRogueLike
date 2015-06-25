@@ -19,6 +19,7 @@
 
 #include "RoomEntity.h"
 #include "ScreenConstants.h"
+#include "DungeonLayoutGenerator.h"
 
 namespace DungeonFactory
 {
@@ -37,35 +38,35 @@ struct RoomLink
 	EDoorSide	mRoomSide1;
 };
 
-static std::vector<RoomLink> sGenerateRoomLinks()
+static std::vector<RoomLink> sGenerateRoomLinks(const DungeonLayout& inLayout)
 {
 	std::vector<RoomLink> links;
-
-	for (int col = 0; col < ROOM_COL_COUNT; ++col)
+	
+	inLayout.ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
 	{
-		for (int row = 0; row < ROOM_ROW_COUNT-1; ++row)
+		if (inRoomData.mDoors[EDoorSide_Bottom])
 		{
 			RoomLink link;
-			link.mRoomIndex0	= IVec2(col, row);
-			link.mRoomIndex1	= IVec2(col, row+1);
+			link.mRoomIndex0	= IVec2(inCol, inRow);
+			link.mRoomIndex1	= IVec2(inCol, inRow+1);
 			link.mRoomSide0		= EDoorSide_Bottom;
 			link.mRoomSide1		= EDoorSide_Top;
 			links.push_back(link);
 		}
-	}
-
-	for (int col = 0; col < ROOM_COL_COUNT-1; ++col)
+	} );
+	
+	inLayout.ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
 	{
-		for (int row = 0; row < ROOM_ROW_COUNT; ++row)
+		if (inRoomData.mDoors[EDoorSide_Right])
 		{
 			RoomLink link;
-			link.mRoomIndex0	= IVec2(col, row);
-			link.mRoomIndex1	= IVec2(col+1, row);
+			link.mRoomIndex0	= IVec2(inCol, inRow);
+			link.mRoomIndex1	= IVec2(inCol+1, inRow);
 			link.mRoomSide0		= EDoorSide_Right;
 			link.mRoomSide1		= EDoorSide_Left;
 			links.push_back(link);
 		}
-	}
+	} );
 
 	return links;
 }
@@ -98,17 +99,19 @@ static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
 
 DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 {
-	DungeonMap dungeon(ROOM_COL_COUNT, ROOM_ROW_COUNT);
+	DungeonLayout layout = DungeonLayoutGenerator(25).Generate();
 
-	for (int col = 0; col < ROOM_COL_COUNT; ++col)
+	DungeonMap dungeon;
+
+	layout.ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
 	{
-		for (int row = 0; row < ROOM_ROW_COUNT; ++row)
+		if (inRoomData.mIsValid)
 		{
-			IVec2 pos( col * ERoomDimensions_Width, row * ERoomDimensions_Height );
+			IVec2 pos( inCol * ERoomDimensions_Width, inRow * ERoomDimensions_Height );
 			auto room = RoomEntity::Create(inWorld, pos);
-			dungeon.Set(col, row, room);
+			dungeon.Set(inCol, inRow, room);
 		}
-	}
+	} );
 	
 	struct DoorConstructInfo
 	{
@@ -137,7 +140,7 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 			return LockedDoor::Create(inWorld, doorPos, constructInfo.mOrientation);
 		};
 
-		auto doorLinks = sGenerateRoomLinks();
+		auto doorLinks = sGenerateRoomLinks(layout);
 
 		for (auto& link : doorLinks)
 		{
@@ -154,7 +157,10 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 	// or sort the renderables based on some sort of mark up on each renderable.
 	dungeon.ForEach( [&] (size_t, size_t, const Entity& inRoom)
 	{
-		FillRoom(inRoom, inMessageBroadcaster);
+		if (inRoom.IsValid())
+		{
+			FillRoom(inRoom, inMessageBroadcaster);
+		}
 	} );
 
 	return dungeon;

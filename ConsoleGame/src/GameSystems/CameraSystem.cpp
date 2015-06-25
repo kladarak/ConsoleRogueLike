@@ -21,8 +21,11 @@ void CameraSystem::Init(World& inWorld, const DungeonMap& inDungeonMap)
 
 	inDungeonMap.ForEach( [&] (size_t, size_t, const Entity& inRoom)
 	{
-		auto triggerBox = inRoom.GetComponent<TriggerBoxComponent>();
-		triggerBox->RegisterOnEnterCallback( [this] (const Entity& inRoom, const Entity& inTriggerer) { OnEntityEnteredRoom(inRoom, inTriggerer); } );
+		if (inRoom.IsValid())
+		{
+			auto triggerBox = inRoom.GetComponent<TriggerBoxComponent>();
+			triggerBox->RegisterOnEnterCallback( [this] (const Entity& inRoom, const Entity& inTriggerer) { OnEntityEnteredRoom(inRoom, inTriggerer); } );
+		}
 	} );
 }
 

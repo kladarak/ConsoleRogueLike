@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <Core/Debug/Assert.h>
+#include <Maths/IVec2.h>
 
 template<typename T>
 class Dynamic2DVector
@@ -15,10 +16,16 @@ public:
 
 	void		Set(size_t inX, size_t inY, const T& inData);
 	T			Get(size_t inX, size_t inY) const;
+	T&			Get(size_t inX, size_t inY);
+
+	void		Set(const IVec2& inIndex, const T& inData)	{ Set(inIndex.mX, inIndex.mY, inData);	}
+	T			Get(const IVec2& inIndex) const				{ return Get(inIndex.mX, inIndex.mY);	}
+	T&			Get(const IVec2& inIndex)					{ return Get(inIndex.mX, inIndex.mY);	}
+
 	void		Clear();
 
-	size_t		GetRowCount() const	{ return mData.size(); }
-	size_t		GetColCount() const	{ return (mData.size() > 0) ? mData[0].size() : 0; }
+	size_t		GetRowCount() const							{ return mData.size(); }
+	size_t		GetColCount() const							{ return (mData.size() > 0) ? mData[0].size() : 0; }
 
 	template<typename TFunctor>
 	void		ForEach(const TFunctor& inFunctor) const;
@@ -56,6 +63,15 @@ void Dynamic2DVector<T>::Set(size_t inX, size_t inY, const T& inData)
 
 template<typename T>
 T Dynamic2DVector<T>::Get(size_t inX, size_t inY) const
+{
+	assert(inX < GetColCount());
+	assert(inY < GetRowCount());
+	
+	return mData[inY][inX];
+}
+
+template<typename T>
+T& Dynamic2DVector<T>::Get(size_t inX, size_t inY)
 {
 	assert(inX < GetColCount());
 	assert(inY < GetRowCount());

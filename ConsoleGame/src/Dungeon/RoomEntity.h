@@ -14,6 +14,8 @@ enum EDoorSide
 	EDoorSide_Bottom,
 	EDoorSide_Left,
 	EDoorSide_Right,
+
+	EDoorSide_Count
 };
 
 enum ERoomDimensions
