@@ -158,13 +158,14 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 			}
 		}
 
-		// Construct stairs.
+		// Construct stairs, by finding a room without a door on its top side.
 		bool hasConstructedStairs = false;
 		while (!hasConstructedStairs)
 		{
-			int col = rand() % layout.GetColCount();
-			int row = rand() % layout.GetRowCount();
-			auto& roomData = layout.Get(col, row);
+			int		col			= rand() % layout.GetColCount();
+			int		row			= rand() % layout.GetRowCount();
+			auto&	roomData	= layout.Get(col, row);
+
 			if (roomData.mIsValid && !roomData.mDoors[EDoorSide_Top])
 			{
 				constructDoor( IVec2(col, row), EDoorSide_Top, [&] (const IVec2& inPosition, EOrientation inOrientation) 
