@@ -5,10 +5,10 @@
 
 class InputBuffer;
 
-class InventoryScreen
+class InventoryScreenState
 {
 public:
-	InventoryScreen();
+	InventoryScreenState();
 
 	void		Init(Entity inPlayer);
 	void		Update(float inFrameTime, const InputBuffer& inInput);

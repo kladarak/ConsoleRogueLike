@@ -1,8 +1,8 @@
 #include "StartMenuState.h"
 
 #include <Containers/ContainerMacros.h>
-
 #include <Input/InputBuffer.h>
+#include <Messages/Messages.h>
 
 
 enum EMenuOption
@@ -28,19 +28,13 @@ StartMenuState::StartMenuState()
 {
 }
 
-void StartMenuState::Reset()
-{
-	*this = StartMenuState();
-}
-
 void StartMenuState::Init()
 {
+
 }
 
-EGameState StartMenuState::Update(float /*inFrameTime*/, const InputBuffer& inInput)
+void StartMenuState::Update(float /*inFrameTime*/, const InputBuffer& inInput)
 {
-	EGameState outState = EGameState_StartMenu;
-	
 	if (inInput.IsPressed('w'))
 	{
 		mHighlightedMenuOption += (gElemCount(kOptions) - 1);
@@ -56,15 +50,13 @@ EGameState StartMenuState::Update(float /*inFrameTime*/, const InputBuffer& inIn
 	{
 		switch (mHighlightedMenuOption)
 		{
-			case 0: outState = EGameState_InGame; break;
+			case EMenuOption_StartGame: RequestGoToState(EGameState_InGame); break;
 			default: break;
 		}
 	}
-
-	return outState;
 }
 
-std::string StartMenuState::GetRenderBuffer()
+std::string StartMenuState::GetRenderBuffer() const
 {
 	std::string out;
 

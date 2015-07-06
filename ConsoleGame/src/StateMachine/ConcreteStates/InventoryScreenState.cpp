@@ -1,4 +1,4 @@
-#include "InventoryScreen.h"
+#include "InventoryScreenState.h"
 
 #include <EntityComponent/Components/PlayerComponent.h>
 
@@ -9,18 +9,20 @@
 #include <Renderer/RenderTargetWriter.h>
 
 
-InventoryScreen::InventoryScreen()
+InventoryScreenState::InventoryScreenState()
 	: mHighlightedItem(0)
 {
 }
 
-void InventoryScreen::Init(Entity inPlayer)
+void InventoryScreenState::Init(Entity inPlayer)
 {
 	mPlayer = inPlayer;
 }
 
-void InventoryScreen::Update(float /*inFrameTime*/, const InputBuffer& inInput)
+void InventoryScreenState::Update(float /*inFrameTime*/, const InputBuffer& inInput)
 {
+	// TODO: Handle user input for state changes, e.g., tab.
+
 	auto	playerComp	= mPlayer.GetComponent<PlayerComponent>();
 	auto&	items		= playerComp->GetInventory().GetAllItems();
 	size_t	itemCount	= items.size();
@@ -47,7 +49,7 @@ void InventoryScreen::Update(float /*inFrameTime*/, const InputBuffer& inInput)
 	}
 }
 
-std::string InventoryScreen::GetRenderBuffer() const
+std::string InventoryScreenState::GetRenderBuffer() const
 {
 	assert(mPlayer.IsValid());
 	

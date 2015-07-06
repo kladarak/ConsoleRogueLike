@@ -1,4 +1,4 @@
-#include "InGamePlayScreen.h"
+#include "InGameState.h"
 
 #include <GameEntities/Player/PlayerEntity.h>
 #include <GameEntities/SpinnerEntity.h>
@@ -20,10 +20,8 @@
 
 #include "ScreenConstants.h"
 
-void InGamePlayScreen::Init()
+void InGameState::Init()
 {
-	mRunning = true;
-
 	mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
@@ -32,11 +30,13 @@ void InGamePlayScreen::Init()
 
 	mHUD.Init(mMessageBroadcaster, mPlayer);
 
-	mMessageBroadcaster.Register<BackToStartMenuMsg>( [&] (const BackToStartMenuMsg&) { mRunning = false; } );
+	mMessageBroadcaster.Register<BackToStartMenuMsg>( [&] (const BackToStartMenuMsg&) { RequestGoToState(EGameState_StartMenu); } );
 }
 
-bool InGamePlayScreen::Update(float inFrameTime, const InputBuffer& inInput)
+void InGameState::Update(float inFrameTime, const InputBuffer& inInput)
 {
+	// TODO: Handle user input for state changes, e.g., tab.
+
 	TriggerSystem::HandleDestroyedEntities(mWorld);
 	mWorld.FlushDestroyedEntities();
 
@@ -51,11 +51,9 @@ bool InGamePlayScreen::Update(float inFrameTime, const InputBuffer& inInput)
 	AnimationSystem::Update(mWorld, inFrameTime);
 
 	mHUD.Update(inFrameTime);
-
-	return mRunning;
 }
 
-std::string InGamePlayScreen::GetRenderBuffer()
+std::string InGameState::GetRenderBuffer() const
 {
 	using namespace ScreenConstants;
 	
@@ -73,7 +71,7 @@ std::string InGamePlayScreen::GetRenderBuffer()
 	
 	RenderTarget renderTarget(gameWidth, gameHeight);
 	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
-	RenderSystem::Render(mWorld, cameraPosition, renderTarget);
+	RenderSystem::Render( const_cast<InGameState*>(this)->mWorld, cameraPosition, renderTarget ); // Ooh, nasty const_cast... Must improve World's interface...
 
 	renderTargetWriter.Write( renderTarget.GetBuffer(), 0, y );
 	y += gameHeight;

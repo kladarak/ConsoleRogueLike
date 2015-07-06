@@ -1,5 +1,7 @@
 #pragma once
 
+#include <StateMachine/StateBase.h>
+
 #include <Core/Messaging/MessageBroadcaster.h>
 #include <EntityComponentSystem/World/World.h>
 #include <GameSystems/CameraSystem.h>
@@ -8,21 +10,21 @@
 
 class InputBuffer;
 
-class InGamePlayScreen
+class InGameState : public StateBase
 {
 public:
-	void				Init();
-	bool				Update(float inFrameTime, const InputBuffer& inInput);
-	std::string			GetRenderBuffer();
+	virtual ~InGameState() { }
 
-	Entity				GetPlayer() const { return mPlayer; }
+	virtual void		Update(float inFrameTime, const InputBuffer& inInput);
+	virtual std::string	GetRenderBuffer() const;
 
 private:
+	virtual void		Init();
+
 	World				mWorld;
 	DungeonMap			mDungeonMap;
 	CameraSystem		mCameraSystem;
 	HUD					mHUD;
 	MessageBroadcaster	mMessageBroadcaster;
 	Entity				mPlayer;
-	bool				mRunning;
 };

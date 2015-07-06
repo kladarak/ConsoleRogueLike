@@ -10,10 +10,31 @@
 #include <EntityComponent/Systems/PositionSystem.h>
 #include <EntityComponent/Systems/CollisionSystem.h>
 
+#include <StateMachine/EGameState.h>
+
 class CoinCollectedMessage	{ };
 class PlayerIsDeadMsg		{ };
 class BackToStartMenuMsg	{ };
 class PlayerWentDownStairs	{ };
+
+class GoToStateMsg
+{
+public:
+	GoToStateMsg(EGameState inState) : mTargetState(inState) { }
+	operator EGameState () const { return mTargetState; }
+	EGameState mTargetState;
+};
+
+class PushStateMsg
+{
+public:
+	PushStateMsg(EGameState inState) : mTargetState(inState) { }
+	operator EGameState () const { return mTargetState; }
+	EGameState mTargetState;
+};
+
+class PopStateMsg { };
+
 
 class AttackMsg
 {
