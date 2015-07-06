@@ -6,6 +6,6 @@
 
 namespace LockedDoor
 {
-	Entity Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation);
-	void BindDoors(const Entity& inEntity0, const Entity& inEntity1);
+	Entity	Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation);
+	void	BindDoors(const Entity& inEntity0, const Entity& inEntity1);
 }

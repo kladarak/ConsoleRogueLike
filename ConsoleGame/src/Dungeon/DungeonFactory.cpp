@@ -102,7 +102,8 @@ static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
 
 DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 {
-	DungeonLayout layout = DungeonLayoutGenerator(25).Generate();
+	const int kRoomCount = 5;
+	DungeonLayout layout = DungeonLayoutGenerator(kRoomCount).Generate();
 
 	DungeonMap dungeon;
 
@@ -144,7 +145,6 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 		};
 		
 		{
-
 			auto constructOpenDoor = [&] (const IVec2& inRoomIndex, EDoorSide inSide)
 			{
 				constructDoor(inRoomIndex, inSide, [&] (const IVec2& inPosition, EOrientation inOrientation) { return OpenDoor::Create(inWorld, inPosition, inOrientation); } );
@@ -155,6 +155,26 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 			{
 				constructOpenDoor(link.mRoomIndex0, link.mRoomSide0);
 				constructOpenDoor(link.mRoomIndex1, link.mRoomSide1);
+			}
+		}
+
+		// Construct stairs.
+		bool hasConstructedStairs = false;
+		while (!hasConstructedStairs)
+		{
+			int col = rand() % layout.GetColCount();
+			int row = rand() % layout.GetRowCount();
+			auto& roomData = layout.Get(col, row);
+			if (roomData.mIsValid && !roomData.mDoors[EDoorSide_Top])
+			{
+				constructDoor( IVec2(col, row), EDoorSide_Top, [&] (const IVec2& inPosition, EOrientation inOrientation) 
+				{
+					LockedDoor::Create(inWorld, inPosition, inOrientation);
+					IVec2 stairsPos(inPosition.mX, inPosition.mY-1);
+					return Stairs::Create(inWorld, inMessageBroadcaster, stairsPos);
+				} );
+
+				hasConstructedStairs = true;
 			}
 		}
 	}
