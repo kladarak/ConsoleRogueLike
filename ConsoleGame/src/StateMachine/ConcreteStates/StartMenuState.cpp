@@ -23,14 +23,10 @@ static const MenuOption kOptions[] =
 	//{ EMenuOption_Dummy,		"Dummy Option" },
 };
 
-StartMenuState::StartMenuState()
-	: mHighlightedMenuOption(0)
+StartMenuState::StartMenuState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
+	: StateBase(inStateMachineMsgBroadcaster, inGameData)
+	, mHighlightedMenuOption(0)
 {
-}
-
-void StartMenuState::Init()
-{
-
 }
 
 void StartMenuState::Update(float /*inFrameTime*/, const InputBuffer& inInput)

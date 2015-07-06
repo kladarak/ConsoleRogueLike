@@ -1,15 +1,17 @@
 #pragma once
 
-#include <EntityComponentSystem/World/World.h>
+#include <string>
+
+class PlayerData;
 
 class EquippedBarUI
 {
 public:
 	EquippedBarUI();
 
-	void		Init(Entity inPlayer);
+	void		Init(PlayerData* inPlayerData);
 	std::string GetRenderBuffer() const;
 
 private:
-	Entity		mPlayer;
+	PlayerData*	mPlayerData;
 };

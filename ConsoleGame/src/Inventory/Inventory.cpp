@@ -1,6 +1,6 @@
 #include "Inventory.h"
 
-#include "ItemBase.h"
+#include "Items/ItemBase.h"
 
 Inventory::~Inventory()
 {

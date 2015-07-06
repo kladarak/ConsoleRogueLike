@@ -1,27 +1,27 @@
 #include "EquippedBarUI.h"
 
-#include <EntityComponent/Components/PlayerComponent.h>
+#include <Inventory/Items/ItemBase.h>
 
-#include <GameEntities/Player/Items/ItemBase.h>
+#include <GameEntities/Player/PlayerData.h>
 
 #include <Renderer/RenderTargetWriter.h>
 
 EquippedBarUI::EquippedBarUI()
+	: mPlayerData(nullptr)
 {
 }
 
-void EquippedBarUI::Init(Entity inPlayer)
+void EquippedBarUI::Init(PlayerData* inPlayerData)
 {
-	 mPlayer = inPlayer;
+	mPlayerData = inPlayerData;
 }
 
 std::string EquippedBarUI::GetRenderBuffer() const
 {
 	RenderTargetWriter renderHelper(20, 2);
 
-	auto playerComp = mPlayer.GetComponent<PlayerComponent>();
-	auto item0 = playerComp->GetItemInSlot( Player::EItemSlot_Slot0 );
-	auto item1 = playerComp->GetItemInSlot( Player::EItemSlot_Slot1 );
+	auto item0 = mPlayerData->GetItemInSlot( Player::EItemSlot_Slot0 );
+	auto item1 = mPlayerData->GetItemInSlot( Player::EItemSlot_Slot1 );
 
 	renderHelper.Write("Spc:",	0, 0);
 	renderHelper.Write("E:",	0, 1);

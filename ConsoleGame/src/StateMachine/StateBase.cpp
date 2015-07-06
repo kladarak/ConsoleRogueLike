@@ -3,10 +3,10 @@
 #include <Core/Messaging/MessageBroadcaster.h>
 #include <Messages/Messages.h>
 
-void StateBase::Initialise(MessageBroadcaster* inStateMachineMsgBroadcaster)
+StateBase::StateBase(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
+	: mGameData(inGameData)
+	, mStateMachineMsgBroadcaster(inStateMachineMsgBroadcaster)
 {
-	mStateMachineMsgBroadcaster = inStateMachineMsgBroadcaster;
-	Init();
 }
 
 void StateBase::RequestGoToState(EGameState inState)

@@ -19,23 +19,28 @@
 #include <Messages/Messages.h>
 
 #include "ScreenConstants.h"
+#include "GameData.h"
 
-void InGameState::Init()
+InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
+	: StateBase(inStateMachineMsgBroadcaster, inGameData)
 {
 	mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
 
-	mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster, mDungeonMap);
+	mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster, mDungeonMap, inGameData);
 
-	mHUD.Init(mMessageBroadcaster, mPlayer);
+	mHUD.Init(mMessageBroadcaster, &inGameData->mPlayerData, mPlayer);
 
 	mMessageBroadcaster.Register<BackToStartMenuMsg>( [&] (const BackToStartMenuMsg&) { RequestGoToState(EGameState_StartMenu); } );
 }
 
 void InGameState::Update(float inFrameTime, const InputBuffer& inInput)
 {
-	// TODO: Handle user input for state changes, e.g., tab.
+	if (inInput.IsPressed('\t'))
+	{
+		RequestPushState(EGameState_InventoryView);
+	}
 
 	TriggerSystem::HandleDestroyedEntities(mWorld);
 	mWorld.FlushDestroyedEntities();

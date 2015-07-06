@@ -16,17 +16,15 @@
 #include <EntityComponent/Components/TriggerBoxComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
 
+#include <Dungeon/DungeonMap.h>
 #include <Messages/Messages.h>
 
-#include "Items/Sword.h"
-#include "Items/Bow.h"
-#include "Items/Shield.h"
-#include "Items/DoorKey.h"
+#include "GameData.h"
 
 namespace PlayerEntity
 {
 
-Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const DungeonMap& inDungeonMap)
+Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const DungeonMap& inDungeonMap, GameData* inGameData)
 {
 	Entity entity = inWorld.CreateEntity();
 
@@ -47,7 +45,7 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const Dungeo
 	entity.AddComponent<AnimationComponent>();
 	entity.AddComponent<CollisionComponent>();
 	entity.AddComponent<HealthComponent>(3);
-	entity.AddComponent<PlayerComponent>();
+	entity.AddComponent<PlayerComponent>( &inGameData->mPlayerData );
 	entity.AddComponent<OrientationComponent>( EOrientation_FaceDown );
 	entity.AddComponent<PositionComponent>( roomPosition + IVec2(10, 10) );
 	entity.AddComponent<RenderableComponent>();
@@ -76,22 +74,7 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const Dungeo
 			entity.GetComponent<PlayerComponent>()->OnAttacked(entity, inAttackMsg, inMsgBroadcaster);
 		}
 	);
-	
-	{
-		auto playerComp = entity.GetComponent<PlayerComponent>();
-		auto& inventory = playerComp->GetInventory();
 
-		auto sword	= new Sword();
-		auto bow	= new Bow();
-		inventory.AddItem( sword );
-		inventory.AddItem( bow );
-		inventory.AddItem( new Shield() );
-		inventory.AddItem( new DoorKey() );
-
-		playerComp->SetItemInSlot( sword,	Player::EItemSlot_Slot0 );
-		playerComp->SetItemInSlot( bow,		Player::EItemSlot_Slot1 );
-	}
-	
 	return entity;
 }
 

@@ -8,10 +8,24 @@
 
 #include <StateMachine/StateBase.h>
 
+#include <Inventory/Items/Sword.h>
+#include <Inventory/Items/Bow.h>
+#include <Inventory/Items/Shield.h>
+#include <Inventory/Items/DoorKey.h>
+
 Game::Game()
-	: mStateMachineMessageHandler(mStateMachine)
+	: mStateMachineMessageHandler(mStateMachine, mGameData)
 	, mIsRunning(false)
 {
+	auto sword	= new Sword();
+	auto bow	= new Bow();
+	mGameData.mPlayerData.mInventory.AddItem( sword );
+	mGameData.mPlayerData.mInventory.AddItem( bow );
+	mGameData.mPlayerData.mInventory.AddItem( new Shield() );
+	mGameData.mPlayerData.mInventory.AddItem( new DoorKey() );
+
+	mGameData.mPlayerData.SetItemInSlot( sword,	Player::EItemSlot_Slot0 );
+	mGameData.mPlayerData.SetItemInSlot( bow,		Player::EItemSlot_Slot1 );
 }
 
 int Game::Run()

@@ -4,16 +4,16 @@
 
 #include "ConcreteStates/StartMenuState.h"
 #include "ConcreteStates/InGameState.h"
+#include "ConcreteStates/InventoryScreenState.h"
 
 #include "StateMachine.h"
 
 namespace
 {
 	template<typename TState>
-	void InitAndPush(StateMachine& inStateMachine, MessageBroadcaster* inBroadcaster)
+	void InitAndPush(StateMachine& inStateMachine, MessageBroadcaster* inBroadcaster, GameData* inGameData)
 	{
-		inStateMachine.PushState<TState>();
-		inStateMachine.GetTop()->Initialise(inBroadcaster);
+		inStateMachine.PushState<TState>(inBroadcaster, inGameData);
 	};
 };
 
@@ -23,8 +23,9 @@ StateMachineMessageHandler::StateChangeRequest::StateChangeRequest(ERequestType 
 {
 }
 
-StateMachineMessageHandler::StateMachineMessageHandler(StateMachine& inStateMachine)
+StateMachineMessageHandler::StateMachineMessageHandler(StateMachine& inStateMachine, GameData& inGameData)
 	: mStateMachine(inStateMachine)
+	, mGameData(inGameData)
 {
 	mMessageBroadcaster.Register<GoToStateMsg>( [&] (const GoToStateMsg& inGoToState)
 	{
@@ -75,8 +76,9 @@ void StateMachineMessageHandler::PushState(EGameState inState)
 {
 	switch (inState)
 	{
-		case EGameState_StartMenu:	InitAndPush<StartMenuState>(mStateMachine,	&mMessageBroadcaster);	break;
-		case EGameState_InGame:		InitAndPush<InGameState>(mStateMachine,		&mMessageBroadcaster);	break;
+		case EGameState_StartMenu:		InitAndPush<StartMenuState>			(mStateMachine,	&mMessageBroadcaster, &mGameData);	break;
+		case EGameState_InGame:			InitAndPush<InGameState>			(mStateMachine,	&mMessageBroadcaster, &mGameData);	break;
+		case EGameState_InventoryView:	InitAndPush<InventoryScreenState>	(mStateMachine,	&mMessageBroadcaster, &mGameData);	break;
 		default: break;
 	}
 }

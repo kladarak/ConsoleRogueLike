@@ -5,11 +5,12 @@
 #include "EGameState.h"
 
 class StateMachine;
+class GameData;
 
 class StateMachineMessageHandler
 {
 public:
-	StateMachineMessageHandler(StateMachine& inStateMachine);
+	StateMachineMessageHandler(StateMachine& inStateMachine, GameData& inGameData);
 
 	StateMachineMessageHandler& operator=(StateMachineMessageHandler& inOther) = delete;
 
@@ -19,6 +20,7 @@ private:
 	void				PushState(EGameState inState);
 
 	StateMachine&		mStateMachine;
+	GameData&			mGameData;
 	MessageBroadcaster	mMessageBroadcaster;
 
 	enum ERequestType

@@ -2,29 +2,23 @@
 
 #include <EntityComponent/Components/PlayerComponent.h>
 
-#include <GameEntities/Player/Items/Inventory.h>
-#include <GameEntities/Player/Items/ItemBase.h>
+#include <Inventory/Inventory.h>
+#include <Inventory/Items/ItemBase.h>
 
 #include <Input/InputBuffer.h>
 #include <Renderer/RenderTargetWriter.h>
+#include "GameData.h"
 
 
-InventoryScreenState::InventoryScreenState()
-	: mHighlightedItem(0)
+InventoryScreenState::InventoryScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
+	: StateBase(inStateMachineMsgBroadcaster, inGameData)
+	, mHighlightedItem(0)
 {
-}
-
-void InventoryScreenState::Init(Entity inPlayer)
-{
-	mPlayer = inPlayer;
 }
 
 void InventoryScreenState::Update(float /*inFrameTime*/, const InputBuffer& inInput)
 {
-	// TODO: Handle user input for state changes, e.g., tab.
-
-	auto	playerComp	= mPlayer.GetComponent<PlayerComponent>();
-	auto&	items		= playerComp->GetInventory().GetAllItems();
+	auto&	items		= mGameData->mPlayerData.mInventory.GetAllItems();
 	size_t	itemCount	= items.size();
 
 	if (inInput.IsPressed('w'))
@@ -40,12 +34,17 @@ void InventoryScreenState::Update(float /*inFrameTime*/, const InputBuffer& inIn
 	
 	if (inInput.IsPressed(' '))
 	{
-		playerComp->SetItemInSlot( items[mHighlightedItem], Player::EItemSlot_Slot0 );
+		mGameData->mPlayerData.SetItemInSlot( items[mHighlightedItem], Player::EItemSlot_Slot0 );
 	}
 	
 	if (inInput.IsPressed('e'))
 	{
-		playerComp->SetItemInSlot( items[mHighlightedItem], Player::EItemSlot_Slot1 );
+		mGameData->mPlayerData.SetItemInSlot( items[mHighlightedItem], Player::EItemSlot_Slot1 );
+	}
+
+	if (inInput.IsPressed('\t'))
+	{
+		RequestPopState();
 	}
 }
 
@@ -55,11 +54,9 @@ std::string InventoryScreenState::GetRenderBuffer() const
 	
 	RenderTargetWriter renderTargetWriter(50, 20);
 
-	auto	playerComp	= mPlayer.GetComponent<PlayerComponent>();
-	auto&	inventory	= playerComp->GetInventory();
-	auto	armedItem0	= playerComp->GetItemInSlot( Player::EItemSlot_Slot0 );
-	auto	armedItem1	= playerComp->GetItemInSlot( Player::EItemSlot_Slot1 );
-	auto&	items		= inventory.GetAllItems();
+	auto	armedItem0	= mGameData->mPlayerData.GetItemInSlot( Player::EItemSlot_Slot0 );
+	auto	armedItem1	= mGameData->mPlayerData.GetItemInSlot( Player::EItemSlot_Slot1 );
+	auto&	items		= mGameData->mPlayerData.mInventory.GetAllItems();
 	
 	int row = 0;
 	int col = 4;

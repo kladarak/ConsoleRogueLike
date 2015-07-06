@@ -7,13 +7,14 @@
 #include "YouAreDeadDisplay.h"
 
 class MessageBroadcaster;
+class PlayerData;
 
 class HUD
 {
 public:
 	HUD();
 
-	void				Init(MessageBroadcaster& inMessageBroadcaster, Entity inPlayer);
+	void				Init(MessageBroadcaster& inMessageBroadcaster, PlayerData* inPlayerData, Entity inPlayer);
 	
 	void				Update(float inFrameTime);
 

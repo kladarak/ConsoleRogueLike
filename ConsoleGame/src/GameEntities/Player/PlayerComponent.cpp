@@ -16,40 +16,38 @@
 
 #include <Messages/Messages.h>
 
-#include "Items/ItemBase.h"
+#include <Inventory/Items/ItemBase.h>
+
 #include "PlayerBehaviours/PlayerIdleBehaviour.h"
 #include "PlayerBehaviours/PlayerDeadBehaviour.h"
+#include "PlayerData.h"
 
 using namespace Player;
 
 static const float kDamagedFlashDuration	= 2.0f;
 static const float kDamageFlashRate			= 10.0f;
 
-PlayerComponent::PlayerComponent() 
-	: mState						(EState_Idle)
-	, mUsingItemSlot				(EItemSlot_None)
+PlayerComponent::PlayerComponent(PlayerData* inPlayerData) 
+	: mPlayerData					(inPlayerData)
+	, mState						(EState_Idle)
 	, mIdleBehaviour				(new PlayerIdleBehaviour())
 	, mDeadBehaviour				(new PlayerDeadBehaviour())
 	, mCurrentBehaviour				(nullptr)
 	, mLastSafePosition				(0, 0)
 	, mDamagedFlashTimeRemaining	(0.0f)
 {
-	memset(mItemSlot, 0, sizeof(mItemSlot));
 }
 
 PlayerComponent::PlayerComponent(PlayerComponent&& inRHS)
-	: mIntention					(inRHS.mIntention)
+	: mPlayerData					(inRHS.mPlayerData)
+	, mIntention					(inRHS.mIntention)
 	, mState						(inRHS.mState)
-	, mUsingItemSlot				(inRHS.mUsingItemSlot)
 	, mIdleBehaviour				(inRHS.mIdleBehaviour)
 	, mDeadBehaviour				(inRHS.mDeadBehaviour)
 	, mCurrentBehaviour				(inRHS.mCurrentBehaviour)
 	, mLastSafePosition				(inRHS.mLastSafePosition)
 	, mDamagedFlashTimeRemaining	(inRHS.mDamagedFlashTimeRemaining)
-	, mInventory					(std::move(inRHS.mInventory))
 {
-	memcpy(mItemSlot, inRHS.mItemSlot, sizeof(mItemSlot));
-
 	inRHS.mIdleBehaviour	= nullptr;
 	inRHS.mDeadBehaviour = nullptr;
 	inRHS.mCurrentBehaviour = nullptr;
@@ -138,11 +136,10 @@ void PlayerComponent::UpdateState(Entity inPlayer)
 	{
 		case EState_UseItem:
 		{
-			auto item = GetItemInSlot(mIntention.mUseItemSlot);
+			auto item = mPlayerData->GetItemInSlot(mIntention.mUseItemSlot);
 			if (nullptr != item)
 			{
 				newBehaviour	= item->GetPlayerBehaviour();
-				mUsingItemSlot	= mIntention.mUseItemSlot;
 				mState			= mIntention.mState;
 			}
 			break;

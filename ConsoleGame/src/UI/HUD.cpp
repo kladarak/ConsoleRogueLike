@@ -6,7 +6,7 @@
 
 #include <EntityComponent/Components/HealthComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
-#include <GameEntities/Player/Items/ItemBase.h>
+#include <Inventory/Items/ItemBase.h>
 
 #include <Messages/Messages.h>
 
@@ -25,14 +25,14 @@ HUD::HUD()
 {
 }
 
-void HUD::Init(MessageBroadcaster& inMessageBroadcaster, Entity inPlayer)
+void HUD::Init(MessageBroadcaster& inMessageBroadcaster, PlayerData* inPlayerData, Entity inPlayer)
 {
 	mPlayer = inPlayer;
 	inMessageBroadcaster.Register<CoinCollectedMessage>(	[this] (const CoinCollectedMessage&)	{ OnCoinCollected();	} );
 	inMessageBroadcaster.Register<PlayerIsDeadMsg>(			[this] (const PlayerIsDeadMsg&)			{ OnPlayerIsDead();		} );
 
 	mHealthBar.Init(mPlayer);
-	mEquippedBar.Init(mPlayer);
+	mEquippedBar.Init(inPlayerData);
 
 	mMessageBroadcaster = &inMessageBroadcaster;
 }

@@ -4,7 +4,6 @@
 
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
-#include <EntityComponent/Components/PlayerComponent.h>
 
 	
 static const AsciiMesh		kDeadRenderMesh( 'X' );
@@ -24,7 +23,6 @@ void PlayerDeadBehaviour::OnStart(Entity inPlayer)
 
 	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( gCArrayToVector(kDeadAnimations, gElemCount(kDeadAnimations)) );
 	inPlayer.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh( kDeadCollisionMesh );
-	inPlayer.GetComponent<PlayerComponent>()->SetUsingItemSlot( EItemSlot_None );
 }
 
 void PlayerDeadBehaviour::OnRestart(Entity /*inPlayer*/)

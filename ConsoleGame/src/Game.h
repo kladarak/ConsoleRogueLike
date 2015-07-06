@@ -5,6 +5,8 @@
 #include <StateMachine/StateMachine.h>
 #include <StateMachine/StateMachineMessageHandler.h>
 
+#include "GameData.h"
+
 class Game
 {
 public:
@@ -19,6 +21,7 @@ private:
 	
 	Timer						mTimer;
 	InputMonitor				mInputMonitor;
+	GameData					mGameData;
 	StateMachine				mStateMachine;
 	StateMachineMessageHandler	mStateMachineMessageHandler;
 	bool						mIsRunning;

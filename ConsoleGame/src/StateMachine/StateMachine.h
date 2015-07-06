@@ -13,7 +13,7 @@ public:
 	~StateMachine();
 
 	template< typename TStateBase >
-	void		PushState();
+	void		PushState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData);
 	void		PopState();
 
 	StateBase*	GetTop() const;
@@ -25,7 +25,7 @@ private:
 };
 
 template< typename TStateBase >
-void StateMachine::PushState()
+void StateMachine::PushState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
 {
-	mStateStack.push_back( new TStateBase() );
+	mStateStack.push_back( new TStateBase(inStateMachineMsgBroadcaster, inGameData) );
 }

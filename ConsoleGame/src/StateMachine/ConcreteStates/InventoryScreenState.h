@@ -1,20 +1,19 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
-#include <EntityComponentSystem/World/World.h>
+#include <StateMachine/StateBase.h>
 
 class InputBuffer;
 
-class InventoryScreenState
+class InventoryScreenState : public StateBase
 {
 public:
-	InventoryScreenState();
+	InventoryScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData);
 
-	void		Init(Entity inPlayer);
-	void		Update(float inFrameTime, const InputBuffer& inInput);
-	std::string GetRenderBuffer() const;
+	virtual void		Update(float inFrameTime, const InputBuffer& inInput);
+	virtual std::string GetRenderBuffer() const;
 
 private:
-	Entity		mPlayer;
-	uint32_t	mHighlightedItem;
+	uint32_t			mHighlightedItem;
 };

@@ -13,14 +13,13 @@ class InputBuffer;
 class InGameState : public StateBase
 {
 public:
+	InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData);
 	virtual ~InGameState() { }
 
 	virtual void		Update(float inFrameTime, const InputBuffer& inInput);
 	virtual std::string	GetRenderBuffer() const;
 
 private:
-	virtual void		Init();
-
 	World				mWorld;
 	DungeonMap			mDungeonMap;
 	CameraSystem		mCameraSystem;

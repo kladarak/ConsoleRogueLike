@@ -4,8 +4,9 @@
 #include <Dungeon/DungeonMap.h>
 
 class MessageBroadcaster;
+class GameData;
 
 namespace PlayerEntity
 {
-	Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const DungeonMap& inDungeonMap);
+	Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const DungeonMap& inDungeonMap, GameData* inGameData);
 }

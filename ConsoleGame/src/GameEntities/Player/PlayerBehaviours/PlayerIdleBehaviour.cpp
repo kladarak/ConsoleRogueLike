@@ -4,7 +4,6 @@
 
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
-#include <EntityComponent/Components/PlayerComponent.h>
 
 	
 static const AsciiMesh		kIdleRenderMesh( 'O' );
@@ -29,7 +28,6 @@ void PlayerIdleBehaviour::OnStart(Entity inPlayer)
 
 	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( GetIdleAnimations() );
 	inPlayer.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh( kIdleCollisionMesh );
-	inPlayer.GetComponent<PlayerComponent>()->SetUsingItemSlot( EItemSlot_None );
 }
 
 void PlayerIdleBehaviour::OnRestart(Entity /*inPlayer*/)
