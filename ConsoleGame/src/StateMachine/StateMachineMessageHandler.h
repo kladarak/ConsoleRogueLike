@@ -14,6 +14,7 @@ public:
 
 	StateMachineMessageHandler& operator=(StateMachineMessageHandler& inOther) = delete;
 
+	bool				HasStateChangeRequests() const { return mRequests.size() > 0; }
 	void				ProcessStateChangeRequests();
 
 private:

@@ -25,7 +25,7 @@ Game::Game()
 	mGameData.mPlayerData.mInventory.AddItem( new DoorKey() );
 
 	mGameData.mPlayerData.SetItemInSlot( sword,	Player::EItemSlot_Slot0 );
-	mGameData.mPlayerData.SetItemInSlot( bow,		Player::EItemSlot_Slot1 );
+	mGameData.mPlayerData.SetItemInSlot( bow,	Player::EItemSlot_Slot1 );
 }
 
 int Game::Run()
@@ -53,8 +53,13 @@ void Game::Init()
 
 void Game::Update()
 {
+	if (mStateMachineMessageHandler.HasStateChangeRequests())
+	{
+		mStateMachineMessageHandler.ProcessStateChangeRequests();
+		system("cls");
+	}
+
 	mTimer.Tick();
-	mStateMachineMessageHandler.ProcessStateChangeRequests();
 
 	float	frameTime	= mTimer.GetDeltaTime();
 	auto	inputBuffer = mInputMonitor.ConsumeBuffer();
