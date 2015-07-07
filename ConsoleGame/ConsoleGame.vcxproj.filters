@@ -229,6 +229,9 @@
     <ClCompile Include="src\Inventory\Items\SwordAnimations.cpp">
       <Filter>Source Files\Inventory\Items</Filter>
     </ClCompile>
+    <ClCompile Include="src\StateMachine\ConcreteStates\StartNewLevelIntroState.cpp">
+      <Filter>Source Files\StateMachine\ConcreteStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -461,6 +464,12 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Player\PlayerData.h">
       <Filter>Source Files\GameEntities\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StateMachine\ConcreteStates\StartNewLevelIntroState.h">
+      <Filter>Source Files\StateMachine\ConcreteStates</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Maths\Maths.h">
+      <Filter>Source Files\Maths</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

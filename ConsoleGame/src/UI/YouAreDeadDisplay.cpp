@@ -1,5 +1,7 @@
 #include "YouAreDeadDisplay.h"
 
+#include <Maths/Maths.h>
+
 namespace
 {
 	const float			kAnimationDuration	= 3.0f;
@@ -35,18 +37,14 @@ std::string YouAreDeadDisplay::GetRenderBuffer() const
 
 	std::string outBuffer;
 
-	auto isTimeBetween	= [&] (float inMin, float inMax)			{ return (mElapsedTime >= inMin) && (mElapsedTime < inMax); };
-	auto lerp			= [&] (float inT, float inMin, float inMax) { return inT * (inMax - inMin) + inMin;		};
-	auto proportion		= [&] (float inT, float inMin, float inMax) { return (inT - inMin) / (inMax - inMin);	};
-
-	if ( isTimeBetween(kKeyFrame0, kKeyFrame1) )
+	if ( gIsBetween(mElapsedTime, kKeyFrame0, kKeyFrame1) )
 	{
 		// Do nothing
 	}
-	else if ( isTimeBetween(kKeyFrame1, kKeyFrame2) )
+	else if ( gIsBetween(mElapsedTime, kKeyFrame1, kKeyFrame2) )
 	{
-		float	t				= proportion(mElapsedTime, kKeyFrame1, kKeyFrame2);
-		size_t	lettersToShow	= (size_t) lerp(t, 0.0f, (float) kMessage.size());
+		float	t				= gFraction(mElapsedTime, kKeyFrame1, kKeyFrame2);
+		size_t	lettersToShow	= (size_t) gLerp2D(t, 0.0f, (float) kMessage.size());
 		outBuffer = kMessage.substr(0, lettersToShow);
 	}
 	else// if ( mElapsedTime >= kKeyFrame2 )

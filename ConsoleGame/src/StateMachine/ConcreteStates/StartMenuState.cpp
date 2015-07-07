@@ -46,7 +46,7 @@ void StartMenuState::Update(float /*inFrameTime*/, const InputBuffer& inInput)
 	{
 		switch (mHighlightedMenuOption)
 		{
-			case EMenuOption_StartGame: RequestGoToState(EGameState_InGame); break;
+			case EMenuOption_StartGame: RequestGoToState(EGameState_StartLevelIntro); break;
 			default: break;
 		}
 	}

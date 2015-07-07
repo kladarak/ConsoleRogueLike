@@ -2,8 +2,9 @@
 
 enum EGameState
 {
-	EGameState_None,
+	EGameState_None			= -1,
 	EGameState_StartMenu,
+	EGameState_StartLevelIntro,
 	EGameState_InGame,
 	EGameState_InventoryView,
 };

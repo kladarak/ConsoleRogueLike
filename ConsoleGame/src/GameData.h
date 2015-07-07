@@ -5,6 +5,8 @@
 class GameData
 {
 public:
-	PlayerData mPlayerData;
+	GameData() : mCurrentLevel(0) { }
 
+	PlayerData	mPlayerData;
+	int			mCurrentLevel;
 };

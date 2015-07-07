@@ -3,6 +3,7 @@
 #include <Messages/Messages.h>
 
 #include "ConcreteStates/StartMenuState.h"
+#include "ConcreteStates/StartNewLevelIntroState.h"
 #include "ConcreteStates/InGameState.h"
 #include "ConcreteStates/InventoryScreenState.h"
 
@@ -14,6 +15,17 @@ namespace
 	void InitAndPush(StateMachine& inStateMachine, MessageBroadcaster* inBroadcaster, GameData* inGameData)
 	{
 		inStateMachine.PushState<TState>(inBroadcaster, inGameData);
+	};
+
+	typedef void (*ConstructAndPushStateFunc)(StateMachine& inStateMachine, MessageBroadcaster* inBroadcaster, GameData* inGameData);
+
+	// In order of EGameState, so that the enum value can be used index into this array.
+	const ConstructAndPushStateFunc kConstructAndPushStateFuncs[] =
+	{
+		&InitAndPush<StartMenuState>,
+		&InitAndPush<StartNewLevelIntroState>,
+		&InitAndPush<InGameState>,
+		&InitAndPush<InventoryScreenState>,
 	};
 };
 
@@ -74,11 +86,5 @@ void StateMachineMessageHandler::ProcessStateChangeRequests()
 
 void StateMachineMessageHandler::PushState(EGameState inState)
 {
-	switch (inState)
-	{
-		case EGameState_StartMenu:		InitAndPush<StartMenuState>			(mStateMachine,	&mMessageBroadcaster, &mGameData);	break;
-		case EGameState_InGame:			InitAndPush<InGameState>			(mStateMachine,	&mMessageBroadcaster, &mGameData);	break;
-		case EGameState_InventoryView:	InitAndPush<InventoryScreenState>	(mStateMachine,	&mMessageBroadcaster, &mGameData);	break;
-		default: break;
-	}
+	kConstructAndPushStateFuncs[inState](mStateMachine, &mMessageBroadcaster, &mGameData);
 }
