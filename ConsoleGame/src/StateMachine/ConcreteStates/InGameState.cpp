@@ -32,7 +32,17 @@ InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameD
 
 	mHUD.Init(mMessageBroadcaster, &inGameData->mPlayerData, mPlayer);
 
-	mMessageBroadcaster.Register<BackToStartMenuMsg>( [&] (const BackToStartMenuMsg&) { RequestGoToState(EGameState_StartMenu); } );
+	mMessageBroadcaster.Register<BackToStartMenuMsg>( [&] (const BackToStartMenuMsg&)
+	{
+		mGameData->mCurrentLevel = 1;
+		RequestGoToState(EGameState_StartMenu);
+	} );
+
+	mMessageBroadcaster.Register<PlayerWentDownStairs>( [&] (const PlayerWentDownStairs&) 
+	{
+		mGameData->mCurrentLevel++;
+		RequestGoToState(EGameState_StartLevelIntro);
+	} );
 }
 
 void InGameState::Update(float inFrameTime, const InputBuffer& inInput)
