@@ -18,23 +18,38 @@ void EquippedBarUI::Init(PlayerData* inPlayerData)
 
 std::string EquippedBarUI::GetRenderBuffer() const
 {
-	RenderTargetWriter renderHelper(20, 2);
+	using namespace Player;
 
-	auto item0 = mPlayerData->GetItemInSlot( Player::EItemSlot_Slot0 );
-	auto item1 = mPlayerData->GetItemInSlot( Player::EItemSlot_Slot1 );
+	RenderTargetWriter renderHelper(20, 2);
 
 	renderHelper.Write("Spc:",	0, 0);
 	renderHelper.Write("E:",	0, 1);
 
-	if (nullptr != item0)
-	{
-		renderHelper.Write(item0->GetHUDIcon(), 5, 0);
-	}
+	static const int kXOffset = 5;
 
-	if (nullptr != item1)
+	auto renderItemIcon = [&] (EItemSlot inSlot)
 	{
-		renderHelper.Write(item1->GetHUDIcon(), 5, 1);
-	}
+		auto item = mPlayerData->GetItemInSlot( inSlot );
+		if (nullptr != item)
+		{
+			const int y = inSlot;
+
+			auto const& icon = item->GetHUDIcon();
+			renderHelper.Write(icon, kXOffset, y);
+
+			int ammoCount = item->GetAmmoCount();
+			if (ammoCount >= 0)
+			{
+				int width = icon.GetLocalBounds().mWidth;
+				int ammoXOffset = kXOffset + 1 + width;
+				std::string ammoAsStr = "x" + std::to_string(ammoCount);
+				renderHelper.Write(ammoAsStr, ammoXOffset, y);
+			}
+		}
+	};
+
+	renderItemIcon( EItemSlot_Slot0 );
+	renderItemIcon( EItemSlot_Slot1 );
 
 	return renderHelper.GetRenderBuffer();
 }

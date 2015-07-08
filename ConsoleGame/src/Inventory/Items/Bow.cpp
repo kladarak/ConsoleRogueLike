@@ -26,6 +26,12 @@ Bow::Bow()
 {
 }
 
+BowPlayerBehaviour::BowPlayerBehaviour() 
+	: mAnimTimeElapsed(kAnimTime)
+	, mArrowCount(10)
+{
+}
+
 void BowPlayerBehaviour::OnStart(Entity inPlayer)
 {
 	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( BowAnimations::Generate() );
@@ -36,15 +42,21 @@ void BowPlayerBehaviour::OnStart(Entity inPlayer)
 	IVec2 attackDir		= gGetOrientationVector(orientation);
 	IVec2 attackPos		= playerPos + attackDir;
 	
-	Arrow::Create(*inPlayer.GetWorld(), attackPos, attackDir);
+	if (mArrowCount > 0)
+	{
+		Arrow::Create(*inPlayer.GetWorld(), attackPos, attackDir);
+		--mArrowCount;
+	}
 
 	mAnimTimeElapsed = 0.0f;
 }
 
 void BowPlayerBehaviour::OnRestart(Entity inPlayer)
 {
-	// For now do this, but really we need to filter how frequently arrows can be fired.
-	OnStart(inPlayer);
+	if (IsFinished())
+	{
+		OnStart(inPlayer);
+	}
 }
 
 void BowPlayerBehaviour::Update(Entity /*inPlayer*/, float inFrameTime)
@@ -54,9 +66,10 @@ void BowPlayerBehaviour::Update(Entity /*inPlayer*/, float inFrameTime)
 
 void BowPlayerBehaviour::OnFinish(Entity /*inPlayer*/)
 {
+	mAnimTimeElapsed = kAnimTime;
 }
 
 bool BowPlayerBehaviour::IsFinished() const
 { 
-	return mAnimTimeElapsed > kAnimTime;
+	return mAnimTimeElapsed >= kAnimTime;
 }

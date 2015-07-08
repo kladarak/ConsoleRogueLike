@@ -18,6 +18,7 @@ public:
 	const AsciiMesh&				GetHUDIcon() const	{ return mData.mHUDIcon;	}
 
 	virtual PlayerBehaviourBase*	GetPlayerBehaviour() = 0;
+	virtual int						GetAmmoCount() const { return -1; }
 
 private:
 	ItemData						mData;

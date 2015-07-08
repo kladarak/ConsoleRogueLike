@@ -56,7 +56,7 @@ std::string HUD::GetTopBarRenderBuffer() const
 	
 	renderTargetWriter.Write( mHealthBar.GetRenderBuffer(), 0, 0 );
 
-	int equippedBarX = ScreenConstants::EMapCols - 10;
+	int equippedBarX = ScreenConstants::EMapCols - 13;
 	renderTargetWriter.Write( mEquippedBar.GetRenderBuffer(), equippedBarX, 0 );
 
 	return renderTargetWriter.GetRenderBuffer();
