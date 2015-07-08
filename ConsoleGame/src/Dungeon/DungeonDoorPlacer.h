@@ -25,6 +25,8 @@ public:
 
 	DungeonDoorPlacer(World& inWorld, DungeonMap& inDungeonMap);
 
+	DungeonDoorPlacer& operator=(const DungeonDoorPlacer& inOther) = delete;
+
 	void		AddOpenDoor(const RoomLink& inRoomLink);
 	void		AddLockedDoor(const RoomLink& inRoomLink);
 	void		AddDungeonExit(const IVec2& inRoomIndex, MessageBroadcaster& inMessageBroadcaster);

@@ -26,6 +26,23 @@
 namespace DungeonFactory
 {
 
+static DungeonMap sConstructMap(World& inWorld, const DungeonLayout& inLayout)
+{
+	DungeonMap dungeon;
+
+	inLayout.ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
+	{
+		if (inRoomData.mIsValid)
+		{
+			IVec2 pos( inCol * ERoomDimensions_Width, inRow * ERoomDimensions_Height );
+			auto room = RoomEntity::Create(inWorld, pos);
+			dungeon.Set(inCol, inRow, room);
+		}
+	} );
+
+	return dungeon;
+}
+
 static IVec2 sGetRandomValidRoomIndex(const DungeonLayout& inLayout)
 {
 	int col, row;
@@ -38,6 +55,57 @@ static IVec2 sGetRandomValidRoomIndex(const DungeonLayout& inLayout)
 	while ( !inLayout.Get(col, row).mIsValid );
 
 	return IVec2(col, row);
+}
+
+static void sAddDoors(DungeonMap& inDungeon, const DungeonLayout& inLayout, World& inWorld, MessageBroadcaster& inMessageBroadcaster)
+{
+	DungeonDoorPlacer doorPlacer(inWorld, inDungeon);
+
+	auto doorLinks = DungeonDoorPlacer::sGenerateRoomLinks(inLayout);
+	for (auto& link : doorLinks)
+	{
+		doorPlacer.AddOpenDoor(link);
+	}
+
+	// Construct stairs, by finding a room without a door on its top side.
+	IVec2 roomIndex(-1, -1);
+
+	do
+	{
+		roomIndex = sGetRandomValidRoomIndex(inLayout);
+	}
+	while ( inLayout.Get(roomIndex).mDoors[EDoorSide_Top] );
+		
+	doorPlacer.AddDungeonExit(roomIndex, inMessageBroadcaster);
+}
+
+static void sPlaceItemInDungeon(Entity inItem, DungeonMap& inDungeon, const DungeonLayout& inLayout)
+{
+	IVec2 position(0, 0);
+
+	// Select room and set position to room position
+	{
+		IVec2	roomIndex	= sGetRandomValidRoomIndex(inLayout);
+		auto	room		= inDungeon.Get(roomIndex);
+		position			= room.GetComponent<PositionComponent>()->GetPosition();
+	}
+
+	// Generate random offset considering wall/door margins and item size.
+	{
+		auto const& keyBounds = inItem.GetComponent<TriggerBoxComponent>()->GetBounds();
+		
+		static const int kRoomMargin = 2;
+		int validAreaWidth = ERoomDimensions_Width - (kRoomMargin*2 + keyBounds.mWidth);
+		int validAreaHeight = ERoomDimensions_Height - (kRoomMargin*2 + keyBounds.mHeight);
+		int x = rand() % validAreaWidth;
+		int y = rand() % validAreaHeight;
+		x += kRoomMargin + keyBounds.mX;
+		y += kRoomMargin + keyBounds.mY;
+		position.mX += x;
+		position.mY += y;
+	}
+
+	inItem.GetComponent<PositionComponent>()->SetPosition(position);
 }
 
 static void SpawnRandomEntities(World& inWorld, const IVec2& inRoomPos, int inCount, const std::function<void (const IVec2& inPos)>& inEntitySpawner)
@@ -69,71 +137,17 @@ static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
 DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, GameData* inGameData)
 {
 	const int kRoomCount = 5;
+
 	DungeonLayout layout = DungeonLayoutGenerator(kRoomCount).Generate();
 
-	DungeonMap dungeon;
+	DungeonMap dungeon = sConstructMap(inWorld, layout);
 
-	layout.ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
-	{
-		if (inRoomData.mIsValid)
-		{
-			IVec2 pos( inCol * ERoomDimensions_Width, inRow * ERoomDimensions_Height );
-			auto room = RoomEntity::Create(inWorld, pos);
-			dungeon.Set(inCol, inRow, room);
-		}
-	} );
-	
-	// Add doors
-	{
-		DungeonDoorPlacer doorPlacer(inWorld, dungeon);
-
-		auto doorLinks = DungeonDoorPlacer::sGenerateRoomLinks(layout);
-		for (auto& link : doorLinks)
-		{
-			doorPlacer.AddOpenDoor(link);
-		}
-
-		// Construct stairs, by finding a room without a door on its top side.
-		IVec2 roomIndex(-1, -1);
-
-		do
-		{
-			roomIndex = sGetRandomValidRoomIndex(layout);
-		}
-		while ( !layout.Get(roomIndex).mDoors[EDoorSide_Top] );
-		
-		doorPlacer.AddDungeonExit(roomIndex, inMessageBroadcaster);
-	}
+	sAddDoors(dungeon, layout, inWorld, inMessageBroadcaster);
 
 	// Place key somewhere.
 	{
 		auto doorKey = ItemEntity::Create<DoorKey>(inWorld, inGameData);
-
-		IVec2 doorKeyPos(0, 0);
-
-		// Select room and set position to room position
-		{
-			IVec2	roomIndex	= sGetRandomValidRoomIndex(layout);
-			auto	room		= dungeon.Get(roomIndex);
-			doorKeyPos			= room.GetComponent<PositionComponent>()->GetPosition();
-		}
-
-		// Generate random offset considering wall/door margins and key size.
-		{
-			auto const& keyBounds = doorKey.GetComponent<TriggerBoxComponent>()->GetBounds();
-		
-			static const int kRoomMargin = 2;
-			int validAreaWidth = ERoomDimensions_Width - (kRoomMargin*2 + keyBounds.mWidth);
-			int validAreaHeight = ERoomDimensions_Height - (kRoomMargin*2 + keyBounds.mHeight);
-			int x = rand() % validAreaWidth;
-			int y = rand() % validAreaHeight;
-			x += kRoomMargin + keyBounds.mX;
-			y += kRoomMargin + keyBounds.mY;
-			doorKeyPos.mX += x;
-			doorKeyPos.mY += y;
-		}
-
-		doorKey.GetComponent<PositionComponent>()->SetPosition(doorKeyPos);
+		sPlaceItemInDungeon(doorKey, dungeon, layout);
 	}
 
 	// Fill rooms after creating all rooms, to fix draw order problems.
