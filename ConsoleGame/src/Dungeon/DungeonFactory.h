@@ -5,8 +5,9 @@
 #include "DungeonMap.h"
 
 class MessageBroadcaster;
+class GameData;
 
 namespace DungeonFactory
 {
-	DungeonMap Generate(World& inGlobalSystems, MessageBroadcaster& inMessageBroadcaster);
+	DungeonMap Generate(World& inGlobalSystems, MessageBroadcaster& inMessageBroadcaster, GameData* inGameData);
 }

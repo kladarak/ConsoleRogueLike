@@ -14,6 +14,9 @@ public:
 	~Inventory();
 
 	void							AddItem(ItemBase* inItem);
+	ItemBase*						FindItem(const std::string& inName) const;
+	void							RemoveAndDeleteItem(ItemBase* inItem);
+
 	const std::vector<ItemBase*>&	GetAllItems() const						{ return mItems; }
 
 private:

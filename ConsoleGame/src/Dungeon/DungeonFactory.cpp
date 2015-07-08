@@ -13,12 +13,15 @@
 
 #include <GameEntities/CoinEntity.h>
 #include <GameEntities/SpinnerEntity.h>
+#include <GameEntities/ItemEntity.h>
 #include <GameEntities/Monsters/MonsterEntityFactory.h>
 
 #include <GameEntities/Obstacles/DoorConstants.h>
 #include <GameEntities/Obstacles/LockedDoor.h>
 #include <GameEntities/Obstacles/OpenDoor.h>
 #include <GameEntities/Obstacles/Stairs.h>
+
+#include <Inventory/Items/DoorKey.h>
 
 #include "RoomEntity.h"
 #include "ScreenConstants.h"
@@ -74,6 +77,20 @@ static std::vector<RoomLink> sGenerateRoomLinks(const DungeonLayout& inLayout)
 	return links;
 }
 
+static IVec2 sGetRandomValidRoomIndex(const DungeonLayout& inLayout)
+{
+	int col, row;
+
+	do
+	{
+		col = rand() % inLayout.GetColCount();
+		row = rand() % inLayout.GetRowCount();
+	}
+	while ( !inLayout.Get(col, row).mIsValid );
+
+	return IVec2(col, row);
+}
+
 static void SpawnRandomEntities(World& inWorld, const IVec2& inRoomPos, int inCount, const std::function<void (const IVec2& inPos)>& inEntitySpawner)
 {
 	for (int i = 0; i < inCount; ++i)
@@ -100,7 +117,7 @@ static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
 	SpawnRandomEntities(world, roomPos, rand()%5, [&] (const IVec2& inPos) { CoinEntity::Create(world, inMessageBroadcaster, inPos); } );
 }
 
-DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
+DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, GameData* inGameData)
 {
 	const int kRoomCount = 5;
 	DungeonLayout layout = DungeonLayoutGenerator(kRoomCount).Generate();
@@ -131,7 +148,7 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 		{ IVec2(ERoomDimensions_Width-2,			ERoomDimensions_DoorVertiOffset),	EOrientation_FaceRight	},
 	};
 	
-	// Addd doors
+	// Add doors
 	{
 		auto constructDoor = [&] (const IVec2& inRoomIndex, EDoorSide inSide, const std::function<Entity (const IVec2&, EOrientation)>& inCreateDoorFunc)
 		{
@@ -162,13 +179,11 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 		bool hasConstructedStairs = false;
 		while (!hasConstructedStairs)
 		{
-			int		col			= rand() % layout.GetColCount();
-			int		row			= rand() % layout.GetRowCount();
-			auto&	roomData	= layout.Get(col, row);
+			IVec2 roomIndex = sGetRandomValidRoomIndex(layout);
 
-			if (roomData.mIsValid && !roomData.mDoors[EDoorSide_Top])
+			if (!layout.Get(roomIndex).mDoors[EDoorSide_Top])
 			{
-				constructDoor( IVec2(col, row), EDoorSide_Top, [&] (const IVec2& inPosition, EOrientation inOrientation) 
+				constructDoor( roomIndex, EDoorSide_Top, [&] (const IVec2& inPosition, EOrientation inOrientation) 
 				{
 					LockedDoor::Create(inWorld, inPosition, inOrientation);
 					IVec2 stairsPos(inPosition.mX, inPosition.mY-1);
@@ -178,6 +193,37 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 				hasConstructedStairs = true;
 			}
 		}
+	}
+
+	// Place key somewhere.
+	{
+		auto doorKey = ItemEntity::Create<DoorKey>(inWorld, inGameData);
+
+		IVec2 doorKeyPos(0, 0);
+
+		// Select room and set position to room position
+		{
+			IVec2	roomIndex	= sGetRandomValidRoomIndex(layout);
+			auto	room		= dungeon.Get(roomIndex);
+			doorKeyPos			= room.GetComponent<PositionComponent>()->GetPosition();
+		}
+
+		// Generate random offset considering wall/door margins and key size.
+		{
+			auto const& keyBounds = doorKey.GetComponent<TriggerBoxComponent>()->GetBounds();
+		
+			static const int kRoomMargin = 2;
+			int validAreaWidth = ERoomDimensions_Width - (kRoomMargin*2 + keyBounds.mWidth);
+			int validAreaHeight = ERoomDimensions_Height - (kRoomMargin*2 + keyBounds.mHeight);
+			int x = rand() % validAreaWidth;
+			int y = rand() % validAreaHeight;
+			x += kRoomMargin + keyBounds.mX;
+			y += kRoomMargin + keyBounds.mY;
+			doorKeyPos.mX += x;
+			doorKeyPos.mY += y;
+		}
+
+		doorKey.GetComponent<PositionComponent>()->SetPosition(doorKeyPos);
 	}
 
 	// Fill rooms after creating all rooms, to fix draw order problems.

@@ -101,6 +101,7 @@
     <ClInclude Include="src\GameData.h" />
     <ClInclude Include="src\GameEntities\CoinEntity.h" />
     <ClInclude Include="src\GameEntities\HealthEntity.h" />
+    <ClInclude Include="src\GameEntities\ItemEntity.h" />
     <ClInclude Include="src\GameEntities\Monsters\MonsterEntityFactory.h" />
     <ClInclude Include="src\GameEntities\Obstacles\DoorConstants.h" />
     <ClInclude Include="src\GameEntities\Obstacles\LockedDoor.h" />

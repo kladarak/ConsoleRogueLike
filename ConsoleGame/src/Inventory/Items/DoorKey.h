@@ -19,6 +19,8 @@ private:
 class DoorKey : public ItemBase
 {
 public:
+	static const std::string kName;
+
 	DoorKey();
 	virtual PlayerBehaviourBase*	GetPlayerBehaviour() { return &mBehaviour; }
 

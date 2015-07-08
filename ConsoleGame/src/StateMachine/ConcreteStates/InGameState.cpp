@@ -16,6 +16,8 @@
 #include <Renderer/RenderTarget.h>
 #include <Renderer/RenderTargetWriter.h>
 
+#include <Inventory/Items/DoorKey.h>
+
 #include <Messages/Messages.h>
 
 #include "ScreenConstants.h"
@@ -24,7 +26,28 @@
 InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
 	: StateBase(inStateMachineMsgBroadcaster, inGameData)
 {
-	mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster);
+	// If this is a new level, remove DoorKey from inventory.
+	// TODO: Improve cleanup of states/levels.
+	{
+		auto& playerData = mGameData->mPlayerData;
+		auto& inventory = playerData.mInventory;
+		
+		auto key = inventory.FindItem(DoorKey::kName);
+
+		if (key == playerData.GetItemInSlot(Player::EItemSlot_Slot0))
+		{
+			playerData.SetItemInSlot(nullptr, Player::EItemSlot_Slot0);
+		}
+
+		if (key == playerData.GetItemInSlot(Player::EItemSlot_Slot1))
+		{
+			playerData.SetItemInSlot(nullptr, Player::EItemSlot_Slot1);
+		}
+
+		inventory.RemoveAndDeleteItem(key);
+	}
+
+	mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster, inGameData);
 	
 	mCameraSystem.Init(mWorld, mDungeonMap);
 

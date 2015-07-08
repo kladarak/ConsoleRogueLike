@@ -22,7 +22,8 @@ public:
 	void							RegisterOnExitCallback(const TriggerCallback& inOnExit)							{ mOnExitCallbacks.push_back(inOnExit);		}
 	
 	bool							IsInBounds(const Entity& inThis, const IVec2& inPosition) const;
-	
+	const IRect&					GetBounds() const																{ return mBounds; }
+
 	void							OnEntered(const Entity& inThis, const Entity& inTriggerer);
 	void							OnExited(const Entity& inThis, const Entity& inTriggerer);
 	
