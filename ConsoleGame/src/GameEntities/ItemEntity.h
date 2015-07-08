@@ -34,14 +34,11 @@ namespace ItemEntity
 		(
 			[=] (Entity inItemEntity, Entity inPlayer)
 			{
-				if (!inPlayer.HasComponent<PlayerComponent>())
+				if (inPlayer.HasComponent<PlayerComponent>())
 				{
-					return;
+					inGameData->mPlayerData.mInventory.AddItem( new TItemBase() );
+					inItemEntity.Kill();
 				}
-
-				inGameData->mPlayerData.mInventory.AddItem( new TItemBase() );
-
-				inItemEntity.Kill();
 			}
 		);
 	
