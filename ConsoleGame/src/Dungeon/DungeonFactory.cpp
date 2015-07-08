@@ -16,66 +16,15 @@
 #include <GameEntities/ItemEntity.h>
 #include <GameEntities/Monsters/MonsterEntityFactory.h>
 
-#include <GameEntities/Obstacles/DoorConstants.h>
-#include <GameEntities/Obstacles/LockedDoor.h>
-#include <GameEntities/Obstacles/OpenDoor.h>
-#include <GameEntities/Obstacles/Stairs.h>
-
 #include <Inventory/Items/DoorKey.h>
 
 #include "RoomEntity.h"
 #include "ScreenConstants.h"
 #include "DungeonLayoutGenerator.h"
+#include "DungeonDoorPlacer.h"
 
 namespace DungeonFactory
 {
-
-enum
-{
-	ROOM_COL_COUNT = 3,
-	ROOM_ROW_COUNT = 3,
-};
-
-struct RoomLink
-{
-	IVec2		mRoomIndex0;
-	IVec2		mRoomIndex1;
-	EDoorSide	mRoomSide0;
-	EDoorSide	mRoomSide1;
-};
-
-static std::vector<RoomLink> sGenerateRoomLinks(const DungeonLayout& inLayout)
-{
-	std::vector<RoomLink> links;
-	
-	inLayout.ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
-	{
-		if (inRoomData.mDoors[EDoorSide_Bottom])
-		{
-			RoomLink link;
-			link.mRoomIndex0	= IVec2(inCol, inRow);
-			link.mRoomIndex1	= IVec2(inCol, inRow+1);
-			link.mRoomSide0		= EDoorSide_Bottom;
-			link.mRoomSide1		= EDoorSide_Top;
-			links.push_back(link);
-		}
-	} );
-	
-	inLayout.ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
-	{
-		if (inRoomData.mDoors[EDoorSide_Right])
-		{
-			RoomLink link;
-			link.mRoomIndex0	= IVec2(inCol, inRow);
-			link.mRoomIndex1	= IVec2(inCol+1, inRow);
-			link.mRoomSide0		= EDoorSide_Right;
-			link.mRoomSide1		= EDoorSide_Left;
-			links.push_back(link);
-		}
-	} );
-
-	return links;
-}
 
 static IVec2 sGetRandomValidRoomIndex(const DungeonLayout& inLayout)
 {
@@ -134,65 +83,26 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, Ga
 		}
 	} );
 	
-	struct DoorConstructInfo
-	{
-		IVec2			mLocalPosition;
-		EOrientation	mOrientation;
-	};
-
-	static const DoorConstructInfo kDoorConstructInfo[] =
-	{
-		{ IVec2(ERoomDimensions_DoorHorizOffset,	1),									EOrientation_FaceUp		},
-		{ IVec2(ERoomDimensions_DoorHorizOffset,	ERoomDimensions_Height-1),			EOrientation_FaceDown	},
-		{ IVec2(1,									ERoomDimensions_DoorVertiOffset),	EOrientation_FaceLeft	},
-		{ IVec2(ERoomDimensions_Width-2,			ERoomDimensions_DoorVertiOffset),	EOrientation_FaceRight	},
-	};
-	
 	// Add doors
 	{
-		auto constructDoor = [&] (const IVec2& inRoomIndex, EDoorSide inSide, const std::function<Entity (const IVec2&, EOrientation)>& inCreateDoorFunc)
-		{
-			auto	room			= dungeon.Get(inRoomIndex.mX, inRoomIndex.mY);
-			auto&	roomPos			= room.GetComponent<PositionComponent>()->GetPosition();
-			auto&	constructInfo	= kDoorConstructInfo[inSide];
-			auto	doorPos			= roomPos + constructInfo.mLocalPosition;
+		DungeonDoorPlacer doorPlacer(inWorld, dungeon);
 
-			RoomEntity::EraseWallForDoor(room, inSide);
-			return inCreateDoorFunc(doorPos, constructInfo.mOrientation);
-		};
-		
+		auto doorLinks = DungeonDoorPlacer::sGenerateRoomLinks(layout);
+		for (auto& link : doorLinks)
 		{
-			auto constructOpenDoor = [&] (const IVec2& inRoomIndex, EDoorSide inSide)
-			{
-				constructDoor(inRoomIndex, inSide, [&] (const IVec2& inPosition, EOrientation inOrientation) { return OpenDoor::Create(inWorld, inPosition, inOrientation); } );
-			};
-
-			auto doorLinks = sGenerateRoomLinks(layout);
-			for (auto& link : doorLinks)
-			{
-				constructOpenDoor(link.mRoomIndex0, link.mRoomSide0);
-				constructOpenDoor(link.mRoomIndex1, link.mRoomSide1);
-			}
+			doorPlacer.AddOpenDoor(link);
 		}
 
 		// Construct stairs, by finding a room without a door on its top side.
-		bool hasConstructedStairs = false;
-		while (!hasConstructedStairs)
+		IVec2 roomIndex(-1, -1);
+
+		do
 		{
-			IVec2 roomIndex = sGetRandomValidRoomIndex(layout);
-
-			if (!layout.Get(roomIndex).mDoors[EDoorSide_Top])
-			{
-				constructDoor( roomIndex, EDoorSide_Top, [&] (const IVec2& inPosition, EOrientation inOrientation) 
-				{
-					LockedDoor::Create(inWorld, inPosition, inOrientation);
-					IVec2 stairsPos(inPosition.mX, inPosition.mY-1);
-					return Stairs::Create(inWorld, inMessageBroadcaster, stairsPos);
-				} );
-
-				hasConstructedStairs = true;
-			}
+			roomIndex = sGetRandomValidRoomIndex(layout);
 		}
+		while ( !layout.Get(roomIndex).mDoors[EDoorSide_Top] );
+		
+		doorPlacer.AddDungeonExit(roomIndex, inMessageBroadcaster);
 	}
 
 	// Place key somewhere.

@@ -232,6 +232,9 @@
     <ClCompile Include="src\StateMachine\ConcreteStates\StartNewLevelIntroState.cpp">
       <Filter>Source Files\StateMachine\ConcreteStates</Filter>
     </ClCompile>
+    <ClCompile Include="src\Dungeon\DungeonDoorPlacer.cpp">
+      <Filter>Source Files\Dungeon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -473,6 +476,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\ItemEntity.h">
       <Filter>Source Files\GameEntities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dungeon\DungeonDoorPlacer.h">
+      <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

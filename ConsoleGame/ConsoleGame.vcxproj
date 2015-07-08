@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Animations\Animation.cpp" />
+    <ClCompile Include="src\Dungeon\DungeonDoorPlacer.cpp" />
     <ClCompile Include="src\Dungeon\DungeonFactory.cpp" />
     <ClCompile Include="src\Dungeon\DungeonLayoutGenerator.cpp" />
     <ClCompile Include="src\Dungeon\RoomEntity.cpp" />
@@ -71,6 +72,7 @@
     <ClInclude Include="src\Containers\ContainerMacros.h" />
     <ClInclude Include="src\Containers\Dynamic2DVector.h" />
     <ClInclude Include="src\Containers\Dynamic2DVectorWithOffset.h" />
+    <ClInclude Include="src\Dungeon\DungeonDoorPlacer.h" />
     <ClInclude Include="src\Dungeon\DungeonFactory.h" />
     <ClInclude Include="src\Dungeon\DungeonLayoutGenerator.h" />
     <ClInclude Include="src\Dungeon\DungeonMap.h" />
