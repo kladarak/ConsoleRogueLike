@@ -238,6 +238,9 @@
     <ClCompile Include="src\GameSystems\ItemDropHandler.cpp">
       <Filter>Source Files\GameSystems</Filter>
     </ClCompile>
+    <ClCompile Include="src\Inventory\Items\Bomb.cpp">
+      <Filter>Source Files\Inventory\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -485,6 +488,9 @@
     </ClInclude>
     <ClInclude Include="src\GameSystems\ItemDropHandler.h">
       <Filter>Source Files\GameSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\Items\Bomb.h">
+      <Filter>Source Files\Inventory\Items</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
