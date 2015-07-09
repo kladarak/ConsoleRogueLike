@@ -53,7 +53,7 @@ const std::string DoorKey::kName = "Key";
 static const CollisionMesh	kDoorKeyCollisionMesh( 0, 0 );
 
 static const char			kDoorKeyIcon[]	= { '0', '-', 'm' };
-static const ItemData		kDoorKeyData	= { DoorKey::kName, AsciiMesh(kDoorKeyIcon, gElemCount(kDoorKeyIcon), 1) };
+static const ItemData		kDoorKeyData(DoorKey::kName, AsciiMesh(kDoorKeyIcon, gElemCount(kDoorKeyIcon), 1), ERequiresNoAmmo);
 static const float			kAnimTime	= 0.15f;
 
 using namespace Player;

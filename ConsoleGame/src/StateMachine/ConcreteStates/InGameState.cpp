@@ -13,6 +13,8 @@
 
 #include <Input/InputBuffer.h>
 
+#include <GameSystems/ItemDropHandler.h>
+
 #include <Renderer/RenderTarget.h>
 #include <Renderer/RenderTargetWriter.h>
 
@@ -66,6 +68,8 @@ InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameD
 		mGameData->mCurrentLevel++;
 		RequestGoToState(EGameState_StartLevelIntro);
 	} );
+
+	ItemDropHandler::Register(mWorld, mMessageBroadcaster, mGameData);
 }
 
 void InGameState::Update(float inFrameTime, const InputBuffer& inInput)

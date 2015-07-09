@@ -61,6 +61,13 @@ public:
 	IVec2 mPosition;
 };
 
+class MonsterDiedMsg
+{
+public:
+	MonsterDiedMsg(const IVec2& inPosition) : mPosition(inPosition) { }
+	IVec2 mPosition;
+};
+
 namespace MessageHelpers
 {
 

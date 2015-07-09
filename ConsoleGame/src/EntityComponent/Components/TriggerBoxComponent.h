@@ -11,9 +11,10 @@ class Entity;
 class TriggerBoxComponent
 {
 public:
-	TriggerBoxComponent(const IRect& inRect) : mBounds(inRect)	{ }
+	TriggerBoxComponent()						: mBounds(0, 0, 1, 1)	{ }
+	TriggerBoxComponent(const IRect& inRect)	: mBounds(inRect)		{ }
 	TriggerBoxComponent(TriggerBoxComponent&& inRHS);
-	~TriggerBoxComponent()										{ }
+	~TriggerBoxComponent()												{ }
 
 	typedef std::function<void (const Entity& inTriggerBox, const Entity& inTriggerer)> TriggerCallback;
 

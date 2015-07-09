@@ -14,9 +14,6 @@
 
 #include <EntityComponent/Systems/CollisionSystem.h>
 
-#include <GameEntities/CoinEntity.h>
-#include <GameEntities/HealthEntity.h>
-
 #include <Containers/ContainerMacros.h>
 
 #include <Messages/Messages.h>
@@ -139,15 +136,8 @@ static void Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBr
 		if (monsterState->mTimeUntilDeath <= 0.0f)
 		{
 			auto position = inThis.GetComponent<PositionComponent>()->GetPosition();
-
 			inThis.Kill();
-
-			switch (rand() % 3)
-			{
-				case 0: CoinEntity::Create(*inThis.GetWorld(), inMsgBroadcaster, position); break;
-				case 1: HealthEntity::Create(*inThis.GetWorld(), position); break;
-				default: break;
-			}
+			inMsgBroadcaster.Broadcast( MonsterDiedMsg(position) );
 		}
 
 		return;

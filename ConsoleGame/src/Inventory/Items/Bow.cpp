@@ -4,9 +4,14 @@
 
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/OrientationComponent.h>
+#include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
+#include <EntityComponent/Components/RenderableComponent.h>
+#include <EntityComponent/Components/TriggerBoxComponent.h>
 
 #include <EntityComponent/Systems/PositionSystem.h>
+
+#include <EntityComponentSystem/World/EntityBuilder.h>
 
 #include <Messages/Messages.h>
 
@@ -16,7 +21,7 @@
 
 
 static const char		kBowIcon[]	= { 'D', ' ', 26 };
-static const ItemData	kBowData	= { "Bow", AsciiMesh(kBowIcon, gElemCount(kBowIcon), 1) };
+static const ItemData	kBowData("Bow", AsciiMesh(kBowIcon, gElemCount(kBowIcon), 1), ERequiresAmmo );
 static const float		kAnimTime	= 0.5f;
 
 using namespace Player;
@@ -25,6 +30,29 @@ Bow::Bow()
 	: ItemBase(kBowData)
 {
 }
+
+void Bow::SpawnAmmo(World& inWorld, const IVec2& inPosition)
+{
+	auto arrow = EntityBuilder(inWorld)
+					.AddComponent<PositionComponent>(inPosition)
+					.AddComponent<RenderableComponent>( AsciiMesh((char) 24) )
+					.AddComponent<TriggerBoxComponent>()
+					.Create();
+
+	arrow.GetComponent<TriggerBoxComponent>()->RegisterOnEnterCallback
+	( 
+		[&] (Entity inThis, Entity inPlayer)
+		{
+			if (inPlayer.HasComponent<PlayerComponent>())
+			{
+				mBehaviour.IncArrowCount();
+				inThis.Kill();
+			}
+		}
+	);
+}
+
+//------------------------------------------------------------------------------------
 
 BowPlayerBehaviour::BowPlayerBehaviour() 
 	: mAnimTimeElapsed(kAnimTime)

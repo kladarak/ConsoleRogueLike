@@ -235,6 +235,9 @@
     <ClCompile Include="src\Dungeon\DungeonDoorPlacer.cpp">
       <Filter>Source Files\Dungeon</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameSystems\ItemDropHandler.cpp">
+      <Filter>Source Files\GameSystems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -479,6 +482,9 @@
     </ClInclude>
     <ClInclude Include="src\Dungeon\DungeonDoorPlacer.h">
       <Filter>Source Files\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameSystems\ItemDropHandler.h">
+      <Filter>Source Files\GameSystems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

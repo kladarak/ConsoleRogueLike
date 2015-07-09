@@ -15,7 +15,7 @@
 #include "ItemData.h"
 
 static const char		kSwordIcon[]	= {	'-','|','-','-','-' };
-static const ItemData	kSwordData		= { "Sword", AsciiMesh(kSwordIcon, gElemCount(kSwordIcon), 1) };
+static const ItemData	kSwordData("Sword", AsciiMesh(kSwordIcon, gElemCount(kSwordIcon), 1), ERequiresNoAmmo);
 static const float		kSwipeTime		= 0.5f;
 
 using namespace Player;

@@ -50,7 +50,7 @@ static const Animation kAnimations[] =
 };
 
 static const char		kShieldIcon[]	= {	'[', gCastUCharToChar(254) ,']' };
-static const ItemData	kShieldData		= { "Shield", AsciiMesh(kShieldIcon, gElemCount(kShieldIcon), 1) };
+static const ItemData	kShieldData("Shield", AsciiMesh(kShieldIcon, gElemCount(kShieldIcon), 1), ERequiresNoAmmo);
 
 //--------------------------------------------------------------------
 

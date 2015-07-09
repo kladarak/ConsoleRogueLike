@@ -12,7 +12,8 @@ public:
 	virtual void	OnFinish(Entity inPlayer);
 	virtual bool	IsFinished() const;
 
-	int				GetArrowCount() const { return mArrowCount; }
+	int				GetArrowCount() const	{ return mArrowCount; }
+	void			IncArrowCount()			{ mArrowCount++; }
 
 private:
 	float			mAnimTimeElapsed;
@@ -24,9 +25,11 @@ class Bow : public ItemBase
 public:
 	Bow();
 	
-	virtual PlayerBehaviourBase*	GetPlayerBehaviour() { return &mBehaviour; }
-	virtual int						GetAmmoCount() const { return mBehaviour.GetArrowCount(); }
+	virtual int						GetAmmoCount() const								{ return mBehaviour.GetArrowCount(); }
+	virtual void					SpawnAmmo(World& inWorld, const IVec2& inPosition);
 
+	virtual PlayerBehaviourBase*	GetPlayerBehaviour()								{ return &mBehaviour; }
+	
 private:
 	BowPlayerBehaviour				mBehaviour;
 

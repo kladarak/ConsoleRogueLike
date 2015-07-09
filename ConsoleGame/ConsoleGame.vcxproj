@@ -41,6 +41,7 @@
     <ClCompile Include="src\GameEntities\Player\PlayerComponent.cpp" />
     <ClCompile Include="src\GameEntities\SpinnerEntity.cpp" />
     <ClCompile Include="src\GameSystems\CameraSystem.cpp" />
+    <ClCompile Include="src\GameSystems\ItemDropHandler.cpp" />
     <ClCompile Include="src\Input\InputBuffer.cpp" />
     <ClCompile Include="src\Input\InputMonitor.cpp" />
     <ClCompile Include="src\Inventory\Inventory.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="src\GameEntities\Player\PlayerEnums.h" />
     <ClInclude Include="src\GameEntities\SpinnerEntity.h" />
     <ClInclude Include="src\GameSystems\CameraSystem.h" />
+    <ClInclude Include="src\GameSystems\ItemDropHandler.h" />
     <ClInclude Include="src\Input\InputBuffer.h" />
     <ClInclude Include="src\Input\InputMonitor.h" />
     <ClInclude Include="src\Inventory\Inventory.h" />
