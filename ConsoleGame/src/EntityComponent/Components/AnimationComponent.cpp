@@ -48,6 +48,13 @@ void AnimationComponent::SetAnimations(const std::vector<Animation>& inAnimation
 	}
 }
 
+void AnimationComponent::SetAnimation(const Animation& inAnimation)
+{
+	mAnimations.clear();
+	mAnimations.push_back(inAnimation);
+	mSelectedAnimation = 0;
+}
+
 void AnimationComponent::SetSelectedAnimation(uint32_t inSelected, bool inResetIt)
 {
 	assert(inSelected < mAnimations.size());

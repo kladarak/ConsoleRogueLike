@@ -17,6 +17,7 @@ public:
 
 private:
 	int				mBombCount;
+	float			mTimeElapsedSinceStart;
 };
 
 class Bomb : public ItemBase
@@ -31,5 +32,4 @@ public:
 	
 private:
 	BombPlayerBehaviour				mBehaviour;
-
 };

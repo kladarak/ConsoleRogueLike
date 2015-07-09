@@ -15,6 +15,7 @@ public:
 	void					SetSelectedAnimation(uint32_t inSelected, bool inResetIt = true);
 	void					SetAnimations(const Animation* inAnimations, uint32_t inCount);
 	void					SetAnimations(const std::vector<Animation>& inAnimations);
+	void					SetAnimation(const Animation& inAnimation);
 
 	void					ResetSelectedAnimation();
 	void					Update(float inFrameTime);

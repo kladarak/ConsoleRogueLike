@@ -17,6 +17,7 @@ public:
 	void								RegisterProgram(const ProgramFunc& inProgram)	{ mPrograms.push_back(inProgram); }
 	
 	const std::vector<ProgramFunc>&		GetPrograms() const								{ return mPrograms; }
+
 private:
 	std::vector<ProgramFunc>			mPrograms;
 };
