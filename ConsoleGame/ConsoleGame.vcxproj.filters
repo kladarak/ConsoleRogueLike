@@ -241,6 +241,9 @@
     <ClCompile Include="src\Inventory\Items\Bomb.cpp">
       <Filter>Source Files\Inventory\Items</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Monsters\WallSparkMonster.cpp">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -491,6 +494,9 @@
     </ClInclude>
     <ClInclude Include="src\Inventory\Items\Bomb.h">
       <Filter>Source Files\Inventory\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Monsters\WallSparkMonster.h">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

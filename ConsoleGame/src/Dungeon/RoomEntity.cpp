@@ -14,10 +14,10 @@
 namespace
 {
 	const std::string	kWhiteSpace = " \n\r\t\0";
-	const char			kRoomWallHoriz[ERoomDimensions_Width+1] = " _____________________________________ "; //+1 for terminating character...
+	const char			kRoomWallHoriz[ERoomDimensions_Width+1] = "_______________________________________"; //+1 for terminating character...
 	const char			kRoomWallVerti[ERoomDimensions_Height] =
 	{
-		' ',
+		'.',
 		'|',
 		'|',
 		'|',
