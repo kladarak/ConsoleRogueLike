@@ -69,16 +69,23 @@ namespace
 
 		static const float kAnimationDuration = gElemCount(kKeyFrames) * kKFTime;
 	}
-
-	class BombTimer
-	{
-	public:
-		BombTimer() : mTimeRemaining(kBombTickTime) { }
-		~BombTimer()								{ }
-
-		float mTimeRemaining;
-	};
 }
+
+//-------------------------------------------------------------------------------------------------
+
+class BombTimer
+{
+public:
+	BombTimer() : mTimeRemaining(kBombTickTime) { }
+	~BombTimer()								{ }
+
+	void Update(Entity inThis, float inFrameTime);
+
+private:
+	float mTimeRemaining;
+};
+
+//-------------------------------------------------------------------------------------------------
 
 Bomb::Bomb()
 	: ItemBase(kBombData)
@@ -106,7 +113,7 @@ void Bomb::SpawnAmmo(World& inWorld, const IVec2& inPosition)
 	);
 }
 
-//-------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 
 BombPlayerBehaviour::BombPlayerBehaviour()
 	: mBombCount(10)
@@ -128,44 +135,10 @@ void BombPlayerBehaviour::OnStart(Entity inPlayer)
 						.AddComponent<BombTimer>()
 						.Create();
 
-		bomb.GetComponent<ProgramComponent>()->RegisterProgram
-		(
-			[] (Entity inThis, float inFrameTime)
-			{
-				auto& tickTime = inThis.GetComponent<BombTimer>()->mTimeRemaining;
-
-				bool wasTicking = tickTime > 0.0f;
-				tickTime -= inFrameTime;
-
-				if (wasTicking && tickTime <= 0.0f)
-				{
-					inThis.GetComponent<AnimationComponent>()->SetAnimation( ExplosionAnimation::kAnimation );
-				}
-				
-				if (tickTime <= 0.0f)
-				{
-					if (tickTime >= -ExplosionAnimation::kAnimationDuration)
-					{
-						auto bombPos = inThis.GetComponent<PositionComponent>()->GetPosition();
-
-						for (int i = -1; i <= 1; ++i)
-						{
-							for (int j = -1; j <= 1; ++j)
-							{
-								IVec2		offset(i, j);
-								IVec2		position = bombPos + offset;
-								AttackMsg	attackMsg(inThis, position, offset, AttackMsg::EEffect_PushBack);
-								MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, position, attackMsg);
-							}
-						}
-					}
-					else
-					{
-						inThis.Kill();
-					}
-				}
-			}
-		);
+		bomb.GetComponent<ProgramComponent>()->RegisterProgram ( [] (Entity inThis, float inFrameTime) 
+		{
+			inThis.GetComponent<BombTimer>()->Update(inThis, inFrameTime);
+		} );
 
 		--mBombCount;
 	}
@@ -193,4 +166,40 @@ void BombPlayerBehaviour::OnFinish(Entity /*inPlayer*/)
 bool BombPlayerBehaviour::IsFinished() const
 {
 	return mTimeElapsedSinceStart <= 0.0f;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void BombTimer::Update(Entity inThis, float inFrameTime)
+{
+	bool wasTicking = mTimeRemaining > 0.0f;
+	mTimeRemaining -= inFrameTime;
+
+	if (wasTicking && mTimeRemaining <= 0.0f)
+	{
+		inThis.GetComponent<AnimationComponent>()->SetAnimation( ExplosionAnimation::kAnimation );
+	}
+				
+	if (mTimeRemaining <= 0.0f)
+	{
+		if (mTimeRemaining >= -ExplosionAnimation::kAnimationDuration)
+		{
+			auto bombPos = inThis.GetComponent<PositionComponent>()->GetPosition();
+
+			for (int i = -1; i <= 1; ++i)
+			{
+				for (int j = -1; j <= 1; ++j)
+				{
+					IVec2		offset(i, j);
+					IVec2		position = bombPos + offset;
+					AttackMsg	attackMsg(inThis, position, offset, AttackMsg::EEffect_PushBack);
+					MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, position, attackMsg);
+				}
+			}
+		}
+		else
+		{
+			inThis.Kill();
+		}
+	}
 }
