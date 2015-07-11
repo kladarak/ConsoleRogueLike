@@ -108,7 +108,7 @@ void WallSparkMonsterComponent::OnEntityCollidedWith(Entity inThis, Entity inCol
 	}
 }
 
-void WallSparkMonsterComponent::Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
+void WallSparkMonsterComponent::Update(Entity inThis, float inFrameTime, MessageBroadcaster&)
 {
 	if (!mFoundWall)
 	{

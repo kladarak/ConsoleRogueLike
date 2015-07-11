@@ -1,6 +1,5 @@
-#include "MonsterEntityFactory.h"
+#include "WormMonster.h"
 
-#include <EntityComponentSystem/World/World.h>
 #include <EntityComponentSystem/World/EntityBuilder.h>
 
 #include <EntityComponent/Components/AnimationComponent.h>
@@ -19,7 +18,7 @@
 
 #include <Messages/Messages.h>
 
-namespace MonsterEntityFactory
+namespace WormMonster
 {
 
 static const float	kAnimationDuration			= 0.5f;
@@ -63,11 +62,11 @@ namespace MonsterAnimation
 	};
 }
 
-class WormMonster
+class WormMonsterComponent
 {
 public:
-	WormMonster();
-	~WormMonster() { }
+	WormMonsterComponent();
+	~WormMonsterComponent() { }
 	
 	void	Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster);
 	void	TakeDamage(Entity inThis);
@@ -83,14 +82,14 @@ private:
 	bool	mIsDying;
 };
 
-WormMonster::WormMonster() 
+WormMonsterComponent::WormMonsterComponent() 
 	: mIsDying			(false)
 	, mTimeUntilDeath	(FLT_MAX)
 {
 	ResetMovementDuration();
 }
 
-void WormMonster::Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
+void WormMonsterComponent::Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
 {
 	if (mIsDying)
 	{
@@ -131,7 +130,7 @@ void WormMonster::Update(Entity inThis, float inFrameTime, MessageBroadcaster& i
 	}
 }
 
-IVec2 WormMonster::GetIntendedMovement(float inFrameTime)
+IVec2 WormMonsterComponent::GetIntendedMovement(float inFrameTime)
 {
 	IVec2 movement(0, 0);
 
@@ -154,12 +153,12 @@ IVec2 WormMonster::GetIntendedMovement(float inFrameTime)
 	return movement;
 }
 
-void WormMonster::ResetMovementDuration()
+void WormMonsterComponent::ResetMovementDuration()
 {
 	mMovementCooldownTime = kMovementCooldownDuration + ((rand()%10) * 0.1f);
 }
 
-void WormMonster::TakeDamage(Entity inThis)
+void WormMonsterComponent::TakeDamage(Entity inThis)
 {
 	if (mIsDying)
 	{
@@ -172,7 +171,7 @@ void WormMonster::TakeDamage(Entity inThis)
 	inThis.GetComponent<AnimationComponent>()->SetSelectedAnimation( MonsterAnimation::EDeathAnimation, true );
 }
 
-void WormMonster::OnEntityCollidedWith(Entity inThis, Entity inCollidingEntity)
+void WormMonsterComponent::OnEntityCollidedWith(Entity inThis, Entity inCollidingEntity)
 {
 	if (mIsDying)
 	{
@@ -188,13 +187,13 @@ void WormMonster::OnEntityCollidedWith(Entity inThis, Entity inCollidingEntity)
 	}
 }
 
-void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& inPosition)
+Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& inPosition)
 {
 	auto entity = EntityBuilder(inWorld)
 					.AddComponent<AnimationComponent>( MonsterAnimation::kAnimations, gElemCount(MonsterAnimation::kAnimations) )
 					.AddComponent<CollisionComponent>( CollisionMesh(0, 0) )
 					.AddComponent<MonsterComponent>()
-					.AddComponent<WormMonster>()
+					.AddComponent<WormMonsterComponent>()
 					.AddComponent<PositionComponent>(inPosition)
 					.AddComponent<RenderableComponent>( MonsterAnimation::kIdleFrames[0] )
 					.AddComponent<TriggererComponent>()
@@ -204,7 +203,7 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 	(
 		[=] (const AttackMsg&)
 		{
-			entity.GetComponent<WormMonster>()->TakeDamage(entity); 
+			entity.GetComponent<WormMonsterComponent>()->TakeDamage(entity); 
 		}
 	);
 	
@@ -212,7 +211,7 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 	(
 		[] (const Entity& inThis, const Entity& inEntity)
 		{
-			inThis.GetComponent<WormMonster>()->OnEntityCollidedWith(inThis, inEntity);
+			inThis.GetComponent<WormMonsterComponent>()->OnEntityCollidedWith(inThis, inEntity);
 		}
 	);
 
@@ -220,9 +219,11 @@ void Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& i
 	(
 		[&inMsgBroadcaster] (const Entity& inThis, float inFrameTime)
 		{
-			inThis.GetComponent<WormMonster>()->Update(inThis, inFrameTime, inMsgBroadcaster); 
+			inThis.GetComponent<WormMonsterComponent>()->Update(inThis, inFrameTime, inMsgBroadcaster); 
 		} 
 	);
+
+	return entity;
 }
 
 }
