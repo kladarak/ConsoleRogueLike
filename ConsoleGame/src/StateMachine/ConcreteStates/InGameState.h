@@ -21,7 +21,6 @@ public:
 
 private:
 	World				mWorld;
-	DungeonMap			mDungeonMap;
 	CameraSystem		mCameraSystem;
 	HUD					mHUD;
 	MessageBroadcaster	mMessageBroadcaster;

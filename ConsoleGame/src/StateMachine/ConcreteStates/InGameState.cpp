@@ -49,11 +49,11 @@ InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameD
 		inventory.RemoveAndDeleteItem(key);
 	}
 
-	mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster, inGameData);
+	mGameData->mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster, inGameData);
 	
-	mCameraSystem.Init(mWorld, mDungeonMap);
+	mCameraSystem.Init(mWorld, mGameData->mDungeonMap);
 
-	mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster, mDungeonMap, inGameData);
+	mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster, inGameData);
 
 	mHUD.Init(mMessageBroadcaster, &inGameData->mPlayerData, mPlayer);
 
@@ -77,6 +77,11 @@ void InGameState::Update(float inFrameTime, const InputBuffer& inInput)
 	if (inInput.IsPressed('\t'))
 	{
 		RequestPushState(EGameState_InventoryView);
+	}
+	
+	if (inInput.IsPressed('p'))
+	{
+		RequestPushState(EGameState_MapView);
 	}
 
 	TriggerSystem::HandleDestroyedEntities(mWorld);

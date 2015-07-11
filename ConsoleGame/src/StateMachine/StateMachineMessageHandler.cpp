@@ -6,6 +6,7 @@
 #include "ConcreteStates/StartNewLevelIntroState.h"
 #include "ConcreteStates/InGameState.h"
 #include "ConcreteStates/InventoryScreenState.h"
+#include "ConcreteStates/MapScreenState.h"
 
 #include "StateMachine.h"
 
@@ -26,6 +27,7 @@ namespace
 		&InitAndPush<StartNewLevelIntroState>,
 		&InitAndPush<InGameState>,
 		&InitAndPush<InventoryScreenState>,
+		&InitAndPush<MapScreenState>,
 	};
 };
 

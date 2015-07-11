@@ -24,7 +24,7 @@
 namespace PlayerEntity
 {
 
-Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const DungeonMap& inDungeonMap, GameData* inGameData)
+Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, GameData* inGameData)
 {
 	Entity entity = inWorld.CreateEntity();
 
@@ -32,10 +32,10 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const Dungeo
 
 	while (roomPosition.mX < 0)
 	{
-		size_t randomX = rand() % inDungeonMap.GetColCount();
-		size_t randomY = rand() % inDungeonMap.GetRowCount();
+		size_t randomX = rand() % inGameData->mDungeonMap.GetColCount();
+		size_t randomY = rand() % inGameData->mDungeonMap.GetRowCount();
 
-		Entity room = inDungeonMap.Get(randomX, randomY);
+		Entity room = inGameData->mDungeonMap.Get(randomX, randomY);
 		if (room.IsValid())
 		{
 			roomPosition = room.GetComponent<PositionComponent>()->GetPosition();

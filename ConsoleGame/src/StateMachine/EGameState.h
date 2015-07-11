@@ -7,4 +7,5 @@ enum EGameState
 	EGameState_StartLevelIntro,
 	EGameState_InGame,
 	EGameState_InventoryView,
+	EGameState_MapView,
 };

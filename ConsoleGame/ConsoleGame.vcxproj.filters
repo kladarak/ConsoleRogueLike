@@ -244,6 +244,9 @@
     <ClCompile Include="src\GameEntities\Monsters\WormMonster.cpp">
       <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClCompile>
+    <ClCompile Include="src\StateMachine\ConcreteStates\MapScreenState.cpp">
+      <Filter>Source Files\StateMachine\ConcreteStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -497,6 +500,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Monsters\WormMonster.h">
       <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StateMachine\ConcreteStates\MapScreenState.h">
+      <Filter>Source Files\StateMachine\ConcreteStates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

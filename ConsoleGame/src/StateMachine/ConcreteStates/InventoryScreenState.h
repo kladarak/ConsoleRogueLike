@@ -1,10 +1,8 @@
 #pragma once
 
 #include <stdint.h>
-#include <string>
-#include <StateMachine/StateBase.h>
 
-class InputBuffer;
+#include <StateMachine/StateBase.h>
 
 class InventoryScreenState : public StateBase
 {

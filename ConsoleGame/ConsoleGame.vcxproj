@@ -60,6 +60,7 @@
     <ClCompile Include="src\Renderer\RenderTargetWriter.cpp" />
     <ClCompile Include="src\StateMachine\ConcreteStates\InGameState.cpp" />
     <ClCompile Include="src\StateMachine\ConcreteStates\InventoryScreenState.cpp" />
+    <ClCompile Include="src\StateMachine\ConcreteStates\MapScreenState.cpp" />
     <ClCompile Include="src\StateMachine\ConcreteStates\StartMenuState.cpp" />
     <ClCompile Include="src\StateMachine\ConcreteStates\StartNewLevelIntroState.cpp" />
     <ClCompile Include="src\StateMachine\StateBase.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="src\ScreenConstants.h" />
     <ClInclude Include="src\StateMachine\ConcreteStates\InGameState.h" />
     <ClInclude Include="src\StateMachine\ConcreteStates\InventoryScreenState.h" />
+    <ClInclude Include="src\StateMachine\ConcreteStates\MapScreenState.h" />
     <ClInclude Include="src\StateMachine\ConcreteStates\StartMenuState.h" />
     <ClInclude Include="src\StateMachine\ConcreteStates\StartNewLevelIntroState.h" />
     <ClInclude Include="src\StateMachine\StateBase.h" />
