@@ -104,6 +104,19 @@ void EraseWallForDoor(Entity inRoom, EDoorSide inSide)
 		renderable->SetCharAtPosition(pos.mX, pos.mY, ' ');
 		collision->ClearDefaultMeshCollidableAt(pos.mX, pos.mY);
 	}
+
+	// Extra correction for Top side.
+	if (inSide == EDoorSide_Top)
+	{
+		int left	= ERoomDimensions_DoorHorizOffset;
+		int right	= ERoomDimensions_DoorHorizOffset + EDoorSize_Width - 1;
+
+		renderable->SetCharAtPosition(left,		0, '.');
+		renderable->SetCharAtPosition(right,	0, '.');
+
+		collision->SetDefaultMeshCollidableAt(left, 0);
+		collision->SetDefaultMeshCollidableAt(right, 0);
+	}
 }
 
 }
