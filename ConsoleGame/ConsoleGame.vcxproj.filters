@@ -121,9 +121,6 @@
     <ClCompile Include="src\GameEntities\Player\PlayerEntity.cpp">
       <Filter>Source Files\GameEntities\Player</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameEntities\Monsters\MonsterEntityFactory.cpp">
-      <Filter>Source Files\GameEntities\Monsters</Filter>
-    </ClCompile>
     <ClCompile Include="src\EntityComponent\Systems\PositionSystem.cpp">
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClCompile>
@@ -244,6 +241,9 @@
     <ClCompile Include="src\GameEntities\Monsters\WallSparkMonster.cpp">
       <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Monsters\WormMonster.cpp">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -335,9 +335,6 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Player\PlayerEnums.h">
       <Filter>Source Files\GameEntities\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameEntities\Monsters\MonsterEntityFactory.h">
-      <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Systems\PositionSystem.h">
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
@@ -496,6 +493,9 @@
       <Filter>Source Files\Inventory\Items</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEntities\Monsters\WallSparkMonster.h">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Monsters\WormMonster.h">
       <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClInclude>
   </ItemGroup>

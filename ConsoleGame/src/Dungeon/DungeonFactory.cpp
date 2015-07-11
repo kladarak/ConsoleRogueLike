@@ -14,7 +14,7 @@
 #include <GameEntities/CoinEntity.h>
 #include <GameEntities/SpinnerEntity.h>
 #include <GameEntities/ItemEntity.h>
-#include <GameEntities/Monsters/MonsterEntityFactory.h>
+#include <GameEntities/Monsters/WormMonster.h>
 #include <GameEntities/Monsters/WallSparkMonster.h>
 
 #include <Inventory/Items/DoorKey.h>
@@ -131,7 +131,7 @@ static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
 	auto roomPos = inRoom.GetComponent<PositionComponent>()->GetPosition();
 	
 	SpawnRandomEntities(world, roomPos, rand()%4, [&] (const IVec2& inPos) { SpinnerEntity::Create(world, inPos); } );
-	SpawnRandomEntities(world, roomPos, rand()%4, [&] (const IVec2& inPos) { MonsterEntityFactory::Create(world, inMessageBroadcaster, inPos); } );
+	SpawnRandomEntities(world, roomPos, rand()%4, [&] (const IVec2& inPos) { WormMonster::Create(world, inMessageBroadcaster, inPos); } );
 	SpawnRandomEntities(world, roomPos, rand()%5, [&] (const IVec2& inPos) { CoinEntity::Create(world, inMessageBroadcaster, inPos); } );
 	SpawnRandomEntities(world, roomPos, rand()%3, [&] (const IVec2& inPos) { WallSparkMonster::Create(world, inMessageBroadcaster, inPos); } );
 }
