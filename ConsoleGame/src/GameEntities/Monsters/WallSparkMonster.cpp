@@ -23,6 +23,17 @@
 namespace WallSparkMonster
 {
 
+static const AsciiMesh kKeyFrames[] =
+{
+	AsciiMesh( 15 ),
+	AsciiMesh( '*' ),
+};
+
+static const float		kKFTime = 0.1f;
+static const Animation	kAnimation(kKeyFrames, gElemCount(kKeyFrames), kKFTime, Animation::EPlaybackStyle_Loop);
+
+static const float		kTimeBetweenMovement = 0.25f;
+
 EOrientation sGetLeftDirection(EOrientation inDirection)
 {
 	switch (inDirection)
@@ -47,16 +58,20 @@ EOrientation sGetRightDirection(EOrientation inDirection)
 	}
 }
 
-static const AsciiMesh kKeyFrames[] =
+static const bool sCollidesWithEnvironment(World& inWorld, const IVec2& inPosition)
 {
-	AsciiMesh( 15 ),
-	AsciiMesh( '*' ),
-};
+	auto collidables = CollisionSystem::GetListofCollidablesAtPosition(inWorld, inPosition);
+	
+	for (auto entity : collidables)
+	{
+		if (!entity.HasComponent<PlayerComponent>() && !entity.HasComponent<MonsterComponent>())
+		{
+			return true;
+		}
+	}
 
-static const float		kKFTime = 0.1f;
-static const Animation	kAnimation(kKeyFrames, gElemCount(kKeyFrames), kKFTime, Animation::EPlaybackStyle_Loop);
-
-static const float		kTimeBetweenMovement = 0.25f;
+	return false;
+}
 
 class WallSparkMonsterComponent
 {
@@ -120,7 +135,7 @@ void WallSparkMonsterComponent::Update(Entity inThis, float inFrameTime, Message
 		auto leftWallDir		= sGetLeftDirection(mLastMovementDirection);
 		auto testLeftWallPos	= position + gGetOrientationVector(leftWallDir);
 
-		if ( !CollisionSystem::CollidesWithAnyEntity(world, testLeftWallPos) )
+		if ( !sCollidesWithEnvironment(world, testLeftWallPos) )
 		{
 			// Wall doesn't exist; move into this space.
 			positionComp->SetPosition(testLeftWallPos);
@@ -134,7 +149,7 @@ void WallSparkMonsterComponent::Update(Entity inThis, float inFrameTime, Message
 	auto		nextPos			= position + gGetOrientationVector(nextDir);
 	int			attemptCount	= 0;
 
-	while (CollisionSystem::CollidesWithAnyEntity(world, nextPos) && attemptCount < EOrientation_Count)
+	while (sCollidesWithEnvironment(world, nextPos) && attemptCount < EOrientation_Count)
 	{
 		nextDir = sGetRightDirection(nextDir);
 		nextPos = position + gGetOrientationVector(nextDir);
@@ -158,7 +173,7 @@ void WallSparkMonsterComponent::sSnapToWallInDirection(Entity inThis, const IVec
 	{
 		position += inDirection;
 	}
-	while ( !CollisionSystem::CollidesWithAnyEntity(world, position) );
+	while ( !sCollidesWithEnvironment(world, position) );
 
 	positionComp->SetPosition(position);
 }
