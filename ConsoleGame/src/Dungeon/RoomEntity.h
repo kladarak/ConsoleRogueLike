@@ -7,16 +7,7 @@
 #include <GameEntities/Obstacles/DoorConstants.h>
 
 #include "ScreenConstants.h"
-
-enum EDoorSide
-{
-	EDoorSide_Top,
-	EDoorSide_Bottom,
-	EDoorSide_Left,
-	EDoorSide_Right,
-
-	EDoorSide_Count
-};
+#include "DungeonMap.h"
 
 enum ERoomDimensions
 {

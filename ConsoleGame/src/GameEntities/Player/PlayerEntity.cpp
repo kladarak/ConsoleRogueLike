@@ -35,7 +35,7 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, GameData* in
 		size_t randomX = rand() % inGameData->mDungeonMap.GetColCount();
 		size_t randomY = rand() % inGameData->mDungeonMap.GetRowCount();
 
-		Entity room = inGameData->mDungeonMap.Get(randomX, randomY);
+		Entity room = inGameData->mDungeonMap.GetRoomEntities().Get(randomX, randomY);
 		if (room.IsValid())
 		{
 			roomPosition = room.GetComponent<PositionComponent>()->GetPosition();

@@ -63,7 +63,7 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 {
 }
 
-void MapScreenState::Update(float inFrameTime, const InputBuffer& inInput)
+void MapScreenState::Update(float /*inFrameTime*/, const InputBuffer& inInput)
 {
 	if (inInput.IsPressed('p'))
 	{
@@ -80,7 +80,7 @@ std::string MapScreenState::GetRenderBuffer() const
 	auto isValidRoom = [&] (size_t inCol, size_t inRow)
 	{
 		bool inRange = inCol < colCount && inRow < rowCount;
-		return inRange && dungeonMap.Get(inCol, inRow).IsValid();
+		return inRange && dungeonMap.GetRoomData().Get(inCol, inRow).mIsValid;
 	};
 
 	RenderTargetWriter renderTarget(dungeonMap.GetColCount()*3, dungeonMap.GetRowCount()*3);
@@ -101,18 +101,6 @@ std::string MapScreenState::GetRenderBuffer() const
 			renderTarget.Write(piece, x, y);
 		}
 	}
-
-	//dungeonMap.ForEach( [&] (size_t inX, size_t inY, const Entity& inRoom)
-	//{
-	//	if (inRoom.IsValid())
-	//	{
-	//
-	//		// * 2 + 1
-	//		int col = inX * 3;
-	//		int row = inY * 3;
-	//		renderTarget.Write(kRoomMesh, col, row);
-	//	}
-	//} );
 
 	return renderTarget.GetRenderBuffer();
 }

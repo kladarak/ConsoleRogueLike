@@ -27,9 +27,9 @@
 namespace DungeonFactory
 {
 
-static DungeonMap sConstructMap(World& inWorld, const DungeonLayout& inLayout)
+static Dynamic2DVector<Entity> sCreateRoomEntities(World& inWorld, const Dynamic2DVector<RoomData>& inLayout)
 {
-	DungeonMap dungeon;
+	Dynamic2DVector<Entity> entities;
 
 	inLayout.ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
 	{
@@ -37,32 +37,32 @@ static DungeonMap sConstructMap(World& inWorld, const DungeonLayout& inLayout)
 		{
 			IVec2 pos( inCol * ERoomDimensions_Width, inRow * ERoomDimensions_Height );
 			auto room = RoomEntity::Create(inWorld, pos);
-			dungeon.Set(inCol, inRow, room);
+			entities.Set(inCol, inRow, room);
 		}
 	} );
 
-	return dungeon;
+	return entities;
 }
 
-static IVec2 sGetRandomValidRoomIndex(const DungeonLayout& inLayout)
+static IVec2 sGetRandomValidRoomIndex(const DungeonMap& inDungeon)
 {
 	int col, row;
 
 	do
 	{
-		col = rand() % inLayout.GetColCount();
-		row = rand() % inLayout.GetRowCount();
+		col = rand() % inDungeon.GetColCount();
+		row = rand() % inDungeon.GetRowCount();
 	}
-	while ( !inLayout.Get(col, row).mIsValid );
+	while ( !inDungeon.GetRoomData().Get(col, row).mIsValid );
 
 	return IVec2(col, row);
 }
 
-static void sAddDoors(DungeonMap& inDungeon, const DungeonLayout& inLayout, World& inWorld, MessageBroadcaster& inMessageBroadcaster)
+static void sAddDoors(const DungeonMap& inDungeon, World& inWorld, MessageBroadcaster& inMessageBroadcaster)
 {
 	DungeonDoorPlacer doorPlacer(inWorld, inDungeon);
 
-	auto doorLinks = DungeonDoorPlacer::sGenerateRoomLinks(inLayout);
+	auto doorLinks = DungeonDoorPlacer::sGenerateRoomLinks(inDungeon);
 	for (auto& link : doorLinks)
 	{
 		doorPlacer.AddOpenDoor(link);
@@ -73,21 +73,21 @@ static void sAddDoors(DungeonMap& inDungeon, const DungeonLayout& inLayout, Worl
 
 	do
 	{
-		roomIndex = sGetRandomValidRoomIndex(inLayout);
+		roomIndex = sGetRandomValidRoomIndex(inDungeon);
 	}
-	while ( inLayout.Get(roomIndex).mDoors[EDoorSide_Top] );
+	while ( inDungeon.GetRoomData().Get(roomIndex).mDoors[EDoorSide_Top] );
 		
 	doorPlacer.AddDungeonExit(roomIndex, inMessageBroadcaster);
 }
 
-static void sPlaceItemInDungeon(Entity inItem, DungeonMap& inDungeon, const DungeonLayout& inLayout)
+static void sPlaceItemInDungeon(Entity inItem, const DungeonMap& inDungeon)
 {
 	IVec2 position(0, 0);
 
 	// Select room and set position to room position
 	{
-		IVec2	roomIndex	= sGetRandomValidRoomIndex(inLayout);
-		auto	room		= inDungeon.Get(roomIndex);
+		IVec2	roomIndex	= sGetRandomValidRoomIndex(inDungeon);
+		auto	room		= inDungeon.GetRoomEntities().Get(roomIndex);
 		position			= room.GetComponent<PositionComponent>()->GetPosition();
 	}
 
@@ -140,23 +140,24 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, Ga
 {
 	const int kRoomCount = 5;
 
-	DungeonLayout layout = DungeonLayoutGenerator(kRoomCount).Generate();
+	Dynamic2DVector<RoomData>	roomData		= DungeonLayoutGenerator(kRoomCount).Generate();
+	Dynamic2DVector<Entity>		roomEntities	= sCreateRoomEntities(inWorld, roomData);
 
-	DungeonMap dungeon = sConstructMap(inWorld, layout);
+	DungeonMap dungeon(roomData, roomEntities);
 
-	sAddDoors(dungeon, layout, inWorld, inMessageBroadcaster);
+	sAddDoors(dungeon, inWorld, inMessageBroadcaster);
 
 	// Place key somewhere.
 	{
 		auto doorKey = ItemEntity::Create<DoorKey>(inWorld, inGameData);
-		sPlaceItemInDungeon(doorKey, dungeon, layout);
+		sPlaceItemInDungeon(doorKey, dungeon);
 	}
 
 	// Fill rooms after creating all rooms, to fix draw order problems.
 	// A better way would be to either have an initial clearing screen pass then skip rendering any whitespace,
 	// or render white space only if no other character has been written to a fragment yet,
 	// or sort the renderables based on some sort of mark up on each renderable.
-	dungeon.ForEach( [&] (size_t, size_t, const Entity& inRoom)
+	dungeon.GetRoomEntities().ForEach( [&] (size_t, size_t, const Entity& inRoom)
 	{
 		if (inRoom.IsValid())
 		{

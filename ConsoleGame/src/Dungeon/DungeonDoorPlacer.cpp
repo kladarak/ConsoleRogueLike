@@ -11,6 +11,7 @@
 #include <GameEntities/Obstacles/Stairs.h>
 
 #include "DungeonMap.h"
+#include "RoomEntity.h"
 
 namespace
 {
@@ -31,9 +32,9 @@ namespace
 	typedef const std::function<Entity (const IVec2&, EOrientation)>& DoorConstructFunc;
 
 	template<typename TDoorConstructFunc>
-	Entity ConstructDoor(DungeonMap& inDungeonMap, const IVec2& inRoomIndex, EDoorSide inSide, const TDoorConstructFunc& inFunc)
+	Entity ConstructDoor(const DungeonMap& inDungeonMap, const IVec2& inRoomIndex, EDoorSide inSide, const TDoorConstructFunc& inFunc)
 	{
-		auto	room			= inDungeonMap.Get(inRoomIndex.mX, inRoomIndex.mY);
+		auto	room			= inDungeonMap.GetRoomEntities().Get(inRoomIndex.mX, inRoomIndex.mY);
 		auto&	roomPos			= room.GetComponent<PositionComponent>()->GetPosition();
 		auto&	constructInfo	= kDoorConstructInfo[inSide];
 		auto	doorPos			= roomPos + constructInfo.mLocalPosition;
@@ -43,11 +44,11 @@ namespace
 	}
 }
 
-std::vector<RoomLink> DungeonDoorPlacer::sGenerateRoomLinks(const DungeonLayout& inLayout)
+std::vector<RoomLink> DungeonDoorPlacer::sGenerateRoomLinks(const DungeonMap& inDungeon)
 {
 	std::vector<RoomLink> links;
 	
-	inLayout.ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
+	inDungeon.GetRoomData().ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
 	{
 		if (inRoomData.mDoors[EDoorSide_Bottom])
 		{
@@ -60,7 +61,7 @@ std::vector<RoomLink> DungeonDoorPlacer::sGenerateRoomLinks(const DungeonLayout&
 		}
 	} );
 	
-	inLayout.ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
+	inDungeon.GetRoomData().ForEach( [&] (size_t inCol, size_t inRow, const RoomData& inRoomData)
 	{
 		if (inRoomData.mDoors[EDoorSide_Right])
 		{
@@ -76,9 +77,9 @@ std::vector<RoomLink> DungeonDoorPlacer::sGenerateRoomLinks(const DungeonLayout&
 	return links;
 }
 
-DungeonDoorPlacer::DungeonDoorPlacer(World& inWorld, DungeonMap& inDungeonMap)
-	: mWorld				(inWorld)
-	, mDungeonMap			(inDungeonMap)
+DungeonDoorPlacer::DungeonDoorPlacer(World& inWorld, const DungeonMap& inDungeonMap)
+	: mDungeonMap	(inDungeonMap)
+	, mWorld		(inWorld)
 {
 }
 

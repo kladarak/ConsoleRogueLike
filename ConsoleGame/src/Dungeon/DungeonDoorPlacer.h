@@ -3,9 +3,7 @@
 #include <vector>
 #include <Maths/IVec2.h>
 
-#include "RoomEntity.h"
 #include "DungeonMap.h"
-#include "DungeonLayoutGenerator.h"
 
 class World;
 class MessageBroadcaster;
@@ -21,17 +19,17 @@ struct RoomLink
 class DungeonDoorPlacer
 {
 public:
-	static std::vector<RoomLink> sGenerateRoomLinks(const DungeonLayout& inLayout);
+	static std::vector<RoomLink> sGenerateRoomLinks(const DungeonMap& inLayout);
 
-	DungeonDoorPlacer(World& inWorld, DungeonMap& inDungeonMap);
+	DungeonDoorPlacer(World& inWorld, const DungeonMap& inDungeonMap);
 
-	DungeonDoorPlacer& operator=(const DungeonDoorPlacer& inOther) = delete;
+	DungeonDoorPlacer&	operator=(const DungeonDoorPlacer& inOther) = delete;
 
-	void		AddOpenDoor(const RoomLink& inRoomLink);
-	void		AddLockedDoor(const RoomLink& inRoomLink);
-	void		AddDungeonExit(const IVec2& inRoomIndex, MessageBroadcaster& inMessageBroadcaster);
+	void				AddOpenDoor(const RoomLink& inRoomLink);
+	void				AddLockedDoor(const RoomLink& inRoomLink);
+	void				AddDungeonExit(const IVec2& inRoomIndex, MessageBroadcaster& inMessageBroadcaster);
 
 private:
-	World&		mWorld;
-	DungeonMap&	mDungeonMap;
+	const DungeonMap&	mDungeonMap;
+	World&				mWorld;
 };

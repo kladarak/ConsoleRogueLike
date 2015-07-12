@@ -19,7 +19,7 @@ void CameraSystem::Init(World& inWorld, const DungeonMap& inDungeonMap)
 	mCameraEntity.AddComponent<CameraComponent>();
 	mCameraEntity.AddComponent<PositionComponent>( IVec2(0, 0) );
 
-	inDungeonMap.ForEach( [&] (size_t, size_t, const Entity& inRoom)
+	inDungeonMap.GetRoomEntities().ForEach( [&] (size_t, size_t, const Entity& inRoom)
 	{
 		if (inRoom.IsValid())
 		{

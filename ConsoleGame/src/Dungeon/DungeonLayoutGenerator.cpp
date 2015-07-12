@@ -33,7 +33,7 @@ DungeonLayoutGenerator::DungeonLayoutGenerator(uint32_t inRoomCount)
 {
 }
 
-DungeonLayout DungeonLayoutGenerator::Generate()
+Dynamic2DVector<RoomData> DungeonLayoutGenerator::Generate()
 {
 	/*
 	- Pick random starting point.
@@ -43,8 +43,8 @@ DungeonLayout DungeonLayoutGenerator::Generate()
 	- If all directions have rooms, pop back one room.
 	*/
 
-	mLayout				= DungeonLayout();
-	mCurrentRoomCount	= 0;
+	mLayout.Clear();
+	mCurrentRoomCount = 0;
 
 	IVec2 seedPosition( 5, 5 );
 	RecurseIntoRoom(seedPosition, EDoorSide_Count);
