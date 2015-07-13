@@ -108,7 +108,7 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 
 void MapScreenState::Update(float inFrameTime, const InputBuffer& inInput)
 {
-	if (inInput.IsPressed('p'))
+	if (inInput.IsPressed('m'))
 	{
 		RequestPopState();
 	}
@@ -140,7 +140,7 @@ std::string MapScreenState::GetRenderBuffer() const
 
 	writer.Write(mBasicMap, mViewOffset.mX, mViewOffset.mY);
 
-	if (fmodf(mPlayerIconFlashTime / kPlayerIconFlashDuration, 2.0f) >= 1.0f)
+	if (fmodf(mPlayerIconFlashTime / kPlayerIconFlashDuration, 2.0f) < 1.0f)
 	{
 		auto playerPos = mGameData->mPlayer.GetComponent<PositionComponent>()->GetPosition();
 		

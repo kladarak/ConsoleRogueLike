@@ -87,7 +87,7 @@ void InGameState::Update(float inFrameTime, const InputBuffer& inInput)
 		RequestPushState(EGameState_InventoryView);
 	}
 	
-	if (inInput.IsPressed('p'))
+	if (inInput.IsPressed('m'))
 	{
 		RequestPushState(EGameState_MapView);
 	}
