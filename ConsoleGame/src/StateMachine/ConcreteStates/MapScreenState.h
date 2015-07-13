@@ -2,6 +2,9 @@
 
 #include <StateMachine/StateBase.h>
 
+#include <Maths/IVec2.h>
+#include <Renderer/RenderTarget.h>
+
 class MapScreenState : public StateBase
 {
 public:
@@ -11,5 +14,7 @@ public:
 	virtual std::string GetRenderBuffer() const;
 
 private:
-
+	RenderTarget		mBasicMap;
+	IVec2				mViewOffset;
+	float				mPlayerIconFlashTime;
 };

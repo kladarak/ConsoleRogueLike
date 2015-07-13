@@ -12,7 +12,9 @@ public:
 	void				Write(char inChar, int inX, int inY);
 	void				Write(const std::string& inString, int inX, int inY);
 	void				Write(const AsciiMesh& inMesh, int inX, int inY);
+	void				Write(const RenderTarget& inRenderTarget, int inX, int inY);
 
+	const RenderTarget& GetRenderTarget() const	{ return mRenderTarget; }
 	std::string			GetRenderBuffer() const { return mRenderTarget.GetBuffer(); }
 
 private:

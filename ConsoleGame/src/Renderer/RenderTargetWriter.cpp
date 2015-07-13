@@ -41,3 +41,8 @@ void RenderTargetWriter::Write(const AsciiMesh& inMesh, int inX, int inY)
 		mRenderTarget.Set(x, y, inChar);
 	} );
 }
+
+void RenderTargetWriter::Write(const RenderTarget& inRenderTarget, int inX, int inY)
+{
+	Write(inRenderTarget.GetBuffer(), inX, inY);
+}

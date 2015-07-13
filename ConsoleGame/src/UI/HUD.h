@@ -7,14 +7,14 @@
 #include "YouAreDeadDisplay.h"
 
 class MessageBroadcaster;
-class PlayerData;
+class GameData;
 
 class HUD
 {
 public:
 	HUD();
 
-	void				Init(MessageBroadcaster& inMessageBroadcaster, PlayerData* inPlayerData, Entity inPlayer);
+	void				Init(MessageBroadcaster& inMessageBroadcaster, GameData* inGameData);
 	
 	void				Update(float inFrameTime);
 
@@ -30,11 +30,11 @@ private:
 	void				OnPlayerIsDead();
 	
 	MessageBroadcaster* mMessageBroadcaster;
+	GameData*			mGameData;
 
 	HealthBarUI			mHealthBar;
 	EquippedBarUI		mEquippedBar;
 	YouAreDeadDisplay	mYouAreDeadDisplay;
 
-	Entity				mPlayer;
 	int					mMoneyCollected;
 };

@@ -11,4 +11,5 @@ public:
 	PlayerData	mPlayerData;
 	DungeonMap	mDungeonMap;
 	int			mCurrentLevel;
+	Entity		mPlayer;
 };

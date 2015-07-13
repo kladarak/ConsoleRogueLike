@@ -1,12 +1,19 @@
 #include "MapScreenState.h"
 
+#include <algorithm>
+
+#include <Maths/Maths.h>
 #include <Input/InputBuffer.h>
 #include <Renderer/RenderTargetWriter.h>
 #include <Renderer/AsciiMesh.h>
 
+#include <EntityComponent/Components/PositionComponent.h>
+
 #include <Dungeon/DungeonMap.h>
+#include <Dungeon/RoomEntity.h>
 
 #include "GameData.h"
+#include "ScreenConstants.h"
 
 namespace
 {
@@ -38,56 +45,45 @@ namespace
 		gCastUCharToChar(194), // BottomLeft | BottomRight
 		gCastUCharToChar(197), // BottomLeft | BottomRight | TopLeft
 		gCastUCharToChar(197), // BottomLeft | BottomRight | TopRight
-		gCastUCharToChar(197), // BottomLeft | BottomRight | TopRight \ TopLeft
+		gCastUCharToChar(197), // BottomLeft | BottomRight | TopRight | TopLeft
 	};
 
-	//const char kRoomPixels[] = 
-	//{
-	//	gCastUCharToChar(218),	'-',	gCastUCharToChar(191),
-	//	'|',					' ',	'|',
-	//	gCastUCharToChar(192),	'-',	gCastUCharToChar(217),
-	//};
-	
-	const char kRoomPixels[] = 
-	{
-		gCastUCharToChar(218), gCastUCharToChar(194), gCastUCharToChar(191),
-		gCastUCharToChar(195), gCastUCharToChar(197), gCastUCharToChar(180),
-		gCastUCharToChar(192), gCastUCharToChar(193), gCastUCharToChar(217),
-	};
+	const char kVerticalWall	= gCastUCharToChar(179);
+	const char kHorizontalWall	= gCastUCharToChar(196);
 
-	const AsciiMesh kRoomMesh(kRoomPixels, 3, 3);
+	const int	kViewMargin					= 5;
+	const float kPlayerIconFlashDuration	= 0.5f;
 }
 
 MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
 	: StateBase(inStateMachineMsgBroadcaster, inGameData)
+	, mBasicMap(0, 0)
+	, mViewOffset(0, 0)
+	, mPlayerIconFlashTime(0.0f)
 {
-}
+	auto&	roomDataMap	= mGameData->mDungeonMap.GetRoomData();
+	int		colCount	= roomDataMap.GetColCount();
+	int		rowCount	= roomDataMap.GetRowCount();
 
-void MapScreenState::Update(float /*inFrameTime*/, const InputBuffer& inInput)
-{
-	if (inInput.IsPressed('p'))
+	RenderTargetWriter writer(colCount*3, rowCount*3);
+	
+	auto isValidRoom = [&] (int inCol, int inRow)
 	{
-		RequestPopState();
-	}
-}
-
-std::string MapScreenState::GetRenderBuffer() const
-{
-	auto&	dungeonMap	= mGameData->mDungeonMap;
-	size_t	colCount	= dungeonMap.GetColCount();
-	size_t	rowCount	= dungeonMap.GetRowCount();
-
-	auto isValidRoom = [&] (size_t inCol, size_t inRow)
-	{
-		bool inRange = inCol < colCount && inRow < rowCount;
-		return inRange && dungeonMap.GetRoomData().Get(inCol, inRow).mIsValid;
+		bool inRange = gIsBetween(inCol, 0, colCount) && gIsBetween(inRow, 0, rowCount);
+		return inRange && roomDataMap.Get(inCol, inRow).mIsValid;
 	};
 
-	RenderTargetWriter renderTarget(dungeonMap.GetColCount()*3, dungeonMap.GetRowCount()*3);
-	
-	for (size_t row = 0; row < dungeonMap.GetRowCount(); ++row)
+	auto ifWallWriteChar = [&] (int inCol, int inRow, EDoorSide inDoorSide, char inWallChar, int inX, int inY)
 	{
-		for (size_t col = 0; col < dungeonMap.GetColCount(); ++col)
+		if (isValidRoom(inCol, inRow) && !roomDataMap.Get(inCol, inRow).mDoors[inDoorSide])
+		{
+			writer.Write(inWallChar, inX, inY);
+		}
+	};
+
+	for (int row = -1; row < rowCount; ++row)
+	{
+		for (int col = -1; col < colCount; ++col)
 		{
 			int mask = 0;
 			mask |= isValidRoom(col,	row)	? TopLeft		: 0;
@@ -96,11 +92,67 @@ std::string MapScreenState::GetRenderBuffer() const
 			mask |= isValidRoom(col+1,	row+1)	? BottomRight	: 0;
 
 			char piece = kCornerPiece[mask];
-			int x = col * 2;
-			int y = row * 2;
-			renderTarget.Write(piece, x, y);
+			int x = (col+1) * 2;
+			int y = (row+1) * 2;
+			writer.Write(piece, x, y);
+
+			ifWallWriteChar(col+1, row+1, EDoorSide_Left,	kVerticalWall,		x,		y+1);
+			ifWallWriteChar(col+1, row+1, EDoorSide_Right,	kVerticalWall,		x+2,	y+1);
+			ifWallWriteChar(col+1, row+1, EDoorSide_Top,	kHorizontalWall,	x+1,	y);
+			ifWallWriteChar(col+1, row+1, EDoorSide_Bottom, kHorizontalWall,	x+1,	y+2);
 		}
 	}
 
-	return renderTarget.GetRenderBuffer();
+	mBasicMap = writer.GetRenderTarget();
+}
+
+void MapScreenState::Update(float inFrameTime, const InputBuffer& inInput)
+{
+	if (inInput.IsPressed('p'))
+	{
+		RequestPopState();
+	}
+
+	if (inInput.IsPressed('a'))
+	{
+		mViewOffset.mX = std::min(mViewOffset.mX + 1, mBasicMap.GetColCount() + kViewMargin);
+	}
+	else if (inInput.IsPressed('d'))
+	{
+		mViewOffset.mX = std::max(mViewOffset.mX - 1, -kViewMargin);
+	}
+	
+	if (inInput.IsPressed('w'))
+	{
+		mViewOffset.mY = std::min(mViewOffset.mY + 1, mBasicMap.GetRowCount() + kViewMargin);
+	}
+	else if (inInput.IsPressed('s'))
+	{
+		mViewOffset.mY = std::max(mViewOffset.mY - 1, -kViewMargin);
+	}
+
+	mPlayerIconFlashTime += inFrameTime;
+}
+
+std::string MapScreenState::GetRenderBuffer() const
+{
+	RenderTargetWriter writer(ScreenConstants::EViewPortWidth, ScreenConstants::EViewPortHeight);
+
+	writer.Write(mBasicMap, mViewOffset.mX, mViewOffset.mY);
+
+	if (fmodf(mPlayerIconFlashTime / kPlayerIconFlashDuration, 2.0f) >= 1.0f)
+	{
+		auto playerPos = mGameData->mPlayer.GetComponent<PositionComponent>()->GetPosition();
+		
+		int col = playerPos.mX / ERoomDimensions_Width;
+		int row = playerPos.mY / ERoomDimensions_Height;
+		int x = (col * 2) + 1;
+		int y = (row * 2) + 1;
+		x += mViewOffset.mX;
+		y += mViewOffset.mY;
+
+		writer.Write('O', x, y);
+	}
+
+	return writer.GetRenderBuffer();
 }

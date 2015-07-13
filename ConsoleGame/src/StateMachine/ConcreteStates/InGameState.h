@@ -14,7 +14,7 @@ class InGameState : public StateBase
 {
 public:
 	InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData);
-	virtual ~InGameState() { }
+	virtual ~InGameState();
 
 	virtual void		Update(float inFrameTime, const InputBuffer& inInput);
 	virtual std::string	GetRenderBuffer() const;
@@ -24,5 +24,4 @@ private:
 	CameraSystem		mCameraSystem;
 	HUD					mHUD;
 	MessageBroadcaster	mMessageBroadcaster;
-	Entity				mPlayer;
 };

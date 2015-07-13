@@ -2,7 +2,9 @@
 
 #include <GameEntities/Player/PlayerEntity.h>
 #include <GameEntities/SpinnerEntity.h>
+
 #include <Dungeon/DungeonFactory.h>
+#include <Dungeon/RoomEntity.h>
 
 #include <EntityComponent/Systems/AnimationSystem.h>
 #include <EntityComponent/Systems/InputHandlerSystem.h>
@@ -28,12 +30,37 @@
 InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
 	: StateBase(inStateMachineMsgBroadcaster, inGameData)
 {
-	// If this is a new level, remove DoorKey from inventory.
-	// TODO: Improve cleanup of states/levels.
+	mGameData->mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster, inGameData);
+	
+	mCameraSystem.Init(mWorld, mGameData->mDungeonMap);
+
+	mGameData->mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster, inGameData);
+
+	mHUD.Init(mMessageBroadcaster, inGameData);
+
+	mMessageBroadcaster.Register<BackToStartMenuMsg>( [&] (const BackToStartMenuMsg&)
+	{
+		mGameData->mCurrentLevel = 1;
+		RequestGoToState(EGameState_StartMenu);
+	} );
+
+	mMessageBroadcaster.Register<PlayerWentDownStairs>( [&] (const PlayerWentDownStairs&) 
+	{
+		mGameData->mCurrentLevel++;
+		RequestGoToState(EGameState_StartLevelIntro);
+	} );
+
+	ItemDropHandler::Register(mWorld, mMessageBroadcaster, mGameData);
+}
+
+InGameState::~InGameState()
+{
+	// Remove Dungeon key.
 	{
 		auto& playerData = mGameData->mPlayerData;
 		auto& inventory = playerData.mInventory;
 		
+		// Might be null; this is handled appropriately.
 		auto key = inventory.FindItem(DoorKey::kName);
 
 		if (key == playerData.GetItemInSlot(Player::EItemSlot_Slot0))
@@ -49,27 +76,8 @@ InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameD
 		inventory.RemoveAndDeleteItem(key);
 	}
 
-	mGameData->mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster, inGameData);
-	
-	mCameraSystem.Init(mWorld, mGameData->mDungeonMap);
-
-	mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster, inGameData);
-
-	mHUD.Init(mMessageBroadcaster, &inGameData->mPlayerData, mPlayer);
-
-	mMessageBroadcaster.Register<BackToStartMenuMsg>( [&] (const BackToStartMenuMsg&)
-	{
-		mGameData->mCurrentLevel = 1;
-		RequestGoToState(EGameState_StartMenu);
-	} );
-
-	mMessageBroadcaster.Register<PlayerWentDownStairs>( [&] (const PlayerWentDownStairs&) 
-	{
-		mGameData->mCurrentLevel++;
-		RequestGoToState(EGameState_StartLevelIntro);
-	} );
-
-	ItemDropHandler::Register(mWorld, mMessageBroadcaster, mGameData);
+	// Clear Player.
+	mGameData->mPlayer = Entity();
 }
 
 void InGameState::Update(float inFrameTime, const InputBuffer& inInput)
@@ -104,8 +112,8 @@ std::string InGameState::GetRenderBuffer() const
 {
 	using namespace ScreenConstants;
 	
-	const int gameWidth		= (EMapCols+1);
-	const int gameHeight	= EMapRows;
+	const int gameWidth		= ERoomDimensions_Width;
+	const int gameHeight	= ERoomDimensions_Height;
 	const int screenWidth	= gameWidth;
 	const int screenHeight	= mHUD.GetTopBarHeight() + gameHeight + mHUD.GetBottomBarHeight();
 

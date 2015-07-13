@@ -11,7 +11,9 @@
 #include <Messages/Messages.h>
 
 #include <Renderer/RenderTargetWriter.h>
+
 #include "ScreenConstants.h"
+#include "GameData.h"
 
 namespace
 {
@@ -20,26 +22,28 @@ namespace
 }
 
 HUD::HUD()
-	: mMessageBroadcaster(nullptr)
-	, mMoneyCollected(0)
+	: mMessageBroadcaster	(nullptr)
+	, mGameData				(nullptr)
+	, mMoneyCollected		(0)
 {
 }
 
-void HUD::Init(MessageBroadcaster& inMessageBroadcaster, PlayerData* inPlayerData, Entity inPlayer)
+void HUD::Init(MessageBroadcaster& inMessageBroadcaster, GameData* inGameData)
 {
-	mPlayer = inPlayer;
+	mGameData = inGameData;
+
 	inMessageBroadcaster.Register<CoinCollectedMessage>(	[this] (const CoinCollectedMessage&)	{ OnCoinCollected();	} );
 	inMessageBroadcaster.Register<PlayerIsDeadMsg>(			[this] (const PlayerIsDeadMsg&)			{ OnPlayerIsDead();		} );
 
-	mHealthBar.Init(mPlayer);
-	mEquippedBar.Init(inPlayerData);
+	mHealthBar.Init(mGameData->mPlayer);
+	mEquippedBar.Init(&mGameData->mPlayerData);
 
 	mMessageBroadcaster = &inMessageBroadcaster;
 }
 
 void HUD::Update(float inFrameTime)
 {
-	if (mPlayer.GetComponent<HealthComponent>()->IsDead())
+	if (mGameData->mPlayer.GetComponent<HealthComponent>()->IsDead())
 	{
 		mYouAreDeadDisplay.UpdateAnimation(inFrameTime);
 
@@ -74,7 +78,7 @@ std::string HUD::GetBottomBarRenderBuffer() const
 
 std::string	HUD::GetOverlayBuffer() const
 {
-	if (mPlayer.GetComponent<HealthComponent>()->IsDead())
+	if (mGameData->mPlayer.GetComponent<HealthComponent>()->IsDead())
 	{
 		return mYouAreDeadDisplay.GetRenderBuffer();
 	}

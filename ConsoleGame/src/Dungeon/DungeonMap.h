@@ -26,14 +26,13 @@ class DungeonMap
 public:
 	DungeonMap() { }
 	DungeonMap(const Dynamic2DVector<RoomData>& inRoomData, const Dynamic2DVector<Entity>& inRoomEntities)
-		: mRoomData(inRoomData), mRoomEntities(inRoomEntities)
+		: mRoomData		(inRoomData)
+		, mRoomEntities	(inRoomEntities)
 	{
-		assert(mRoomData.GetColCount() == mRoomEntities.GetColCount());
-		assert(mRoomData.GetRowCount() == mRoomEntities.GetRowCount());
 	}
 
-	size_t								GetColCount() const		{ return mRoomData.GetColCount(); }
-	size_t								GetRowCount() const		{ return mRoomData.GetRowCount(); }
+	size_t								GetColCount() const		{ return mRoomEntities.GetColCount(); }
+	size_t								GetRowCount() const		{ return mRoomEntities.GetRowCount(); }
 
 	const Dynamic2DVector<RoomData>&	GetRoomData() const		{ return mRoomData; }
 	const Dynamic2DVector<Entity>&		GetRoomEntities() const { return mRoomEntities; }
