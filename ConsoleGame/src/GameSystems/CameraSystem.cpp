@@ -13,29 +13,31 @@ CameraSystem::CameraSystem()
 {
 }
 
-void CameraSystem::Init(World& inWorld, const DungeonMap& inDungeonMap)
+void CameraSystem::Init(World& inWorld, DungeonMap& inDungeonMap)
 {
 	mCameraEntity = inWorld.CreateEntity();
 	mCameraEntity.AddComponent<CameraComponent>();
 	mCameraEntity.AddComponent<PositionComponent>( IVec2(0, 0) );
 
-	inDungeonMap.GetRoomEntities().ForEach( [&] (size_t, size_t, const Entity& inRoom)
+	inDungeonMap.GetRoomEntities().ForEach( [&] (size_t inCol, size_t inRow, const Entity& inRoom)
 	{
 		if (inRoom.IsValid())
 		{
 			auto triggerBox = inRoom.GetComponent<TriggerBoxComponent>();
-			triggerBox->RegisterOnEnterCallback( [this] (const Entity& inRoom, const Entity& inTriggerer) { OnEntityEnteredRoom(inRoom, inTriggerer); } );
+			triggerBox->RegisterOnEnterCallback( [=, &inDungeonMap] (const Entity& inRoom, const Entity& inTriggerer) 
+			{
+				if (inTriggerer.HasComponent<PlayerComponent>())
+				{
+					MoveCameraToRoom(inRoom);
+					inDungeonMap.SetRoomVisited(inCol, inRow);
+				}
+			} );
 		}
 	} );
 }
 
-void CameraSystem::OnEntityEnteredRoom(const Entity& inRoom, const Entity& inTriggerer)
+void CameraSystem::MoveCameraToRoom(const Entity& inRoom)
 {
-	if (!inTriggerer.HasComponent<PlayerComponent>())
-	{
-		return;
-	}
-
 	auto posComp = inRoom.GetComponent<PositionComponent>();
 	assert(nullptr != posComp);
 

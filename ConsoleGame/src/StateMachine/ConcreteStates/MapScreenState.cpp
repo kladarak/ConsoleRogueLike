@@ -61,45 +61,46 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 	, mViewOffset(0, 0)
 	, mPlayerIconFlashTime(0.0f)
 {
-	auto&	roomDataMap	= mGameData->mDungeonMap.GetRoomData();
-	int		colCount	= roomDataMap.GetColCount();
-	int		rowCount	= roomDataMap.GetRowCount();
+	auto&	roomDataMap		= mGameData->mDungeonMap.GetRoomData();
+	auto&	roomsVisited	= mGameData->mDungeonMap.GetRoomsVisited();
+	int		colCount		= roomsVisited.GetColCount();
+	int		rowCount		= roomsVisited.GetRowCount();
 
 	RenderTargetWriter writer(colCount*3, rowCount*3);
 	
-	auto isValidRoom = [&] (int inCol, int inRow)
+	auto hasVisitedRoom = [&] (int inCol, int inRow)
 	{
 		bool inRange = gIsBetween(inCol, 0, colCount) && gIsBetween(inRow, 0, rowCount);
-		return inRange && roomDataMap.Get(inCol, inRow).mIsValid;
+		return inRange && roomsVisited.Get(inCol, inRow);
 	};
 
 	auto ifWallWriteChar = [&] (int inCol, int inRow, EDoorSide inDoorSide, char inWallChar, int inX, int inY)
 	{
-		if (isValidRoom(inCol, inRow) && !roomDataMap.Get(inCol, inRow).mDoors[inDoorSide])
+		if (hasVisitedRoom(inCol, inRow) && !roomDataMap.Get(inCol, inRow).mDoors[inDoorSide])
 		{
 			writer.Write(inWallChar, inX, inY);
 		}
 	};
 
-	for (int row = -1; row < rowCount; ++row)
+	for (int row = 0; row <= rowCount; ++row)
 	{
-		for (int col = -1; col < colCount; ++col)
+		for (int col = 0; col <= colCount; ++col)
 		{
 			int mask = 0;
-			mask |= isValidRoom(col,	row)	? TopLeft		: 0;
-			mask |= isValidRoom(col+1,	row)	? TopRight		: 0;
-			mask |= isValidRoom(col,	row+1)	? BottomLeft	: 0;
-			mask |= isValidRoom(col+1,	row+1)	? BottomRight	: 0;
+			mask |= hasVisitedRoom(col-1,	row-1)	? TopLeft		: 0;
+			mask |= hasVisitedRoom(col,	row-1)		? TopRight		: 0;
+			mask |= hasVisitedRoom(col-1,	row)	? BottomLeft	: 0;
+			mask |= hasVisitedRoom(col,	row)		? BottomRight	: 0;
 
 			char piece = kCornerPiece[mask];
-			int x = (col+1) * 2;
-			int y = (row+1) * 2;
+			int x = col * 2;
+			int y = row * 2;
 			writer.Write(piece, x, y);
 
-			ifWallWriteChar(col+1, row+1, EDoorSide_Left,	kVerticalWall,		x,		y+1);
-			ifWallWriteChar(col+1, row+1, EDoorSide_Right,	kVerticalWall,		x+2,	y+1);
-			ifWallWriteChar(col+1, row+1, EDoorSide_Top,	kHorizontalWall,	x+1,	y);
-			ifWallWriteChar(col+1, row+1, EDoorSide_Bottom, kHorizontalWall,	x+1,	y+2);
+			ifWallWriteChar(col, row, EDoorSide_Left,	kVerticalWall,		x,		y+1);
+			ifWallWriteChar(col, row, EDoorSide_Right,	kVerticalWall,		x+2,	y+1);
+			ifWallWriteChar(col, row, EDoorSide_Top,	kHorizontalWall,	x+1,	y);
+			ifWallWriteChar(col, row, EDoorSide_Bottom, kHorizontalWall,	x+1,	y+2);
 		}
 	}
 

@@ -9,12 +9,12 @@ class CameraSystem
 public:
 	CameraSystem();
 
-	void	Init(World& inWorld, const DungeonMap& inDungeonMap);
+	void	Init(World& inWorld, DungeonMap& inDungeonMap);
 	
 	IVec2	GetCameraPosition() const;
 
 private:
-	void	OnEntityEnteredRoom(const Entity& inRoom, const Entity& inTriggerer);
+	void	MoveCameraToRoom(const Entity& inRoom);
 
 	Entity	mCameraEntity;
 
