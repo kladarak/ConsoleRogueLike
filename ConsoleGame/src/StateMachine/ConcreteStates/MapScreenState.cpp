@@ -53,6 +53,18 @@ namespace
 
 	const int	kViewMargin					= 5;
 	const float kPlayerIconFlashDuration	= 0.5f;
+
+	IVec2 sCalculatePlayerIconPosition(const Entity& inPlayer)
+	{
+		auto playerPos = inPlayer.GetComponent<PositionComponent>()->GetPosition();
+		
+		int col = playerPos.mX / ERoomDimensions_Width;
+		int row = playerPos.mY / ERoomDimensions_Height;
+		int x = (col * 2) + 1;
+		int y = (row * 2) + 1;
+
+		return IVec2(x, y);
+	}
 }
 
 MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
@@ -105,6 +117,10 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 	}
 
 	mBasicMap = writer.GetRenderTarget();
+
+	IVec2 playerIconPos = sCalculatePlayerIconPosition(mGameData->mPlayer);
+	IVec2 mapCentre(ScreenConstants::EViewPortWidth/2, ScreenConstants::EViewPortHeight/2);
+	mViewOffset = mapCentre - playerIconPos;
 }
 
 void MapScreenState::Update(float inFrameTime, const InputBuffer& inInput)
@@ -141,6 +157,13 @@ std::string MapScreenState::GetRenderBuffer() const
 
 	writer.Write(mBasicMap, mViewOffset.mX, mViewOffset.mY);
 
+	if (fmodf(mPlayerIconFlashTime / kPlayerIconFlashDuration, 2.0f) < 1.0f)
+	{
+		IVec2 playerIconPos = sCalculatePlayerIconPosition(mGameData->mPlayer);
+		playerIconPos += mViewOffset;
+		writer.Write('O', playerIconPos.mX, playerIconPos.mY);
+	}
+	
 	if (fmodf(mPlayerIconFlashTime / kPlayerIconFlashDuration, 2.0f) < 1.0f)
 	{
 		auto playerPos = mGameData->mPlayer.GetComponent<PositionComponent>()->GetPosition();
