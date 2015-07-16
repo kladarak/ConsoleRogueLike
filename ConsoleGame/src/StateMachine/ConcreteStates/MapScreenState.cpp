@@ -163,20 +163,6 @@ std::string MapScreenState::GetRenderBuffer() const
 		playerIconPos += mViewOffset;
 		writer.Write('O', playerIconPos.mX, playerIconPos.mY);
 	}
-	
-	if (fmodf(mPlayerIconFlashTime / kPlayerIconFlashDuration, 2.0f) < 1.0f)
-	{
-		auto playerPos = mGameData->mPlayer.GetComponent<PositionComponent>()->GetPosition();
-		
-		int col = playerPos.mX / ERoomDimensions_Width;
-		int row = playerPos.mY / ERoomDimensions_Height;
-		int x = (col * 2) + 1;
-		int y = (row * 2) + 1;
-		x += mViewOffset.mX;
-		y += mViewOffset.mY;
-
-		writer.Write('O', x, y);
-	}
 
 	return writer.GetRenderBuffer();
 }
