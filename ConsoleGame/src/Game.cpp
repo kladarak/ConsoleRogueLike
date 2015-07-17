@@ -69,12 +69,24 @@ void Game::Update()
 
 void Game::Render()
 {
-	COORD	pos		= { 0, 0 };
-	HANDLE	output	= GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleCursorPosition(output, pos);
+	HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
+	
+	{
+		CONSOLE_CURSOR_INFO cursorInfo;
+		GetConsoleCursorInfo(output, &cursorInfo);
+		cursorInfo.bVisible = false;
+		SetConsoleCursorInfo(output, &cursorInfo);
+	}
 
-	printf("%04i FPS (%03.3fms)\n\n", (uint32_t) (1.0f / mTimer.GetDeltaTime()), mTimer.GetDeltaTime() * 1000.0f);
+	RenderTarget renderTarget = mStateMachine.GetTop()->GetRenderTarget();
 
-	std::string buffer = mStateMachine.GetTop()->GetRenderTarget().GetBuffer();
-	printf(buffer.c_str());
+	renderTarget.ForEach( [&] (size_t inCol, size_t inRow, const Fragment& inFragment)
+	{
+		COORD pos = { (short) inCol, (short) inRow };
+		SetConsoleCursorPosition( output, pos );
+		SetConsoleTextAttribute( output, (WORD) inFragment.mColour );
+		printf( "%c", inFragment.mChar );
+	} );
+
+	printf("\n\n%04i FPS (%03.3fms)", (uint32_t) (1.0f / mTimer.GetDeltaTime()), mTimer.GetDeltaTime() * 1000.0f);
 }

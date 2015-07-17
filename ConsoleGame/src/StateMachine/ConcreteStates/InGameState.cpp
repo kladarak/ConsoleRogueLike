@@ -128,7 +128,7 @@ RenderTarget InGameState::GetRenderTarget() const
 	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
 	RenderSystem::Render( const_cast<InGameState*>(this)->mWorld, cameraPosition, renderTarget ); // Ooh, nasty const_cast... Must improve World's interface...
 
-	renderTargetWriter.Write( renderTarget.GetBuffer(), 0, y );
+	renderTargetWriter.Write( renderTarget, 0, y );
 	y += gameHeight;
 	
 	renderTargetWriter.Write( mHUD.GetBottomBarRenderTarget(), 0, y );

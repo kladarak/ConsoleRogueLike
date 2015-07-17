@@ -507,5 +507,8 @@
     <ClInclude Include="src\Renderer\Colour.h">
       <Filter>Source Files\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\Fragment.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

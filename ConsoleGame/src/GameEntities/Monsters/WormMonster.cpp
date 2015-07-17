@@ -29,8 +29,8 @@ namespace MonsterAnimation
 {
 	static const AsciiMesh kIdleFrames[] =
 	{
-		AsciiMesh( "e", 1, 1 ),
-		AsciiMesh( "@", 1, 1 ),
+		AsciiMesh( Fragment('e', ETextGreen), 1, 1 ),
+		AsciiMesh( Fragment('@', ETextGreen), 1, 1 ),
 	};
 
 	static const Animation kIdle(kIdleFrames, gElemCount(kIdleFrames), kAnimationDuration, Animation::EPlaybackStyle_Loop);

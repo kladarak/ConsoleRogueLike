@@ -3,22 +3,31 @@
 #include <vector>
 #include <cstring>
 
+#include <Containers/Dynamic2DVector.h>
+
+#include "Fragment.h"
+
 class RenderTarget
 {
 public:
 	RenderTarget(int inColumns, int inRows);
 
 	void						Set(int inCol, int inRow, char inChar);
-	std::string					GetBuffer() const;
+	void						Set(int inCol, int inRow, const Fragment& inFragment);
 
-	int							GetColCount() const { return mCols; }
-	int							GetRowCount() const { return mRows; }
+	int							GetColCount() const { return mFragments.GetColCount(); }
+	int							GetRowCount() const { return mFragments.GetRowCount(); }
 
 	bool						operator==(const RenderTarget& inRHS);
 	bool						operator!=(const RenderTarget& inRHS) { return !(*this == inRHS); }
 
+	template<typename TFunctor>
+	void ForEach(const TFunctor& inFunctor) const
+	{
+		mFragments.ForEach(inFunctor);
+	}
+
 private:
-	std::vector< std::string >	mChars;
-	int							mCols;
-	int							mRows;
+	Dynamic2DVector<Fragment>	mFragments;
+
 };

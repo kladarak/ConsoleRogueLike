@@ -29,7 +29,7 @@ static void RenderEntityToTarget(const Entity& inEntity, const IVec2& inCameraPo
 	{
 		int x = inX + position.mX;
 		int y = inY + position.mY;
-		inTarget.Set(x, y, inFrag.mChar);
+		inTarget.Set(x, y, inFrag);
 	} );
 }
 
