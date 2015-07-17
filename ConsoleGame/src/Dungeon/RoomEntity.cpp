@@ -61,9 +61,9 @@ Entity Create(World& inWorld, const IVec2& inPosition)
 
 	CollisionMesh collisionMesh;
 
-	renderMesh.ForEachFrag( [&] (int inX, int inY, char inChar)
+	renderMesh.ForEachFrag( [&] (int inX, int inY, const Fragment& inFrag)
 	{
-		if ( kWhiteSpace.find( inChar ) == std::string::npos )
+		if ( kWhiteSpace.find( inFrag.mChar ) == std::string::npos )
 		{
 			collisionMesh.SetCollidableAt( inX, inY );
 		}

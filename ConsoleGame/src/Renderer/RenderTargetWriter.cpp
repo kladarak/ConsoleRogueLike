@@ -34,11 +34,11 @@ void RenderTargetWriter::Write(const std::string& inString, int inX, int inY)
 
 void RenderTargetWriter::Write(const AsciiMesh& inMesh, int inX, int inY)
 {
-	inMesh.ForEachFrag( [&] (int inFragX, int inFragY, char inChar)
+	inMesh.ForEachFrag( [&] (int inFragX, int inFragY, const Fragment& inFrag)
 	{
 		int x = inFragX + inX;
 		int y = inFragY + inY;
-		mRenderTarget.Set(x, y, inChar);
+		mRenderTarget.Set(x, y, inFrag.mChar);
 	} );
 }
 

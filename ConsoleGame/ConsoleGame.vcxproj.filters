@@ -504,5 +504,8 @@
     <ClInclude Include="src\StateMachine\ConcreteStates\MapScreenState.h">
       <Filter>Source Files\StateMachine\ConcreteStates</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\Colour.h">
+      <Filter>Source Files\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

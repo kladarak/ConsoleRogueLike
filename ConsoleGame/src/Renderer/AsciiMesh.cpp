@@ -1,7 +1,7 @@
 #include "AsciiMesh.h"
 
 AsciiMesh::AsciiMesh(const char* inChars, size_t inCols, size_t inRows, const IVec2& inCentreOffset)
-	: Dynamic2DVectorWithOffset<char>()
+	: Base()
 {
 	for (size_t row = 0; row < inRows; ++row)
 	{

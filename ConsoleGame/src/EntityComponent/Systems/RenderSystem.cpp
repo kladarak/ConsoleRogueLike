@@ -25,11 +25,11 @@ static void RenderEntityToTarget(const Entity& inEntity, const IVec2& inCameraPo
 
 	auto& mesh		= renderableComp->GetMesh();
 
-	mesh.ForEachFrag( [&] (int inX, int inY, char inChar)
+	mesh.ForEachFrag( [&] (int inX, int inY, const Fragment& inFrag)
 	{
 		int x = inX + position.mX;
 		int y = inY + position.mY;
-		inTarget.Set(x, y, inChar);
+		inTarget.Set(x, y, inFrag.mChar);
 	} );
 }
 

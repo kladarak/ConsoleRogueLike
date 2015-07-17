@@ -141,6 +141,7 @@
     <ClInclude Include="src\Maths\Maths.h" />
     <ClInclude Include="src\Messages\Messages.h" />
     <ClInclude Include="src\Renderer\AsciiMesh.h" />
+    <ClInclude Include="src\Renderer\Colour.h" />
     <ClInclude Include="src\Renderer\RenderTarget.h" />
     <ClInclude Include="src\Renderer\RenderTargetWriter.h" />
     <ClInclude Include="src\ScreenConstants.h" />
