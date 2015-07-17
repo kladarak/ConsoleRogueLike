@@ -13,9 +13,10 @@
 
 namespace Stairs
 {
-	
-static const char			kRenderMeshData[] = "|=====|";
-static const AsciiMesh		kRenderMesh( kRenderMeshData, 7, 1 );
+
+static const Fragment		kStair(gCastUCharToChar(205), ETextDarkYellow);
+static const Fragment		kRenderMeshData[] = { kStair, kStair, kStair, kStair, kStair };
+static const AsciiMesh		kRenderMesh( kRenderMeshData, 5, 1, IVec2(1, 0) );
 static const bool			kCollisionMeshData[] = 
 { 
 	true,	true,	true,	true,	true,	true,	true,

@@ -6,6 +6,8 @@
 
 #include <Containers/ContainerMacros.h>
 
+#include <Dungeon/WallFragments.h>
+
 #include "DoorConstants.h"
 
 namespace OpenDoor
@@ -14,7 +16,7 @@ namespace OpenDoor
 namespace FaceUpDown
 {
 
-	static const char			kRenderMeshData[EDoorSize_Width+1] = { "|     |" };  //+1 for terminating character...
+	static const Fragment		kRenderMeshData[EDoorSize_Width+1] = { DungeonWall::kVerticalWall, ' ',' ',' ',' ',' ', DungeonWall::kVerticalWall };  //+1 for terminating character...
 	static const AsciiMesh		kRenderMesh(kRenderMeshData, 7, 1);
 	
 	static const bool			kCollisionMeshData[] = { true, false, false, false, false, false, true };
@@ -23,13 +25,13 @@ namespace FaceUpDown
 
 namespace FaceLeftRight
 {
-	static const char kRenderMeshData[EDoorSize_Height] = 
+	static const Fragment kRenderMeshData[EDoorSize_Height] = 
 	{
-		'_',
+		DungeonWall::kHorizontalWall,
 		' ',
 		' ',
 		' ',
-		gCastUCharToChar(238),
+		DungeonWall::kHorizontalWall,
 	};
 	
 	static const AsciiMesh		kRenderMesh(kRenderMeshData, 1, 5);

@@ -19,11 +19,12 @@ public:
 	AsciiMesh(const Fragment& inClearFrag,	size_t inCols, size_t inRows, const IVec2& inCentreOffset = IVec2(0, 0)) : Base( inCols, inRows, inClearFrag, inCentreOffset ) { }
 	AsciiMesh(char inClearChar,				size_t inCols, size_t inRows, const IVec2& inCentreOffset = IVec2(0, 0)) : Base( inCols, inRows, inClearChar, inCentreOffset ) { }
 
-	void SetCharAtPosition(int inX, int inY, char inChar)	{ Set(inX, inY, inChar); }
+	void SetCharAtPosition(int inX, int inY, char inChar)				{ Set(inX, inY, inChar); }
+	void SetFragAtPosition(int inX, int inY, const Fragment& inFrag)	{ Set(inX, inY, inFrag); }
 
 	template<typename TFunctor>
-	void ForEachFrag(const TFunctor& inFunctor) const		{ ForEach(inFunctor); }
+	void ForEachFrag(const TFunctor& inFunctor) const					{ ForEach(inFunctor); }
 
 };
 
-static inline char gCastUCharToChar(unsigned char inChar)	{ return -128+(inChar%128); }
+static inline char gCastUCharToChar(unsigned char inChar)				{ return -128+(inChar%128); }

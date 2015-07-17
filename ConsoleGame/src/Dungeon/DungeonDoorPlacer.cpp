@@ -24,7 +24,7 @@ namespace
 	const DoorConstructInfo kDoorConstructInfo[] =
 	{
 		{ IVec2(ERoomDimensions_DoorHorizOffset,	1),									EOrientation_FaceUp		},
-		{ IVec2(ERoomDimensions_DoorHorizOffset,	ERoomDimensions_Height-1),			EOrientation_FaceDown	},
+		{ IVec2(ERoomDimensions_DoorHorizOffset,	ERoomDimensions_Height-2),			EOrientation_FaceDown	},
 		{ IVec2(1,									ERoomDimensions_DoorVertiOffset),	EOrientation_FaceLeft	},
 		{ IVec2(ERoomDimensions_Width-2,			ERoomDimensions_DoorVertiOffset),	EOrientation_FaceRight	},
 	};

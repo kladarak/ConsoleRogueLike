@@ -14,7 +14,7 @@ enum ERoomDimensions
 	ERoomDimensions_Width			= ScreenConstants::EMapCols+1,
 	ERoomDimensions_Height			= ScreenConstants::EMapRows,
 	ERoomDimensions_DoorHorizOffset = (ERoomDimensions_Width - EDoorSize_Width) / 2,
-	ERoomDimensions_DoorVertiOffset = ((ERoomDimensions_Height - EDoorSize_Height) / 2) + 1,
+	ERoomDimensions_DoorVertiOffset = (ERoomDimensions_Height - EDoorSize_Height) / 2,
 };
 
 namespace RoomEntity

@@ -9,38 +9,28 @@
 
 #include <Renderer/AsciiMesh.h>
 
+#include "WallFragments.h"
 #include "ScreenConstants.h"
 
 namespace
 {
 	const std::string	kWhiteSpace = " \n\r\t\0";
-	const char			kRoomWallHoriz[ERoomDimensions_Width+1] = "_______________________________________"; //+1 for terminating character...
-	const char			kRoomWallVerti[ERoomDimensions_Height] =
-	{
-		'.',
-		'|',
-		'|',
-		'|',
-		'|',
-		'|',
-		'|',
-		'|',
-		'|',
-		'|',
-		'|',
-		'|',
-		'|',
-		'|'
-	};
 
 	AsciiMesh sGenerateRoom()
 	{
+		using namespace DungeonWall;
+
 		AsciiMesh mesh(' ', ERoomDimensions_Height, ERoomDimensions_Width);
 	
-		for (int i = 0; i < ERoomDimensions_Width; ++i)		{ mesh.SetCharAtPosition(i,	0, kRoomWallHoriz[i]); }
-		for (int i = 0; i < ERoomDimensions_Width; ++i)		{ mesh.SetCharAtPosition(i,	ERoomDimensions_Height-1, kRoomWallHoriz[i]); }
-		for (int i = 0; i < ERoomDimensions_Height; ++i)	{ mesh.SetCharAtPosition(0,	i, kRoomWallVerti[i]); }
-		for (int i = 0; i < ERoomDimensions_Height; ++i)	{ mesh.SetCharAtPosition(ERoomDimensions_Width-1, i, kRoomWallVerti[i]); }
+		for (int i = 1; i < ERoomDimensions_Width-1; ++i)	{ mesh.Set(i,	0, kHorizontalWall); }
+		for (int i = 1; i < ERoomDimensions_Width-1; ++i)	{ mesh.Set(i,	ERoomDimensions_Height-1, kHorizontalWall); }
+		for (int i = 1; i < ERoomDimensions_Height-1; ++i)	{ mesh.Set(0,	i, kVerticalWall); }
+		for (int i = 1; i < ERoomDimensions_Height-1; ++i)	{ mesh.Set(ERoomDimensions_Width-1, i, kVerticalWall); }
+		
+		mesh.Set(0,							0,							kTopLeftCorner);
+		mesh.Set(ERoomDimensions_Width-1,	0,							kTopRightCorner);
+		mesh.Set(0,							ERoomDimensions_Height-1,	kBottomLeftCorner);
+		mesh.Set(ERoomDimensions_Width-1,	ERoomDimensions_Height-1,	kBottomRightCorner);
 
 		return mesh;
 	}
@@ -76,20 +66,24 @@ Entity Create(World& inWorld, const IVec2& inPosition)
 
 void EraseWallForDoor(Entity inRoom, EDoorSide inSide)
 {
+	using namespace DungeonWall;
+
 	struct DoorEraseSetup
 	{
-		int		mStart;
-		int		mEnd;
-		IVec2	mPosition;
-		IVec2	mOffset;
+		int			mStart;
+		int			mEnd;
+		IVec2		mPosition;
+		IVec2		mOffset;
+		Fragment	mCorner0;
+		Fragment	mCorner1;
 	};
 
 	static const DoorEraseSetup kDoorEraseSetup[] =
 	{
-		{ 0, EDoorSize_Width,		IVec2(ERoomDimensions_DoorHorizOffset,	0),									IVec2(1, 0) },	 // EDoorSide_Top
-		{ 0, EDoorSize_Width,		IVec2(ERoomDimensions_DoorHorizOffset,	ERoomDimensions_Height - 1),		IVec2(1, 0) },	 // EDoorSide_Bottom
-		{ 1, EDoorSize_Height - 1,	IVec2(0,								ERoomDimensions_DoorVertiOffset),	IVec2(0, 1) },	 // EDoorSide_Left
-		{ 1, EDoorSize_Height - 1,	IVec2(ERoomDimensions_Width - 1,		ERoomDimensions_DoorVertiOffset),	IVec2(0, 1) },	 // EDoorSide_Right
+		{ 0, EDoorSize_Width,	IVec2(ERoomDimensions_DoorHorizOffset,	0),									IVec2(1, 0), kTopRightCorner,		kTopLeftCorner		},	 // EDoorSide_Top
+		{ 0, EDoorSize_Width,	IVec2(ERoomDimensions_DoorHorizOffset,	ERoomDimensions_Height - 1),		IVec2(1, 0), kBottomRightCorner,	kBottomLeftCorner	},	 // EDoorSide_Bottom
+		{ 0, EDoorSize_Height,	IVec2(0,								ERoomDimensions_DoorVertiOffset),	IVec2(0, 1), kBottomLeftCorner,		kTopLeftCorner		},	 // EDoorSide_Left
+		{ 0, EDoorSize_Height,	IVec2(ERoomDimensions_Width - 1,		ERoomDimensions_DoorVertiOffset),	IVec2(0, 1), kBottomRightCorner,	kTopRightCorner		},	 // EDoorSide_Right
 	};
 
 	const DoorEraseSetup& setup = kDoorEraseSetup[inSide];
@@ -101,21 +95,19 @@ void EraseWallForDoor(Entity inRoom, EDoorSide inSide)
 	{
 		IVec2 pos = setup.mPosition + (setup.mOffset * i);
 
-		renderable->SetCharAtPosition(pos.mX, pos.mY, ' ');
-		collision->ClearDefaultMeshCollidableAt(pos.mX, pos.mY);
-	}
-
-	// Extra correction for Top side.
-	if (inSide == EDoorSide_Top)
-	{
-		int left	= ERoomDimensions_DoorHorizOffset;
-		int right	= ERoomDimensions_DoorHorizOffset + EDoorSize_Width - 1;
-
-		renderable->SetCharAtPosition(left,		0, '.');
-		renderable->SetCharAtPosition(right,	0, '.');
-
-		collision->SetDefaultMeshCollidableAt(left, 0);
-		collision->SetDefaultMeshCollidableAt(right, 0);
+		if (i == setup.mStart)
+		{
+			renderable->SetFragAtPosition(pos.mX, pos.mY, setup.mCorner0);
+		}
+		else if (i == setup.mEnd - 1)
+		{
+			renderable->SetFragAtPosition(pos.mX, pos.mY, setup.mCorner1);
+		}
+		else
+		{
+			renderable->SetCharAtPosition(pos.mX, pos.mY, ' ');
+			collision->ClearDefaultMeshCollidableAt(pos.mX, pos.mY);
+		}
 	}
 }
 

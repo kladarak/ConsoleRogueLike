@@ -16,6 +16,14 @@ namespace LockedDoor
 
 static const float kOpenAnimKFDuration = 0.15f;
 
+static const Fragment kLeftTPiece	( gCastUCharToChar(195),	ETextDarkYellow );
+static const Fragment kRightTPiece	( gCastUCharToChar(180),	ETextDarkYellow );
+static const Fragment kTopTPiece	( gCastUCharToChar(194),	ETextDarkYellow );
+static const Fragment kBottomTPiece	( gCastUCharToChar(193),	ETextDarkYellow );
+static const Fragment kVertiPiece	( gCastUCharToChar(179),	ETextDarkYellow );
+static const Fragment kHorizPiece	( gCastUCharToChar(196),	ETextDarkYellow );
+static const Fragment kLockPiece	( 'o',						ETextDarkYellow );
+
 enum EAnimationSlot
 {
 	EAnimationSlot_Idle,
@@ -24,19 +32,21 @@ enum EAnimationSlot
 
 namespace FaceUpDown
 {
-	static const char		kIdleRenderMeshData[] = "|--o--|";
+	static const Fragment	kIdleRenderMeshData[] = { kLeftTPiece, kHorizPiece, kHorizPiece, kLockPiece, kHorizPiece, kHorizPiece, kRightTPiece }; // "|--o--|";
 	static const AsciiMesh	kIdleRenderMesh( kIdleRenderMeshData, 7, 1 );
 	static const Animation	kIdleAnimation( &kIdleRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Once );
 	
-	static const char		kOpenRenderMeshKF1[] = "|-- --|";
-	static const char		kOpenRenderMeshKF2[] = "|-   -|";
-	static const char		kOpenRenderMeshKF3[] = "|     |";
+	static const Fragment	kOpenRenderMeshKF1[] = { kLeftTPiece, kHorizPiece,	kHorizPiece,	' ', kHorizPiece,	kHorizPiece,	kRightTPiece }; // "|-- --|";
+	static const Fragment	kOpenRenderMeshKF2[] = { kLeftTPiece, kHorizPiece,	' ',			' ', ' ',			kHorizPiece,	kRightTPiece }; // "|-   -|";
+	static const Fragment	kOpenRenderMeshKF3[] = { kLeftTPiece, ' ',			' ',			' ', ' ',			' ',			kRightTPiece }; // "|-   -|"; // t pieces
+	static const Fragment	kOpenRenderMeshKF4[] = { kVertiPiece, ' ',			' ',			' ', ' ',			' ',			kVertiPiece };	// "|     |";
 	
 	static const AsciiMesh	kOpenAnimKeyFrames[] =
 	{
 		AsciiMesh( kOpenRenderMeshKF1,	7, 1 ),
 		AsciiMesh( kOpenRenderMeshKF2,	7, 1 ),
 		AsciiMesh( kOpenRenderMeshKF3,	7, 1 ),
+		AsciiMesh( kOpenRenderMeshKF4,	7, 1 ),
 	};
 
 	static const Animation kOpenAnimation(	kOpenAnimKeyFrames, 
@@ -57,39 +67,48 @@ namespace FaceUpDown
 
 namespace FaceLeftRight
 {
-	static const char kIdleRenderMeshData[] =
+	static const Fragment kIdleRenderMeshData[] =
 	{
-		'_',
-		'|',
-		'o',
-		'|',
-		gCastUCharToChar(238),
+		kTopTPiece,
+		kVertiPiece,
+		kLockPiece,
+		kVertiPiece,
+		kBottomTPiece,
 	};
 
 	static const AsciiMesh kIdleRenderMesh(kIdleRenderMeshData, 1, 5);
 	static const Animation kIdleAnimation( &kIdleRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Once );
 	
-	static const char kOpenRenderMeshKF1[] = 
+	static const Fragment kOpenRenderMeshKF1[] = 
 	{
-		'_',
-		'|',
+		kTopTPiece,
+		kVertiPiece,
 		' ',
-		'|',
-		gCastUCharToChar(238),
+		kVertiPiece,
+		kBottomTPiece,
 	};
-	static const char kOpenRenderMeshKF2[] = 
+	static const Fragment kOpenRenderMeshKF2[] = 
 	{
-		'_',
+		kTopTPiece,
 		' ',
 		' ',
 		' ',
-		gCastUCharToChar(238),
+		kBottomTPiece,
+	};
+	static const Fragment kOpenRenderMeshKF3[] = 
+	{
+		kHorizPiece,
+		' ',
+		' ',
+		' ',
+		kHorizPiece,
 	};
 	
-	static const AsciiMesh	kOpenAnimKeyFrames[] =
+	static const AsciiMesh kOpenAnimKeyFrames[] =
 	{
 		AsciiMesh( kOpenRenderMeshKF1,	1, 5 ),
 		AsciiMesh( kOpenRenderMeshKF2,	1, 5 ),
+		AsciiMesh( kOpenRenderMeshKF3,	1, 5 ),
 	};
 
 	static const Animation kOpenAnimation(	kOpenAnimKeyFrames, 

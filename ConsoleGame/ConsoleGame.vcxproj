@@ -81,6 +81,7 @@
     <ClInclude Include="src\Dungeon\DungeonLayoutGenerator.h" />
     <ClInclude Include="src\Dungeon\DungeonMap.h" />
     <ClInclude Include="src\Dungeon\RoomEntity.h" />
+    <ClInclude Include="src\Dungeon\WallFragments.h" />
     <ClInclude Include="src\EntityComponent\Components\AnimationComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\CameraComponent.h" />
     <ClInclude Include="src\EntityComponent\Components\CollisionComponent.h" />

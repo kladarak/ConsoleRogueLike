@@ -138,7 +138,7 @@ static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
 
 DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, GameData* inGameData)
 {
-	const int kRoomCount = 25;
+	const int kRoomCount = 5;
 
 	Dynamic2DVector<RoomData>	roomData		= DungeonLayoutGenerator(kRoomCount).Generate();
 	Dynamic2DVector<Entity>		roomEntities	= sCreateRoomEntities(inWorld, roomData);
