@@ -75,6 +75,6 @@ void Game::Render()
 
 	printf("%04i FPS (%03.3fms)\n\n", (uint32_t) (1.0f / mTimer.GetDeltaTime()), mTimer.GetDeltaTime() * 1000.0f);
 
-	std::string buffer = mStateMachine.GetTop()->GetRenderBuffer();
+	std::string buffer = mStateMachine.GetTop()->GetRenderTarget().GetBuffer();
 	printf(buffer.c_str());
 }

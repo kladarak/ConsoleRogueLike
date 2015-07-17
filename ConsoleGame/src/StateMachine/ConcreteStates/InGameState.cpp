@@ -108,7 +108,7 @@ void InGameState::Update(float inFrameTime, const InputBuffer& inInput)
 	mHUD.Update(inFrameTime);
 }
 
-std::string InGameState::GetRenderBuffer() const
+RenderTarget InGameState::GetRenderTarget() const
 {
 	using namespace ScreenConstants;
 	
@@ -121,7 +121,7 @@ std::string InGameState::GetRenderBuffer() const
 
 	RenderTargetWriter renderTargetWriter(screenWidth, screenHeight);
 
-	renderTargetWriter.Write( mHUD.GetTopBarRenderBuffer(), 0, y );
+	renderTargetWriter.Write( mHUD.GetTopBarRenderTarget(), 0, y );
 	y += mHUD.GetTopBarHeight();
 	
 	RenderTarget renderTarget(gameWidth, gameHeight);
@@ -131,10 +131,10 @@ std::string InGameState::GetRenderBuffer() const
 	renderTargetWriter.Write( renderTarget.GetBuffer(), 0, y );
 	y += gameHeight;
 	
-	renderTargetWriter.Write( mHUD.GetBottomBarRenderBuffer(), 0, y );
+	renderTargetWriter.Write( mHUD.GetBottomBarRenderTarget(), 0, y );
 
 	int halfHeight = screenHeight / 2;
-	renderTargetWriter.Write( mHUD.GetOverlayBuffer(), 10, halfHeight );
+	renderTargetWriter.Write( mHUD.GetOverlayRenderTarget(), 10, halfHeight );
 
-	return renderTargetWriter.GetRenderBuffer();
+	return renderTargetWriter.GetRenderTarget();
 }

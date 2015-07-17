@@ -48,7 +48,7 @@ void InventoryScreenState::Update(float /*inFrameTime*/, const InputBuffer& inIn
 	}
 }
 
-std::string InventoryScreenState::GetRenderBuffer() const
+RenderTarget InventoryScreenState::GetRenderTarget() const
 {
 	assert(mPlayer.IsValid());
 	
@@ -81,5 +81,5 @@ std::string InventoryScreenState::GetRenderBuffer() const
 		row++;
 	}
 
-	return renderTargetWriter.GetRenderBuffer();
+	return renderTargetWriter.GetRenderTarget();
 }

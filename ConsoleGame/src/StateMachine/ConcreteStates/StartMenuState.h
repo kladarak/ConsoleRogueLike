@@ -9,9 +9,9 @@ public:
 	StartMenuState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData);
 	virtual ~StartMenuState() { }
 
-	virtual void		Update(float inFrameTime, const InputBuffer& inInput);
-	virtual	std::string GetRenderBuffer() const;
+	virtual void			Update(float inFrameTime, const InputBuffer& inInput);
+	virtual	RenderTarget	GetRenderTarget() const;
 
 private:
-	uint32_t			mHighlightedMenuOption;
+	uint32_t				mHighlightedMenuOption;
 };

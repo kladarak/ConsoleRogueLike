@@ -1,6 +1,7 @@
 #include "YouAreDeadDisplay.h"
 
 #include <Maths/Maths.h>
+#include <Renderer/RenderTargetWriter.h>
 
 namespace
 {
@@ -28,14 +29,14 @@ bool YouAreDeadDisplay::IsAnimationFinished() const
 	return mElapsedTime >= kAnimationDuration;
 }
 
-std::string YouAreDeadDisplay::GetRenderBuffer() const
+RenderTarget YouAreDeadDisplay::GetRenderTarget() const
 {
 	static const float kKeyFrame0 = 0.0f;
 	static const float kKeyFrame1 = 0.5f;
 	static const float kKeyFrame2 = 1.5f;
 	static const float kKeyFrame3 = 2.0f;
 
-	std::string outBuffer;
+	RenderTargetWriter writer(kMessage.size(), 1);
 
 	if ( gIsBetween(mElapsedTime, kKeyFrame0, kKeyFrame1) )
 	{
@@ -45,12 +46,12 @@ std::string YouAreDeadDisplay::GetRenderBuffer() const
 	{
 		float	t				= gFraction(mElapsedTime, kKeyFrame1, kKeyFrame2);
 		size_t	lettersToShow	= (size_t) gLerp2D(t, 0.0f, (float) kMessage.size());
-		outBuffer = kMessage.substr(0, lettersToShow);
+		writer.Write(kMessage.substr(0, lettersToShow), 0, 0);
 	}
 	else// if ( mElapsedTime >= kKeyFrame2 )
 	{
-		outBuffer = kMessage;
+		writer.Write(kMessage, 0, 0);
 	}
 
-	return outBuffer;
+	return writer.GetRenderTarget();
 }

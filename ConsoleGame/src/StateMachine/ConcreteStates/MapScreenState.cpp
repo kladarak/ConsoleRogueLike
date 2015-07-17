@@ -151,7 +151,7 @@ void MapScreenState::Update(float inFrameTime, const InputBuffer& inInput)
 	mPlayerIconFlashTime += inFrameTime;
 }
 
-std::string MapScreenState::GetRenderBuffer() const
+RenderTarget MapScreenState::GetRenderTarget() const
 {
 	RenderTargetWriter writer(ScreenConstants::EViewPortWidth, ScreenConstants::EViewPortHeight);
 
@@ -164,5 +164,5 @@ std::string MapScreenState::GetRenderBuffer() const
 		writer.Write('O', playerIconPos.mX, playerIconPos.mY);
 	}
 
-	return writer.GetRenderBuffer();
+	return writer.GetRenderTarget();
 }

@@ -3,6 +3,7 @@
 #include <Containers/ContainerMacros.h>
 #include <Input/InputBuffer.h>
 #include <Messages/Messages.h>
+#include <Renderer/RenderTargetWriter.h>
 
 
 enum EMenuOption
@@ -52,17 +53,19 @@ void StartMenuState::Update(float /*inFrameTime*/, const InputBuffer& inInput)
 	}
 }
 
-std::string StartMenuState::GetRenderBuffer() const
+RenderTarget StartMenuState::GetRenderTarget() const
 {
-	std::string out;
+	RenderTargetWriter writer(20, gElemCount(kOptions));
 
 	for (size_t i = 0; i < gElemCount(kOptions); ++i)
 	{
-		out += (i == mHighlightedMenuOption) ? 26 : ' ';
-		out += " ";
-		out += kOptions[i].mDisplayText;
-		out += "\n";
+		std::string str;
+		str += (i == mHighlightedMenuOption) ? 26 : ' ';
+		str += " ";
+		str += kOptions[i].mDisplayText;
+
+		writer.Write(str, 0, i);
 	}
 
-	return out;
+	return writer.GetRenderTarget();
 }

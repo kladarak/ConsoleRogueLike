@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <Renderer/RenderTarget.h>
 #include "EGameState.h"
 
 class InputBuffer;
@@ -14,16 +15,16 @@ public:
 	StateBase(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData);
 	virtual ~StateBase() { }
 
-	virtual void		Update(float inFrameTime, const InputBuffer& inInput)	= 0;
-	virtual	std::string GetRenderBuffer() const									= 0;
+	virtual void			Update(float inFrameTime, const InputBuffer& inInput)	= 0;
+	virtual	RenderTarget	GetRenderTarget() const									= 0;
 
 protected:
-	void				RequestGoToState(EGameState inState);
-	void				RequestPushState(EGameState inState);
-	void				RequestPopState();
+	void					RequestGoToState(EGameState inState);
+	void					RequestPushState(EGameState inState);
+	void					RequestPopState();
 	
-	GameData*			mGameData;
+	GameData*				mGameData;
 
 private:
-	MessageBroadcaster* mStateMachineMsgBroadcaster;
+	MessageBroadcaster*		mStateMachineMsgBroadcaster;
 };

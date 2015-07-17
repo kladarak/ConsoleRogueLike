@@ -54,36 +54,36 @@ void HUD::Update(float inFrameTime)
 	}
 }
 
-std::string HUD::GetTopBarRenderBuffer() const
+RenderTarget HUD::GetTopBarRenderTarget() const
 {
 	RenderTargetWriter renderTargetWriter(100, kTopBarHeight);
 	
-	renderTargetWriter.Write( mHealthBar.GetRenderBuffer(), 0, 0 );
+	renderTargetWriter.Write( mHealthBar.GetRenderTarget(), 0, 0 );
 
 	int equippedBarX = ScreenConstants::EMapCols - 13;
-	renderTargetWriter.Write( mEquippedBar.GetRenderBuffer(), equippedBarX, 0 );
+	renderTargetWriter.Write( mEquippedBar.GetRenderTarget(), equippedBarX, 0 );
 
-	return renderTargetWriter.GetRenderBuffer();
+	return renderTargetWriter.GetRenderTarget();
 }
 
-std::string HUD::GetBottomBarRenderBuffer() const
+RenderTarget HUD::GetBottomBarRenderTarget() const
 {
 	RenderTargetWriter renderTargetWriter(100, kBottomBarHeight);
 	
 	std::string money = "Money: $" + std::to_string(mMoneyCollected) + "\n";
 	renderTargetWriter.Write(money, 0, 0);
 
-	return renderTargetWriter.GetRenderBuffer();
+	return renderTargetWriter.GetRenderTarget();
 }
 
-std::string	HUD::GetOverlayBuffer() const
+RenderTarget HUD::GetOverlayRenderTarget() const
 {
 	if (mGameData->mPlayer.GetComponent<HealthComponent>()->IsDead())
 	{
-		return mYouAreDeadDisplay.GetRenderBuffer();
+		return mYouAreDeadDisplay.GetRenderTarget();
 	}
 
-	return "";
+	return RenderTarget(0, 0);
 }
 
 int HUD::GetTopBarHeight() const

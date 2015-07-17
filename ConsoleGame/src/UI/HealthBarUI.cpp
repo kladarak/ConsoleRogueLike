@@ -1,6 +1,7 @@
 #include "HealthBarUI.h"
 
 #include <EntityComponent/Components/HealthComponent.h>
+#include <Renderer/RenderTargetWriter.h>
 
 static const char kHeartIcon = 3;
 
@@ -13,11 +14,13 @@ void HealthBarUI::Init(Entity inPlayer)
 	 mPlayer = inPlayer;
 }
 
-std::string HealthBarUI::GetRenderBuffer() const
+RenderTarget HealthBarUI::GetRenderTarget() const
 {
 	auto health = mPlayer.GetComponent<HealthComponent>();
 	int current = health->GetCurrentHealth();
 	int max		= health->GetMaxHealth();
+	
+	RenderTargetWriter writer(max, 1);
 
 	std::string healthBar(max, '.');
 	for (int i = 0; i < current; ++i)
@@ -25,5 +28,7 @@ std::string HealthBarUI::GetRenderBuffer() const
 		healthBar[i] = kHeartIcon;
 	}
 	
-	return healthBar;
+	writer.Write(healthBar, 0, 0);
+
+	return writer.GetRenderTarget();
 }

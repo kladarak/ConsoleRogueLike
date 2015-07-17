@@ -30,7 +30,7 @@ void StartNewLevelIntroState::Update(float inFrameTime, const InputBuffer& /*inI
 	}
 }
 
-std::string StartNewLevelIntroState::GetRenderBuffer() const
+RenderTarget StartNewLevelIntroState::GetRenderTarget() const
 {
 	std::string levelMsg	= "Level " + std::to_string( mGameData->mCurrentLevel );
 
@@ -46,5 +46,5 @@ std::string StartNewLevelIntroState::GetRenderBuffer() const
 	
 	renderTargetWriter.Write( levelMsg, 10, 5 );
 
-	return renderTargetWriter.GetRenderBuffer();
+	return renderTargetWriter.GetRenderTarget();
 }

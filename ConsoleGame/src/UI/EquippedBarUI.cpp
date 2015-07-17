@@ -16,7 +16,7 @@ void EquippedBarUI::Init(PlayerData* inPlayerData)
 	mPlayerData = inPlayerData;
 }
 
-std::string EquippedBarUI::GetRenderBuffer() const
+RenderTarget EquippedBarUI::GetRenderTarget() const
 {
 	using namespace Player;
 
@@ -51,5 +51,5 @@ std::string EquippedBarUI::GetRenderBuffer() const
 	renderItemIcon( EItemSlot_Slot0 );
 	renderItemIcon( EItemSlot_Slot1 );
 
-	return renderHelper.GetRenderBuffer();
+	return renderHelper.GetRenderTarget();
 }

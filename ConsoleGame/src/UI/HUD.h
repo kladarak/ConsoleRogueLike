@@ -18,9 +18,9 @@ public:
 	
 	void				Update(float inFrameTime);
 
-	std::string			GetTopBarRenderBuffer() const;
-	std::string			GetBottomBarRenderBuffer() const;
-	std::string			GetOverlayBuffer() const;
+	RenderTarget		GetTopBarRenderTarget() const;
+	RenderTarget		GetBottomBarRenderTarget() const;
+	RenderTarget		GetOverlayRenderTarget() const;
 
 	int					GetTopBarHeight() const;
 	int					GetBottomBarHeight() const;

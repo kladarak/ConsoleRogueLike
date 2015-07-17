@@ -24,6 +24,7 @@ public:
 	AsciiMesh(const AsciiMesh& inRHS)	: Base( inRHS )			{ }
 	AsciiMesh(char inChar)				: Base( 1, 1, inChar )	{ }
 	AsciiMesh(const char* inChars, size_t inCols, size_t inRows, const IVec2& inCentreOffset = IVec2(0, 0));
+	AsciiMesh(const Fragment* inFrags, size_t inCols, size_t inRows, const IVec2& inCentreOffset = IVec2(0, 0));
 	AsciiMesh(char inClearChar, size_t inCols, size_t inRows, const IVec2& inCentreOffset = IVec2(0, 0)) : Base( inCols, inRows, inClearChar, inCentreOffset ) { }
 
 	void SetCharAtPosition(int inX, int inY, char inChar)	{ Set(inX, inY, inChar); }

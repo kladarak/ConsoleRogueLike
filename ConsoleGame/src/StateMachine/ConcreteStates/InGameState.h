@@ -16,12 +16,12 @@ public:
 	InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData);
 	virtual ~InGameState();
 
-	virtual void		Update(float inFrameTime, const InputBuffer& inInput);
-	virtual std::string	GetRenderBuffer() const;
+	virtual void			Update(float inFrameTime, const InputBuffer& inInput);
+	virtual	RenderTarget	GetRenderTarget() const;
 
 private:
-	World				mWorld;
-	CameraSystem		mCameraSystem;
-	HUD					mHUD;
-	MessageBroadcaster	mMessageBroadcaster;
+	World					mWorld;
+	CameraSystem			mCameraSystem;
+	HUD						mHUD;
+	MessageBroadcaster		mMessageBroadcaster;
 };

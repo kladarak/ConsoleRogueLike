@@ -15,7 +15,6 @@ public:
 	void				Write(const RenderTarget& inRenderTarget, int inX, int inY);
 
 	const RenderTarget& GetRenderTarget() const	{ return mRenderTarget; }
-	std::string			GetRenderBuffer() const { return mRenderTarget.GetBuffer(); }
 
 private:
 	RenderTarget		mRenderTarget;

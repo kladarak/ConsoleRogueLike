@@ -9,9 +9,9 @@ class InventoryScreenState : public StateBase
 public:
 	InventoryScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData);
 
-	virtual void		Update(float inFrameTime, const InputBuffer& inInput);
-	virtual std::string GetRenderBuffer() const;
+	virtual void			Update(float inFrameTime, const InputBuffer& inInput);
+	virtual RenderTarget	GetRenderTarget() const;
 
 private:
-	uint32_t			mHighlightedItem;
+	uint32_t				mHighlightedItem;
 };
