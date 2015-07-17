@@ -2,6 +2,7 @@
 
 #include <Containers/ContainerMacros.h>
 #include <GameEntities/Player/PlayerEnums.h>
+#include <GameEntities/Player/PlayerConstants.h>
 
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
@@ -16,20 +17,20 @@
 
 //--------------------------------------------------------------------
 
-static const char kShieldFaceUp[] =
+static const Fragment kShieldFaceUp[] =
 {
 	'-',
-	'O',
+	PlayerConstants::kSprite,
 };
 
-static const char kShieldFaceDown[] =
+static const Fragment kShieldFaceDown[] =
 {
-	'O',
+	PlayerConstants::kSprite,
 	'-',
 };
 
-static const char kShieldFaceLeft[]	= { '|','O' };
-static const char kShieldFaceRight[] = { 'O','|' };
+static const Fragment kShieldFaceLeft[]	= { '|', PlayerConstants::kSprite };
+static const Fragment kShieldFaceRight[] = { PlayerConstants::kSprite, '|' };
 
 static const AsciiMesh kShieldRenderMeshes[EOrientation_Count] =
 {

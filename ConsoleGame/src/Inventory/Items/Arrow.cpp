@@ -17,10 +17,10 @@ namespace Arrow
 static const float kMovementTime = 0.05f;
 static const AsciiMesh kMeshes[] = 
 {
-	(char) 24, 
-	(char) 25, 
-	(char) 26, 
-	(char) 27
+	Fragment(24, ETextYellow),
+	Fragment(25, ETextYellow),
+	Fragment(26, ETextYellow),
+	Fragment(27, ETextYellow),
 };
 
 class ArrowUpdateState

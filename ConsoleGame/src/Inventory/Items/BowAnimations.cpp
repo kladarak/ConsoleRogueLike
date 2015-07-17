@@ -1,18 +1,20 @@
 #include "BowAnimations.h"
 
 #include <Containers/ContainerMacros.h>
+#include <GameEntities/Player/PlayerConstants.h>
 
 namespace BowAnimations
 {
 
-static const float kBowKeyFrameDuration = 0.1f;
+static const float		kBowKeyFrameDuration	= 0.1f;
+static const Fragment	kPlayerSprite			= PlayerConstants::kSprite;
 
 namespace BowFaceUp
 {
-	static const char kBowFaceUp0[]	= {	'+',
-										'O' };
-	static const char kBowFaceUp1[]	= {	'-',
-										'O' };
+	static const Fragment kBowFaceUp0[]	= {	'+',
+											kPlayerSprite };
+	static const Fragment kBowFaceUp1[]	= {	'-',
+											kPlayerSprite };
 
 	static const AsciiMesh kBowFaceUpKeyFrames[] =
 	{
@@ -30,10 +32,10 @@ namespace BowFaceUp
 
 namespace BowFaceDown
 {
-	static const char kBowFaceDown0[]	= {	'O',
-											'+' };
-	static const char kBowFaceDown1[]	= {	'O',
-											'-' };
+	static const Fragment kBowFaceDown0[]	= {	kPlayerSprite,
+												'+' };
+	static const Fragment kBowFaceDown1[]	= {	kPlayerSprite,
+												'-' };
 
 	static const AsciiMesh kBowFaceDownKeyFrames[] =
 	{
@@ -51,8 +53,8 @@ namespace BowFaceDown
 
 namespace BowFaceLeft
 {
-	static const char kBowFaceLeft0[]	= { '+','O' };
-	static const char kBowFaceLeft1[]	= { '|','O' };
+	static const Fragment kBowFaceLeft0[]	= { '+', kPlayerSprite };
+	static const Fragment kBowFaceLeft1[]	= { '|', kPlayerSprite };
 
 	static const AsciiMesh kBowFaceLeftKeyFrames[] =
 	{
@@ -70,8 +72,8 @@ namespace BowFaceLeft
 
 namespace BowFaceRight
 {
-	static const char kBowFaceRight0[] = { 'O','+' };
-	static const char kBowFaceRight1[] = { 'O','|' };
+	static const Fragment kBowFaceRight0[] = { kPlayerSprite, '+' };
+	static const Fragment kBowFaceRight1[] = { kPlayerSprite, '|' };
 
 	static const AsciiMesh kBowFaceRightKeyFrames[] =
 	{

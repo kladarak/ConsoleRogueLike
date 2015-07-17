@@ -14,7 +14,7 @@
 namespace CoinEntity
 {
 
-static const char kCoinSprite = '$';
+static const Fragment kCoinSprite('$', ETextDarkGreen);
 
 static void OnEntityEntered(MessageBroadcaster& inMessageBroadcaster, Entity inCoinEntity, Entity inTriggerer)
 {

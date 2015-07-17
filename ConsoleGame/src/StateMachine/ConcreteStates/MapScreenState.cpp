@@ -9,6 +9,7 @@
 
 #include <EntityComponent/Components/PositionComponent.h>
 
+#include <GameEntities/Player/PlayerConstants.h>
 #include <Dungeon/DungeonMap.h>
 #include <Dungeon/RoomEntity.h>
 
@@ -161,7 +162,7 @@ RenderTarget MapScreenState::GetRenderTarget() const
 	{
 		IVec2 playerIconPos = sCalculatePlayerIconPosition(mGameData->mPlayer);
 		playerIconPos += mViewOffset;
-		writer.Write('O', playerIconPos.mX, playerIconPos.mY);
+		writer.Write(PlayerConstants::kSprite, playerIconPos.mX, playerIconPos.mY);
 	}
 
 	return writer.GetRenderTarget();

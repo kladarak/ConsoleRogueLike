@@ -14,7 +14,7 @@
 namespace HealthEntity
 {
 
-static const char kHealth = 3;
+static const Fragment kHealth(3, ETextRed);
 static const AsciiMesh kHealthMesh(&kHealth, 1, 1);
 
 

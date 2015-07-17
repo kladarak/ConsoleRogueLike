@@ -1,20 +1,24 @@
 #include "SwordAnimations.h"
 
 #include <Containers/ContainerMacros.h>
+#include <GameEntities/Player/PlayerConstants.h>
 
 namespace SwordAnimations
 {
 
-static const float kSwordKeyFrameDuration = 0.05f;
+static const float		kSwordKeyFrameDuration	= 0.05f;
+static const Fragment	kPlayerSprite			= PlayerConstants::kSprite;
 
 namespace SwordFaceUp
 {
-	static const char kSwordFaceUp0[]	= {	'_',
-											'O' };
-	static const char kSwordFaceUp1[]	= {	'\\',
-											'O' };
-	static const char kSwordFaceUp2[]	= {	' ', '|',
-											'O', ' ' };
+	static const Fragment kSwordFaceUp0[]	= {	'_',
+												kPlayerSprite };
+
+	static const Fragment kSwordFaceUp1[]	= {	'\\',
+												kPlayerSprite };
+
+	static const Fragment kSwordFaceUp2[]	= {	' ',			'|',
+												kPlayerSprite,	' ' };
 
 	static const AsciiMesh kSwordFaceUpKeyFrames[] =
 	{
@@ -33,12 +37,14 @@ namespace SwordFaceUp
 
 namespace SwordFaceDown
 {
-	static const char kSwordFaceDown0[]	= {	'O',
-											'-' };
-	static const char kSwordFaceDown1[]	= {	'O',
-											'\\' };
-	static const char kSwordFaceDown2[]	= {	' ', 'O',
-											'|', ' ' };
+	static const Fragment kSwordFaceDown0[]	= {	kPlayerSprite,
+												'-' };
+
+	static const Fragment kSwordFaceDown1[]	= {	kPlayerSprite,
+												'\\' };
+
+	static const Fragment kSwordFaceDown2[]	= {	' ', kPlayerSprite,
+												'|', ' ' };
 
 	static const AsciiMesh kSwordFaceDownKeyFrames[] =
 	{
@@ -57,9 +63,9 @@ namespace SwordFaceDown
 
 namespace SwordFaceLeft
 {
-	static const char kSwordFaceLeft0[]	= { '|','O' };
-	static const char kSwordFaceLeft1[]	= { '/','O' };
-	static const char kSwordFaceLeft2[]	= { gCastUCharToChar(238),'O' }; // should be "overscore" / "macron"
+	static const Fragment kSwordFaceLeft0[]	= { '|', kPlayerSprite };
+	static const Fragment kSwordFaceLeft1[]	= { '/', kPlayerSprite };
+	static const Fragment kSwordFaceLeft2[]	= { gCastUCharToChar(238), kPlayerSprite }; // should be "overscore" / "macron"
 
 	static const AsciiMesh kSwordFaceLeftKeyFrames[] =
 	{
@@ -78,9 +84,9 @@ namespace SwordFaceLeft
 
 namespace SwordFaceRight
 {
-	static const char kSwordFaceRight0[] = { 'O','|' };
-	static const char kSwordFaceRight1[] = { 'O','/' };
-	static const char kSwordFaceRight2[] = { 'O','_' };
+	static const Fragment kSwordFaceRight0[] = { kPlayerSprite, '|' };
+	static const Fragment kSwordFaceRight1[] = { kPlayerSprite, '/' };
+	static const Fragment kSwordFaceRight2[] = { kPlayerSprite, '_' };
 
 	static const AsciiMesh kSwordFaceRightKeyFrames[] =
 	{

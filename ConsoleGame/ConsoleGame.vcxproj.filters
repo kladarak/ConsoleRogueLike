@@ -510,5 +510,8 @@
     <ClInclude Include="src\Renderer\Fragment.h">
       <Filter>Source Files\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameEntities\Player\PlayerConstants.h">
+      <Filter>Source Files\GameEntities\Player</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -117,6 +117,7 @@
     <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerBehaviourBase.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerDeadBehaviour.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerIdleBehaviour.h" />
+    <ClInclude Include="src\GameEntities\Player\PlayerConstants.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerData.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerEntity.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerEnums.h" />

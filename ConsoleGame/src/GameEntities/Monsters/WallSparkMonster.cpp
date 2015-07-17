@@ -25,8 +25,8 @@ namespace WallSparkMonster
 
 static const AsciiMesh kKeyFrames[] =
 {
-	AsciiMesh( 15 ),
-	AsciiMesh( '*' ),
+	AsciiMesh( Fragment(15, ETextYellow) ),
+	AsciiMesh( Fragment('*', ETextYellow) ),
 };
 
 static const float		kKFTime = 0.1f;

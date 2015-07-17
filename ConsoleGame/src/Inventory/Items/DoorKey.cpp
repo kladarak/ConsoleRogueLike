@@ -2,6 +2,8 @@
 
 #include <Containers/ContainerMacros.h>
 
+#include <GameEntities/Player/PlayerConstants.h>
+
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/OrientationComponent.h>
@@ -13,20 +15,20 @@
 
 //--------------------------------------------------------------------
 
-static const char kDoorKeyFaceUp[] =
+static const Fragment kDoorKeyFaceUp[] =
 {
-	'|',
-	'O',
+	Fragment('|', ETextYellow),
+	PlayerConstants::kSprite,
 };
 
-static const char kDoorKeyFaceDown[] =
+static const Fragment kDoorKeyFaceDown[] =
 {
-	'O',
-	'|',
+	PlayerConstants::kSprite,
+	Fragment('|', ETextYellow),
 };
 
-static const char kDoorKeyFaceLeft[]	= { '-','O' };
-static const char kDoorKeyFaceRight[]	= { 'O','-' };
+static const Fragment kDoorKeyFaceLeft[]	= { Fragment('-', ETextYellow), PlayerConstants::kSprite  };
+static const Fragment kDoorKeyFaceRight[]	= { PlayerConstants::kSprite, Fragment('-', ETextYellow) };
 
 static const AsciiMesh kDoorKeyRenderMeshes[EOrientation_Count] =
 {

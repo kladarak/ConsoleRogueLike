@@ -35,7 +35,7 @@ void Bow::SpawnAmmo(World& inWorld, const IVec2& inPosition)
 {
 	auto arrow = EntityBuilder(inWorld)
 					.AddComponent<PositionComponent>(inPosition)
-					.AddComponent<RenderableComponent>( AsciiMesh((char) 24) )
+					.AddComponent<RenderableComponent>( Fragment(24, ETextYellow) )
 					.AddComponent<TriggerBoxComponent>()
 					.Create();
 

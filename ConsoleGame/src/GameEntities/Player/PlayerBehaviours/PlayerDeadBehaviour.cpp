@@ -6,7 +6,7 @@
 #include <EntityComponent/Components/CollisionComponent.h>
 
 	
-static const AsciiMesh		kDeadRenderMesh( 'X' );
+static const AsciiMesh		kDeadRenderMesh( Fragment('X', ETextDarkYellow) );
 static const CollisionMesh	kDeadCollisionMesh( 0, 0 );
 
 static const Animation kDeadAnimations[] =

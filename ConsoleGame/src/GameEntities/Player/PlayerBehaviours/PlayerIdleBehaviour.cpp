@@ -4,9 +4,9 @@
 
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
-
+#include <GameEntities/Player/PlayerConstants.h>
 	
-static const AsciiMesh		kIdleRenderMesh( 'O' );
+static const AsciiMesh		kIdleRenderMesh( PlayerConstants::kSprite );
 static const CollisionMesh	kIdleCollisionMesh( 0, 0 );
 
 static const Animation kIdleAnimations[] =
