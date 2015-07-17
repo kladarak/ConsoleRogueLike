@@ -46,11 +46,11 @@ RenderTarget YouAreDeadDisplay::GetRenderTarget() const
 	{
 		float	t				= gFraction(mElapsedTime, kKeyFrame1, kKeyFrame2);
 		size_t	lettersToShow	= (size_t) gLerp2D(t, 0.0f, (float) kMessage.size());
-		writer.Write(kMessage.substr(0, lettersToShow), 0, 0);
+		writer.Write(kMessage.substr(0, lettersToShow), ETextWhite, 0, 0);
 	}
 	else// if ( mElapsedTime >= kKeyFrame2 )
 	{
-		writer.Write(kMessage, 0, 0);
+		writer.Write(kMessage, ETextWhite, 0, 0);
 	}
 
 	return writer.GetRenderTarget();

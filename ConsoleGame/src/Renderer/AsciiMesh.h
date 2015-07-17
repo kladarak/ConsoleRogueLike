@@ -26,5 +26,3 @@ public:
 	void ForEachFrag(const TFunctor& inFunctor) const					{ ForEach(inFunctor); }
 
 };
-
-static inline char gCastUCharToChar(unsigned char inChar)				{ return -128+(inChar%128); }

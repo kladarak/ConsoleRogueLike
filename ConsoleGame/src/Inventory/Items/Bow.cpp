@@ -20,7 +20,7 @@
 #include "BowAnimations.h"
 
 
-static const char		kBowIcon[]	= { 'D', ' ', 26 };
+static const Fragment	kBowIcon[]	= { Fragment('D', ETextDarkYellow), ' ', Fragment(26, ETextYellow) };
 static const ItemData	kBowData("Bow", AsciiMesh(kBowIcon, gElemCount(kBowIcon), 1), ERequiresAmmo );
 static const float		kAnimTime	= 0.5f;
 
@@ -62,6 +62,11 @@ BowPlayerBehaviour::BowPlayerBehaviour()
 
 void BowPlayerBehaviour::OnStart(Entity inPlayer)
 {
+	if (mArrowCount == 0)
+	{
+		return;
+	}
+
 	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( BowAnimations::Generate() );
 
 	auto playerPos		= inPlayer.GetComponent<PositionComponent>()->GetPosition();
@@ -70,11 +75,8 @@ void BowPlayerBehaviour::OnStart(Entity inPlayer)
 	IVec2 attackDir		= gGetOrientationVector(orientation);
 	IVec2 attackPos		= playerPos + attackDir;
 	
-	if (mArrowCount > 0)
-	{
-		Arrow::Create(*inPlayer.GetWorld(), attackPos, attackDir);
-		--mArrowCount;
-	}
+	Arrow::Create(*inPlayer.GetWorld(), attackPos, attackDir);
+	--mArrowCount;
 
 	mAnimTimeElapsed = 0.0f;
 }

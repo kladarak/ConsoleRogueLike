@@ -12,6 +12,7 @@ public:
 	void				Write(char inChar, int inX, int inY);
 	void				Write(const Fragment& inFragment, int inX, int inY);
 	void				Write(const std::string& inString, int inX, int inY);
+	void				Write(const std::string& inString, EColour inColour, int inX, int inY);
 	void				Write(const AsciiMesh& inMesh, int inX, int inY);
 	void				Write(const RenderTarget& inRenderTarget, int inX, int inY);
 

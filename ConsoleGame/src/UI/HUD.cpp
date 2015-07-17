@@ -71,7 +71,7 @@ RenderTarget HUD::GetBottomBarRenderTarget() const
 	RenderTargetWriter renderTargetWriter(100, kBottomBarHeight);
 	
 	std::string money = "Money: $" + std::to_string(mMoneyCollected) + "\n";
-	renderTargetWriter.Write(money, 0, 0);
+	renderTargetWriter.Write(money, ETextDarkGreen, 0, 0);
 
 	return renderTargetWriter.GetRenderTarget();
 }

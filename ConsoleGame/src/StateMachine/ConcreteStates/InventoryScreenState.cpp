@@ -72,7 +72,7 @@ RenderTarget InventoryScreenState::GetRenderTarget() const
 		std::string itemName = item->GetName();
 		itemName += (item == armedItem0) ? " (Spc)" : "";
 		itemName += (item == armedItem1) ? " (E)"	: "";
-		renderTargetWriter.Write(itemName, col, row++);
+		renderTargetWriter.Write(itemName, ETextWhite, col, row++);
 		
 		const AsciiMesh& icon = item->GetHUDIcon();
 		renderTargetWriter.Write(icon, col, row);

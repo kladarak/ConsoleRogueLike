@@ -64,7 +64,7 @@ RenderTarget StartMenuState::GetRenderTarget() const
 		str += " ";
 		str += kOptions[i].mDisplayText;
 
-		writer.Write(str, 0, i);
+		writer.Write(str, ETextWhite, 0, i);
 	}
 
 	return writer.GetRenderTarget();

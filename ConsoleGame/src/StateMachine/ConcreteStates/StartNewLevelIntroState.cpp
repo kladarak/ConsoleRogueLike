@@ -44,7 +44,7 @@ RenderTarget StartNewLevelIntroState::GetRenderTarget() const
 	// Use a RenderTargetWriter just to position the text somewhere central.
 	RenderTargetWriter renderTargetWriter(20, 10);
 	
-	renderTargetWriter.Write( levelMsg, 10, 5 );
+	renderTargetWriter.Write( levelMsg, ETextWhite, 10, 5 );
 
 	return renderTargetWriter.GetRenderTarget();
 }

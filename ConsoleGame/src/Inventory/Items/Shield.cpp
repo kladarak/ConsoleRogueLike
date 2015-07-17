@@ -19,18 +19,18 @@
 
 static const Fragment kShieldFaceUp[] =
 {
-	'-',
+	Fragment(gCastUCharToChar(196), ETextBlue),
 	PlayerConstants::kSprite,
 };
 
 static const Fragment kShieldFaceDown[] =
 {
 	PlayerConstants::kSprite,
-	'-',
+	Fragment(gCastUCharToChar(196), ETextBlue),
 };
 
-static const Fragment kShieldFaceLeft[]	= { '|', PlayerConstants::kSprite };
-static const Fragment kShieldFaceRight[] = { PlayerConstants::kSprite, '|' };
+static const Fragment kShieldFaceLeft[]		= { Fragment(gCastUCharToChar(179), ETextBlue), PlayerConstants::kSprite };
+static const Fragment kShieldFaceRight[]	= { PlayerConstants::kSprite, Fragment(gCastUCharToChar(179), ETextBlue) };
 
 static const AsciiMesh kShieldRenderMeshes[EOrientation_Count] =
 {
@@ -50,7 +50,7 @@ static const Animation kAnimations[] =
 	Animation( &kShieldRenderMeshes[3], 1, 0.0f, Animation::EPlaybackStyle_Once ),
 };
 
-static const char		kShieldIcon[]	= {	'[', gCastUCharToChar(254) ,']' };
+static const Fragment	kShieldIcon[]	= {	Fragment('[', ETextDarkYellow), Fragment(gCastUCharToChar(254), ETextBlue), Fragment(']', ETextDarkYellow) };
 static const ItemData	kShieldData("Shield", AsciiMesh(kShieldIcon, gElemCount(kShieldIcon), 1), ERequiresNoAmmo);
 
 //--------------------------------------------------------------------

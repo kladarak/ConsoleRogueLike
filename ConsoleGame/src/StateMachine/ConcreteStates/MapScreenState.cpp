@@ -26,31 +26,31 @@ namespace
 		BottomRight = 1 << 3
 	};
 
-	const char kCornerPiece[]
+	const Fragment kCornerPiece[]
 	{
 		' ',
-		gCastUCharToChar(217), // TopLeft
-		gCastUCharToChar(192), // TopRight
-		gCastUCharToChar(193), // TopLeft | TopRight
+		Fragment( gCastUCharToChar(217), ETextDarkYellow), // TopLeft
+		Fragment( gCastUCharToChar(192), ETextDarkYellow), // TopRight
+		Fragment( gCastUCharToChar(193), ETextDarkYellow), // TopLeft | TopRight
 
-		gCastUCharToChar(191), // BottomLeft
-		gCastUCharToChar(180), // BottomLeft | TopLeft
-		gCastUCharToChar(197), // BottomLeft | TopRight
-		gCastUCharToChar(197), // BottomLeft | TopLeft | TopRight
-		
-		gCastUCharToChar(218), // BottomRight
-		gCastUCharToChar(197), // BottomRight | TopLeft
-		gCastUCharToChar(195), // BottomRight | TopRight
-		gCastUCharToChar(197), // BottomRight | TopLeft | TopRight
-		
-		gCastUCharToChar(194), // BottomLeft | BottomRight
-		gCastUCharToChar(197), // BottomLeft | BottomRight | TopLeft
-		gCastUCharToChar(197), // BottomLeft | BottomRight | TopRight
-		gCastUCharToChar(197), // BottomLeft | BottomRight | TopRight | TopLeft
+		Fragment( gCastUCharToChar(191), ETextDarkYellow), // BottomLeft
+		Fragment( gCastUCharToChar(180), ETextDarkYellow), // BottomLeft | TopLeft
+		Fragment( gCastUCharToChar(197), ETextDarkYellow), // BottomLeft | TopRight
+		Fragment( gCastUCharToChar(197), ETextDarkYellow), // BottomLeft | TopLeft | TopRight
+
+		Fragment( gCastUCharToChar(218), ETextDarkYellow), // BottomRight
+		Fragment( gCastUCharToChar(197), ETextDarkYellow), // BottomRight | TopLeft
+		Fragment( gCastUCharToChar(195), ETextDarkYellow), // BottomRight | TopRight
+		Fragment( gCastUCharToChar(197), ETextDarkYellow), // BottomRight | TopLeft | TopRight
+
+		Fragment( gCastUCharToChar(194), ETextDarkYellow), // BottomLeft | BottomRight
+		Fragment( gCastUCharToChar(197), ETextDarkYellow), // BottomLeft | BottomRight | TopLeft
+		Fragment( gCastUCharToChar(197), ETextDarkYellow), // BottomLeft | BottomRight | TopRight
+		Fragment( gCastUCharToChar(197), ETextDarkYellow), // BottomLeft | BottomRight | TopRight | TopLeft
 	};
 
-	const char kVerticalWall	= gCastUCharToChar(179);
-	const char kHorizontalWall	= gCastUCharToChar(196);
+	const Fragment kVerticalWall	= Fragment( gCastUCharToChar(179), ETextDarkYellow) ;
+	const Fragment kHorizontalWall	= Fragment( gCastUCharToChar(196), ETextDarkYellow) ;
 
 	const int	kViewMargin					= 5;
 	const float kPlayerIconFlashDuration	= 0.5f;
@@ -87,7 +87,7 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 		return inRange && roomsVisited.Get(inCol, inRow);
 	};
 
-	auto ifWallWriteChar = [&] (int inCol, int inRow, EDoorSide inDoorSide, char inWallChar, int inX, int inY)
+	auto ifWallWriteChar = [&] (int inCol, int inRow, EDoorSide inDoorSide, const Fragment& inWallChar, int inX, int inY)
 	{
 		if (hasVisitedRoom(inCol, inRow) && !roomDataMap.Get(inCol, inRow).mDoors[inDoorSide])
 		{
@@ -101,11 +101,11 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 		{
 			int mask = 0;
 			mask |= hasVisitedRoom(col-1,	row-1)	? TopLeft		: 0;
-			mask |= hasVisitedRoom(col,	row-1)		? TopRight		: 0;
+			mask |= hasVisitedRoom(col,		row-1)	? TopRight		: 0;
 			mask |= hasVisitedRoom(col-1,	row)	? BottomLeft	: 0;
-			mask |= hasVisitedRoom(col,	row)		? BottomRight	: 0;
+			mask |= hasVisitedRoom(col,		row)	? BottomRight	: 0;
 
-			char piece = kCornerPiece[mask];
+			auto& piece = kCornerPiece[mask];
 			int x = col * 2;
 			int y = row * 2;
 			writer.Write(piece, x, y);
