@@ -6,7 +6,6 @@
 #include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Components/MonsterComponent.h>
-#include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
@@ -41,6 +40,12 @@ MonsterBuilder&	MonsterBuilder::SetPosition(const IVec2& inPosition)
 MonsterBuilder&	MonsterBuilder::SetRenderable(const AsciiMesh& inAsciiMesh)
 {
 	mRenderMesh = inAsciiMesh;
+
+	if ((mOptionalComponents & EAnimation) == 0)
+	{
+		mAnimation = Animation(&mRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Loop);
+	}
+
 	return *this;
 }
 
@@ -50,14 +55,10 @@ Entity MonsterBuilder::Create()
 	
 	builder.AddComponent<CollisionComponent>( CollisionMesh(0, 0) )
 			.AddComponent<MonsterComponent>()
-			.AddComponent<PositionComponent>(mPosition)
+			.AddComponent<PositionComponent>( mPosition )
 			.AddComponent<RenderableComponent>( mRenderMesh )
-			.AddComponent<TriggererComponent>();
-
-	if ((mOptionalComponents & EAnimation) > 0)
-	{
-		builder.AddComponent<AnimationComponent>(mAnimation);
-	}
+			.AddComponent<TriggererComponent>()
+			.AddComponent<AnimationComponent>( mAnimation );
 
 	auto entity = builder.Create();
 

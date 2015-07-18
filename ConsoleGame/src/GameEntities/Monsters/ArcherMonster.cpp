@@ -2,14 +2,10 @@
 
 #include <EntityComponentSystem/World/EntityBuilder.h>
 
-#include <EntityComponent/Components/AnimationComponent.h>
-#include <EntityComponent/Components/CollisionComponent.h>
-#include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Components/MonsterComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
-#include <EntityComponent/Components/RenderableComponent.h>
 #include <EntityComponent/Components/TriggerBoxComponent.h>
 
 #include <EntityComponent/Systems/CollisionSystem.h>
@@ -22,26 +18,16 @@
 
 #include <Messages/Messages.h>
 
+#include "MonsterBuilder.h"
 
 namespace ArcherMonster
 {
 
 static const float kTimeBetweenMovement		= 0.5f;
 static const float kTimeBetweenFiringArrows	= 1.0f;
-static const float kDeathAnimationDuration	= 1.5f;
 
 static const AsciiMesh kIdleMesh( Fragment('O', ETextRed) );
-
-static const AsciiMesh kDeathFrames[] =
-{
-	gCastUCharToChar(178),
-	gCastUCharToChar(177),
-	gCastUCharToChar(176),
-	gCastUCharToChar(250),
-};
-	
-static const Animation kDeathAnimation(kDeathFrames, gElemCount(kDeathFrames), kDeathAnimationDuration/gElemCount(kDeathFrames), Animation::EPlaybackStyle_Once);
-
+static const Animation kIdleAnimation(&kIdleMesh, 1, 0.0f, Animation::EPlaybackStyle_Loop);
 
 static int GetSign(int inValue)
 {
@@ -51,52 +37,53 @@ static int GetSign(int inValue)
 class ArcherMonsterComponent
 {
 public:
-	ArcherMonsterComponent();
-	~ArcherMonsterComponent() {}
+	ArcherMonsterComponent(const Entity& inPatrolBoundsEntity);
+	ArcherMonsterComponent(ArcherMonsterComponent&& inOther);
+	~ArcherMonsterComponent() { }
 
-	void Update(Entity inThis, float inFrameTime, MessageBroadcaster&);
+	void Update(Entity inThis, float inFrameTime);
 
-	void OnEntityCollidedWith(Entity inThis, Entity inEntity);
-	
 	void OnPlayerEnteredPatrolArea(Entity inPlayer) { mTarget = inPlayer; }
 	void OnPlayerExitedPatrolArea(Entity)			{ mTarget = Entity(); }
 
-	void TakeDamage(Entity inThis, Entity inPatrolBoundsEntity); 
-
 private:
+	Entity	mPatrolBoundsEntity; 
 	Entity	mTarget;
 	float	mTimeSinceLastMovement;
 	float	mTimeSinceLastFiredArrow;
-	float	mTimeUntilDeath;
-	bool	mIsDying;
 };
 
-ArcherMonsterComponent::ArcherMonsterComponent()
-	: mTimeSinceLastMovement(0.0f)
+ArcherMonsterComponent::ArcherMonsterComponent(const Entity& inPatrolBoundsEntity)
+	: mPatrolBoundsEntity(inPatrolBoundsEntity)
+	, mTimeSinceLastMovement(0.0f)
 	, mTimeSinceLastFiredArrow(0.0f)
-	, mTimeUntilDeath(FLT_MAX)
-	, mIsDying(false)
 {
 }
 
-void ArcherMonsterComponent::Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
+ArcherMonsterComponent::ArcherMonsterComponent(ArcherMonsterComponent&& inOther)
+	: mPatrolBoundsEntity		(inOther.mPatrolBoundsEntity)
+	, mTarget					(inOther.mTarget)
+	, mTimeSinceLastMovement	(inOther.mTimeSinceLastMovement)
+	, mTimeSinceLastFiredArrow	(inOther.mTimeSinceLastFiredArrow)
 {
-	if (!mTarget.IsValid())
-	{
-		return;
-	}
-	
-	if (mIsDying)
-	{
-		mTimeUntilDeath -= inFrameTime;
+	inOther.mPatrolBoundsEntity = Entity();
+	inOther.mTarget				= Entity();
+}
 
-		if (mTimeUntilDeath <= 0.0f)
+void ArcherMonsterComponent::Update(Entity inThis, float inFrameTime)
+{
+	if (inThis.GetComponent<MonsterComponent>()->IsDying())
+	{
+		if (mPatrolBoundsEntity.IsAlive())
 		{
-			auto position = inThis.GetComponent<PositionComponent>()->GetPosition();
-			inThis.Kill();
-			inMsgBroadcaster.Broadcast( MonsterDiedMsg(position) );
+			mPatrolBoundsEntity.Kill();
 		}
 
+		return;
+	}
+
+	if (!mTarget.IsValid())
+	{
 		return;
 	}
 
@@ -125,7 +112,8 @@ void ArcherMonsterComponent::Update(Entity inThis, float inFrameTime, MessageBro
 
 			if (direction.mX != 0 || direction.mY != 0)
 			{
-				Arrow::Create(*inThis.GetWorld(), thisPosition, direction);
+				IVec2 startPosition = thisPosition + direction;
+				Arrow::Create(*inThis.GetWorld(), startPosition, direction);
 			}
 		}
 	}
@@ -151,31 +139,6 @@ void ArcherMonsterComponent::Update(Entity inThis, float inFrameTime, MessageBro
 	}
 }
 
-void ArcherMonsterComponent::OnEntityCollidedWith(Entity inThis, Entity inCollidingEntity)
-{
-	if (mIsDying)
-	{
-		return;
-	}
-
-	auto msgRecComp = inCollidingEntity.GetComponent<MessageReceiverComponent>();
-	if (nullptr != msgRecComp)
-	{
-		auto position = inThis.GetComponent<PositionComponent>()->GetPosition();
-		AttackMsg attackMsg(inThis, position, IVec2(0, 0), AttackMsg::EEffect_PushBack);
-		msgRecComp->Broadcast( attackMsg );
-	}
-}
-
-void ArcherMonsterComponent::TakeDamage(Entity inThis, Entity inPatrolBoundsEntity)
-{
-	mIsDying		= true;
-	mTimeUntilDeath = kDeathAnimationDuration;
-
-	inPatrolBoundsEntity.Kill();
-	inThis.GetComponent<AnimationComponent>()->SetAnimation( kDeathAnimation );
-}
-
 Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& inPosition)
 {
 	int roomCol		= inPosition.mX / ERoomDimensions_Width;
@@ -188,14 +151,12 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2&
 								.AddComponent<TriggerBoxComponent>(IRect(0, 0, ERoomDimensions_Width, ERoomDimensions_Height))
 								.Create();
 
-	auto archerEntity = EntityBuilder(inWorld)
-							.AddComponent<AnimationComponent>( Animation(&kIdleMesh, 1, 0.0f, Animation::EPlaybackStyle_Loop) )
-							.AddComponent<CollisionComponent>( CollisionMesh(0, 0) )
-							.AddComponent<MonsterComponent>()
-							.AddComponent<ArcherMonsterComponent>()
-							.AddComponent<PositionComponent>(inPosition)
-							.AddComponent<RenderableComponent>( kIdleMesh )
+	auto archerEntity = MonsterBuilder(inWorld, &inMsgBroadcaster)
+							.SetRenderable(kIdleMesh)
+							.SetPosition(inPosition)
 							.Create();
+
+	archerEntity.AddComponent<ArcherMonsterComponent>(patrolBoundsEntity);
 
 	{
 		auto patrolTriggerBoxComp = patrolBoundsEntity.GetComponent<TriggerBoxComponent>();
@@ -222,29 +183,12 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2&
 		);
 	}
 	
-	archerEntity.AddComponent<TriggerBoxComponent>()->RegisterOnEnterCallback
-	(
-		[] (const Entity& inThis, const Entity& inEntity)
-		{
-			inThis.GetComponent<ArcherMonsterComponent>()->OnEntityCollidedWith(inThis, inEntity);
-		}
-	);
-
-	archerEntity.AddComponent<ProgramComponent>()->RegisterProgram
+	archerEntity.GetComponent<ProgramComponent>()->RegisterProgram
 	(
 		[&inMsgBroadcaster] (const Entity& inThis, float inFrameTime)
 		{
-			inThis.GetComponent<ArcherMonsterComponent>()->Update(inThis, inFrameTime, inMsgBroadcaster); 
+			inThis.GetComponent<ArcherMonsterComponent>()->Update(inThis, inFrameTime); 
 		} 
-	);
-	
-	archerEntity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>
-	(
-		[=] (const AttackMsg&)
-		{
-			// TODO: archer entity needs to destroy its patrol trigger box entity too.
-			archerEntity.GetComponent<ArcherMonsterComponent>()->TakeDamage(archerEntity, patrolBoundsEntity); 
-		}
 	);
 
 	return archerEntity;

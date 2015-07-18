@@ -1,16 +1,8 @@
 #include "WormMonster.h"
 
-#include <EntityComponentSystem/World/EntityBuilder.h>
-
-#include <EntityComponent/Components/AnimationComponent.h>
-#include <EntityComponent/Components/CollisionComponent.h>
-#include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Components/MonsterComponent.h>
-#include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
-#include <EntityComponent/Components/RenderableComponent.h>
-#include <EntityComponent/Components/TriggerBoxComponent.h>
 
 #include <EntityComponent/Systems/CollisionSystem.h>
 

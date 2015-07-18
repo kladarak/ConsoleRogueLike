@@ -15,7 +15,10 @@ static void UpdatePrograms(const Entity& inEntity, float inFrameTime)
 
 	for (auto& program : programs)
 	{
-		program(inEntity, inFrameTime);
+		if (inEntity.IsAlive()) // It may have died in a previous program
+		{
+			program(inEntity, inFrameTime);
+		}
 	}
 }
 
@@ -25,7 +28,10 @@ void Update(World& inWorld, float inFrameTime)
 
 	for (auto& entity : programEntities)
 	{
-		UpdatePrograms(entity, inFrameTime);
+		if (entity.IsAlive())  // It may have died in a previous entity's program
+		{
+			UpdatePrograms(entity, inFrameTime);
+		}
 	}
 }
 
