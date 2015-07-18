@@ -29,22 +29,18 @@ namespace MonsterAnimation
 {
 	static const AsciiMesh kIdleFrames[] =
 	{
-		AsciiMesh( Fragment('e', ETextGreen), 1, 1 ),
-		AsciiMesh( Fragment('@', ETextGreen), 1, 1 ),
+		Fragment('e', ETextGreen),
+		Fragment('@', ETextGreen),
 	};
 
 	static const Animation kIdle(kIdleFrames, gElemCount(kIdleFrames), kAnimationDuration, Animation::EPlaybackStyle_Loop);
-	
-	static const char kDeathKF0 = gCastUCharToChar(178);
-	static const char kDeathKF1 = gCastUCharToChar(177);
-	static const char kDeathKF2 = gCastUCharToChar(176);
 
 	static const AsciiMesh kDeathFrames[] =
 	{
-		AsciiMesh( &kDeathKF0,	1, 1 ),
-		AsciiMesh( &kDeathKF1,	1, 1 ),
-		AsciiMesh( &kDeathKF2,	1, 1 ),
-		AsciiMesh( ".",			1, 1 ),
+		gCastUCharToChar(178),
+		gCastUCharToChar(177),
+		gCastUCharToChar(176),
+		gCastUCharToChar(250),
 	};
 	
 	static const Animation kDeath(kDeathFrames, gElemCount(kDeathFrames), kDeathAnimationDuration/gElemCount(kDeathFrames), Animation::EPlaybackStyle_Once);

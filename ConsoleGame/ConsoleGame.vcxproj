@@ -30,6 +30,7 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameEntities\CoinEntity.cpp" />
     <ClCompile Include="src\GameEntities\HealthEntity.cpp" />
+    <ClCompile Include="src\GameEntities\Monsters\ArcherMonster.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\WormMonster.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\WallSparkMonster.cpp" />
     <ClCompile Include="src\GameEntities\Obstacles\LockedDoor.cpp" />
@@ -109,6 +110,7 @@
     <ClInclude Include="src\GameEntities\CoinEntity.h" />
     <ClInclude Include="src\GameEntities\HealthEntity.h" />
     <ClInclude Include="src\GameEntities\ItemEntity.h" />
+    <ClInclude Include="src\GameEntities\Monsters\ArcherMonster.h" />
     <ClInclude Include="src\GameEntities\Monsters\WormMonster.h" />
     <ClInclude Include="src\GameEntities\Monsters\WallSparkMonster.h" />
     <ClInclude Include="src\GameEntities\Obstacles\DoorConstants.h" />

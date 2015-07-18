@@ -16,6 +16,7 @@
 #include <GameEntities/ItemEntity.h>
 #include <GameEntities/Monsters/WormMonster.h>
 #include <GameEntities/Monsters/WallSparkMonster.h>
+#include <GameEntities/Monsters/ArcherMonster.h>
 
 #include <Inventory/Items/DoorKey.h>
 
@@ -134,6 +135,7 @@ static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
 	SpawnRandomEntities(world, roomPos, rand()%4, [&] (const IVec2& inPos) { WormMonster::Create(world, inMessageBroadcaster, inPos); } );
 	SpawnRandomEntities(world, roomPos, rand()%5, [&] (const IVec2& inPos) { CoinEntity::Create(world, inMessageBroadcaster, inPos); } );
 	SpawnRandomEntities(world, roomPos, rand()%3, [&] (const IVec2& inPos) { WallSparkMonster::Create(world, inMessageBroadcaster, inPos); } );
+	SpawnRandomEntities(world, roomPos, rand()%3, [&] (const IVec2& inPos) { ArcherMonster::Create(world, inMessageBroadcaster, inPos); } );
 }
 
 DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, GameData* inGameData)

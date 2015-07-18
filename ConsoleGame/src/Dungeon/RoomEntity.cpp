@@ -7,8 +7,6 @@
 #include <EntityComponent/Components/RenderableComponent.h>
 #include <EntityComponent/Components/TriggerBoxComponent.h>
 
-#include <Renderer/AsciiMesh.h>
-
 #include "WallFragments.h"
 #include "ScreenConstants.h"
 
