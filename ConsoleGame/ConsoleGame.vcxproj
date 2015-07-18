@@ -19,6 +19,7 @@
     <ClCompile Include="src\EntityComponent\Components\AnimationComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Components\CollisionMesh.cpp" />
+    <ClCompile Include="src\EntityComponent\Components\MonsterComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Components\TriggerBoxComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\AnimationSystem.cpp" />
     <ClCompile Include="src\EntityComponent\Systems\CollisionSystem.cpp" />
@@ -31,6 +32,8 @@
     <ClCompile Include="src\GameEntities\CoinEntity.cpp" />
     <ClCompile Include="src\GameEntities\HealthEntity.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\ArcherMonster.cpp" />
+    <ClCompile Include="src\GameEntities\Monsters\MonsterBuilder.cpp" />
+    <ClCompile Include="src\GameEntities\Monsters\MonsterDeathAnimation.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\WormMonster.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\WallSparkMonster.cpp" />
     <ClCompile Include="src\GameEntities\Obstacles\LockedDoor.cpp" />
@@ -111,6 +114,8 @@
     <ClInclude Include="src\GameEntities\HealthEntity.h" />
     <ClInclude Include="src\GameEntities\ItemEntity.h" />
     <ClInclude Include="src\GameEntities\Monsters\ArcherMonster.h" />
+    <ClInclude Include="src\GameEntities\Monsters\MonsterBuilder.h" />
+    <ClInclude Include="src\GameEntities\Monsters\MonsterDeathAnimation.h" />
     <ClInclude Include="src\GameEntities\Monsters\WormMonster.h" />
     <ClInclude Include="src\GameEntities\Monsters\WallSparkMonster.h" />
     <ClInclude Include="src\GameEntities\Obstacles\DoorConstants.h" />

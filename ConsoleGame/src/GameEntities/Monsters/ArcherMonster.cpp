@@ -59,7 +59,7 @@ public:
 	void OnEntityCollidedWith(Entity inThis, Entity inEntity);
 	
 	void OnPlayerEnteredPatrolArea(Entity inPlayer) { mTarget = inPlayer; }
-	void OnPlayerExitedPatrolArea(Entity inPlayer)	{ mTarget = Entity(); }
+	void OnPlayerExitedPatrolArea(Entity)			{ mTarget = Entity(); }
 
 	void TakeDamage(Entity inThis, Entity inPatrolBoundsEntity); 
 
@@ -201,7 +201,7 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2&
 		auto patrolTriggerBoxComp = patrolBoundsEntity.GetComponent<TriggerBoxComponent>();
 		patrolTriggerBoxComp->RegisterOnEnterCallback
 		(
-			[=] (const Entity& inThis, const Entity& inEntity)
+			[=] (const Entity&, const Entity& inEntity)
 			{
 				if (inEntity.HasComponent<PlayerComponent>())
 				{
@@ -212,7 +212,7 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2&
 
 		patrolTriggerBoxComp->RegisterOnExitCallback
 		(
-			[=] (const Entity& inThis, const Entity& inEntity)
+			[=] (const Entity&, const Entity& inEntity)
 			{
 				if (inEntity.HasComponent<PlayerComponent>())
 				{

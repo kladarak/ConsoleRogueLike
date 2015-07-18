@@ -18,15 +18,17 @@
 
 #include <Messages/Messages.h>
 
+#include "MonsterBuilder.h"
+
 namespace WormMonster
 {
 
-static const float	kAnimationDuration			= 0.5f;
-static const float	kMovementCooldownDuration	= 1.0f;
-static const float	kDeathAnimationDuration		= 1.5f;
+static const float kMovementCooldownDuration = 1.0f;
 
 namespace MonsterAnimation
 {
+	static const float kAnimationDuration = 0.5f;
+
 	static const AsciiMesh kIdleFrames[] =
 	{
 		Fragment('e', ETextGreen),
@@ -34,28 +36,6 @@ namespace MonsterAnimation
 	};
 
 	static const Animation kIdle(kIdleFrames, gElemCount(kIdleFrames), kAnimationDuration, Animation::EPlaybackStyle_Loop);
-
-	static const AsciiMesh kDeathFrames[] =
-	{
-		gCastUCharToChar(178),
-		gCastUCharToChar(177),
-		gCastUCharToChar(176),
-		gCastUCharToChar(250),
-	};
-	
-	static const Animation kDeath(kDeathFrames, gElemCount(kDeathFrames), kDeathAnimationDuration/gElemCount(kDeathFrames), Animation::EPlaybackStyle_Once);
-
-	static const Animation kAnimations[] =
-	{
-		kIdle,
-		kDeath
-	};
-
-	enum
-	{
-		EIdleAnimation = 0,
-		EDeathAnimation
-	};
 }
 
 class WormMonsterComponent
@@ -65,39 +45,23 @@ public:
 	~WormMonsterComponent() { }
 	
 	void	Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster);
-	void	TakeDamage(Entity inThis);
-	void	OnEntityCollidedWith(Entity inThis, Entity inCollidingEntity);
 
 private:
 	IVec2	GetIntendedMovement(float inFrameTime);
 	void	ResetMovementDuration();
 
 	float	mMovementCooldownTime;
-
-	float	mTimeUntilDeath;
-	bool	mIsDying;
 };
 
-WormMonsterComponent::WormMonsterComponent() 
-	: mIsDying			(false)
-	, mTimeUntilDeath	(FLT_MAX)
+WormMonsterComponent::WormMonsterComponent()
 {
 	ResetMovementDuration();
 }
 
-void WormMonsterComponent::Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
+void WormMonsterComponent::Update(Entity inThis, float inFrameTime, MessageBroadcaster&)
 {
-	if (mIsDying)
+	if (inThis.GetComponent<MonsterComponent>()->IsDying())
 	{
-		mTimeUntilDeath -= inFrameTime;
-
-		if (mTimeUntilDeath <= 0.0f)
-		{
-			auto position = inThis.GetComponent<PositionComponent>()->GetPosition();
-			inThis.Kill();
-			inMsgBroadcaster.Broadcast( MonsterDiedMsg(position) );
-		}
-
 		return;
 	}
 
@@ -154,64 +118,17 @@ void WormMonsterComponent::ResetMovementDuration()
 	mMovementCooldownTime = kMovementCooldownDuration + ((rand()%10) * 0.1f);
 }
 
-void WormMonsterComponent::TakeDamage(Entity inThis)
-{
-	if (mIsDying)
-	{
-		return;
-	}
-
-	mIsDying		= true;
-	mTimeUntilDeath	= kDeathAnimationDuration;
-
-	inThis.GetComponent<AnimationComponent>()->SetSelectedAnimation( MonsterAnimation::EDeathAnimation, true );
-}
-
-void WormMonsterComponent::OnEntityCollidedWith(Entity inThis, Entity inCollidingEntity)
-{
-	if (mIsDying)
-	{
-		return;
-	}
-
-	auto msgRecComp = inCollidingEntity.GetComponent<MessageReceiverComponent>();
-	if (nullptr != msgRecComp)
-	{
-		auto position = inThis.GetComponent<PositionComponent>()->GetPosition();
-		AttackMsg attackMsg(inThis, position, IVec2(0, 0), AttackMsg::EEffect_PushBack);
-		msgRecComp->Broadcast( attackMsg );
-	}
-}
-
 Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& inPosition)
 {
-	auto entity = EntityBuilder(inWorld)
-					.AddComponent<AnimationComponent>( MonsterAnimation::kAnimations, gElemCount(MonsterAnimation::kAnimations) )
-					.AddComponent<CollisionComponent>( CollisionMesh(0, 0) )
-					.AddComponent<MonsterComponent>()
-					.AddComponent<WormMonsterComponent>()
-					.AddComponent<PositionComponent>(inPosition)
-					.AddComponent<RenderableComponent>( MonsterAnimation::kIdleFrames[0] )
-					.AddComponent<TriggererComponent>()
+	auto entity = MonsterBuilder(inWorld, &inMsgBroadcaster)
+					.SetAnimation( MonsterAnimation::kIdle )
+					.SetRenderable( MonsterAnimation::kIdleFrames[0] )
+					.SetPosition( inPosition )
 					.Create();
 
-	entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>
-	(
-		[=] (const AttackMsg&)
-		{
-			entity.GetComponent<WormMonsterComponent>()->TakeDamage(entity); 
-		}
-	);
-	
-	entity.AddComponent<TriggerBoxComponent>()->RegisterOnEnterCallback
-	(
-		[] (const Entity& inThis, const Entity& inEntity)
-		{
-			inThis.GetComponent<WormMonsterComponent>()->OnEntityCollidedWith(inThis, inEntity);
-		}
-	);
+	entity.AddComponent<WormMonsterComponent>();
 
-	entity.AddComponent<ProgramComponent>()->RegisterProgram
+	entity.GetComponent<ProgramComponent>()->RegisterProgram
 	(
 		[&inMsgBroadcaster] (const Entity& inThis, float inFrameTime)
 		{

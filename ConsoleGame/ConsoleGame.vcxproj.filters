@@ -250,6 +250,15 @@
     <ClCompile Include="src\GameEntities\Monsters\ArcherMonster.cpp">
       <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Monsters\MonsterBuilder.cpp">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEntities\Monsters\MonsterDeathAnimation.cpp">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EntityComponent\Components\MonsterComponent.cpp">
+      <Filter>Source Files\ComponentsSystems\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -520,6 +529,12 @@
       <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEntities\Monsters\ArcherMonster.h">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Monsters\MonsterBuilder.h">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Monsters\MonsterDeathAnimation.h">
       <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClInclude>
   </ItemGroup>

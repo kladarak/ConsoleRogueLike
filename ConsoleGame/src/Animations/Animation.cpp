@@ -1,5 +1,13 @@
 #include "Animation.h"
 
+Animation::Animation()
+	: mCurrentKeyFrame	( 0	)
+	, mKeyFrameDuration	( 0.0f )
+	, mRunningTime		( 0.0f )
+	, mPlaybackStyle	( EPlaybackStyle_Loop )
+{
+}
+
 Animation::Animation(Animation&& inRHS)
 	: mKeyFrames		( std::move(inRHS.mKeyFrames)	)
 	, mCurrentKeyFrame	( inRHS.mCurrentKeyFrame		)

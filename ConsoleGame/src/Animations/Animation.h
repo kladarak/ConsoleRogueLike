@@ -12,6 +12,7 @@ public:
 		EPlaybackStyle_Loop
 	};
 
+	Animation();
 	Animation(Animation&& inRHS);
 	Animation(const Animation& inRHS);
 	Animation(const AsciiMesh* inMeshes, uint32_t inCount, float inKeyFrameDuration, EPlaybackStyle inPlaybackStyle);
