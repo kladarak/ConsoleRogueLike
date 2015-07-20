@@ -269,7 +269,7 @@ void CaterpillarMonsterComponent::Update(Entity inThis, float /*inFrameTime*/)
 				}
 			}
 
-			return Animations::Idle::kAnimation;
+			return Animations::IdleFaceLeft::kAnimation;
 		} ();
 
 		animComp->SetAnimation( nextAnimation );
