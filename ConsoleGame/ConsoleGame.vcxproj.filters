@@ -85,9 +85,6 @@
     <ClCompile Include="src\Input\InputMonitor.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameEntities\SpinnerEntity.cpp">
-      <Filter>Source Files\GameEntities</Filter>
-    </ClCompile>
     <ClCompile Include="src\EntityComponent\Systems\CollisionSystem.cpp">
       <Filter>Source Files\ComponentsSystems\Systems</Filter>
     </ClCompile>
@@ -262,6 +259,9 @@
     <ClCompile Include="src\Dungeon\LevelData.cpp">
       <Filter>Source Files\Dungeon</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Monsters\SpinnerEntity.cpp">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -284,9 +284,6 @@
     </ClInclude>
     <ClInclude Include="src\Input\InputMonitor.h">
       <Filter>Source Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameEntities\SpinnerEntity.h">
-      <Filter>Source Files\GameEntities</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityComponent\Components\CollisionComponent.h">
       <Filter>Source Files\ComponentsSystems\Components</Filter>
@@ -542,6 +539,9 @@
     </ClInclude>
     <ClInclude Include="src\Dungeon\LevelData.h">
       <Filter>Source Files\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Monsters\SpinnerEntity.h">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

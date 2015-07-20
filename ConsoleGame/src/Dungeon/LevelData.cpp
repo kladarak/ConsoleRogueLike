@@ -5,12 +5,14 @@
 #include <GameEntities/Monsters/WormMonster.h>
 #include <GameEntities/Monsters/WallSparkMonster.h>
 #include <GameEntities/Monsters/ArcherMonster.h>
+#include <GameEntities/Monsters/SpinnerEntity.h>
 
 // Macros defined to make level data easier to read.
 // JSON might be more of an approriate format for this.
 
 #define START_LEVEL_DATA				{
 #define ROOM_COUNT(n)						n,
+#define MONEY_COUNT(n)						n,
 #define START_MONSTER_FACTORIES				{
 #define ADD_MONSTER_FACTORY(n, funcPtr)			{ n, funcPtr },
 #define END_MONSTER_FACTORIES				},
@@ -19,22 +21,27 @@
 #define WORM_MONSTER	&WormMonster::Create
 #define SPARK_MONSTER	&WallSparkMonster::Create
 #define ARCHER_MONSTER	&ArcherMonster::Create
+#define SPINNER_OBJECT	&SpinnerEntity::Create
 
 const LevelData kLevelData[]
 {
 	START_LEVEL_DATA
 		ROOM_COUNT(1)
+		MONEY_COUNT(1)
 	END_LEVEL_DATA
 
 	START_LEVEL_DATA
 		ROOM_COUNT(3)
+		MONEY_COUNT(3)
 		START_MONSTER_FACTORIES
 			ADD_MONSTER_FACTORY(3, WORM_MONSTER)
+			ADD_MONSTER_FACTORY(3, SPINNER_OBJECT)
 		END_MONSTER_FACTORIES
 	END_LEVEL_DATA
 
 	START_LEVEL_DATA
 		ROOM_COUNT(5)
+		MONEY_COUNT(5)
 		START_MONSTER_FACTORIES
 			ADD_MONSTER_FACTORY(4, WORM_MONSTER)
 			ADD_MONSTER_FACTORY(4, SPARK_MONSTER)

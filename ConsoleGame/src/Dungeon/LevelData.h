@@ -17,6 +17,7 @@ struct MonsterSpawnInfo
 struct LevelData
 {
 	int								mRoomCount;
+	int								mMoneyCount;
 	std::vector<MonsterSpawnInfo>	mMonsterSpawnInfo;
 };
 

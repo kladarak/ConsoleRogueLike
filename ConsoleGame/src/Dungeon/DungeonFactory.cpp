@@ -12,11 +12,7 @@
 #include <EntityComponent/Systems/CollisionSystem.h>
 
 #include <GameEntities/CoinEntity.h>
-#include <GameEntities/SpinnerEntity.h>
 #include <GameEntities/ItemEntity.h>
-#include <GameEntities/Monsters/WormMonster.h>
-#include <GameEntities/Monsters/WallSparkMonster.h>
-#include <GameEntities/Monsters/ArcherMonster.h>
 
 #include <Inventory/Items/DoorKey.h>
 
@@ -28,6 +24,42 @@
 
 namespace DungeonFactory
 {
+
+static IVec2 sGetRandomValidRoomIndex(const DungeonMap& inDungeon)
+{
+	int col, row;
+
+	do
+	{
+		col = rand() % inDungeon.GetColCount();
+		row = rand() % inDungeon.GetRowCount();
+	}
+	while ( !inDungeon.GetRoomData().Get(col, row).mIsValid );
+
+	return IVec2(col, row);
+}
+
+static IVec2 sGetRandomValidRoomPosition(const DungeonMap& inDungeon)
+{
+	IVec2	roomIndex	= sGetRandomValidRoomIndex(inDungeon);
+	auto	room		= inDungeon.GetRoomEntities().Get(roomIndex);
+	return room.GetComponent<PositionComponent>()->GetPosition();
+}
+
+static IVec2 sGetRandomOffsetInRoom(const IRect& inObjectBounds = IRect(0, 0, 1, 1))
+{
+	// Generate random offset considering wall/door margins and item size.
+	static const int kRoomMargin = 2;
+
+	int validAreaWidth = ERoomDimensions_Width - (kRoomMargin*2 + inObjectBounds.mWidth);
+	int validAreaHeight = ERoomDimensions_Height - (kRoomMargin*2 + inObjectBounds.mHeight);
+	int x = rand() % validAreaWidth;
+	int y = rand() % validAreaHeight;
+	x += kRoomMargin + inObjectBounds.mX;
+	y += kRoomMargin + inObjectBounds.mY;
+
+	return IVec2(x, y);
+}
 
 static Dynamic2DVector<Entity> sCreateRoomEntities(World& inWorld, const Dynamic2DVector<RoomData>& inLayout)
 {
@@ -44,20 +76,6 @@ static Dynamic2DVector<Entity> sCreateRoomEntities(World& inWorld, const Dynamic
 	} );
 
 	return entities;
-}
-
-static IVec2 sGetRandomValidRoomIndex(const DungeonMap& inDungeon)
-{
-	int col, row;
-
-	do
-	{
-		col = rand() % inDungeon.GetColCount();
-		row = rand() % inDungeon.GetRowCount();
-	}
-	while ( !inDungeon.GetRoomData().Get(col, row).mIsValid );
-
-	return IVec2(col, row);
 }
 
 static void sAddDoors(const DungeonMap& inDungeon, World& inWorld, MessageBroadcaster& inMessageBroadcaster)
@@ -82,36 +100,23 @@ static void sAddDoors(const DungeonMap& inDungeon, World& inWorld, MessageBroadc
 	doorPlacer.AddDungeonExit(roomIndex, inMessageBroadcaster);
 }
 
-static void sPlaceItemInDungeon(Entity inItem, const DungeonMap& inDungeon)
+static void sPlaceItemInDungeon(const DungeonMap& inDungeon, Entity inItem)
 {
-	IVec2 position(0, 0);
-
-	// Select room and set position to room position
-	{
-		IVec2	roomIndex	= sGetRandomValidRoomIndex(inDungeon);
-		auto	room		= inDungeon.GetRoomEntities().Get(roomIndex);
-		position			= room.GetComponent<PositionComponent>()->GetPosition();
-	}
-
-	// Generate random offset considering wall/door margins and item size.
-	{
-		auto const& keyBounds = inItem.GetComponent<TriggerBoxComponent>()->GetBounds();
-		
-		static const int kRoomMargin = 2;
-		int validAreaWidth = ERoomDimensions_Width - (kRoomMargin*2 + keyBounds.mWidth);
-		int validAreaHeight = ERoomDimensions_Height - (kRoomMargin*2 + keyBounds.mHeight);
-		int x = rand() % validAreaWidth;
-		int y = rand() % validAreaHeight;
-		x += kRoomMargin + keyBounds.mX;
-		y += kRoomMargin + keyBounds.mY;
-		position.mX += x;
-		position.mY += y;
-	}
-
+	IVec2 position = sGetRandomValidRoomPosition(inDungeon);
+	position += sGetRandomOffsetInRoom( inItem.GetComponent<TriggerBoxComponent>()->GetBounds() );
 	inItem.GetComponent<PositionComponent>()->SetPosition(position);
 }
 
-static void sFillDungeonWithMonsters(World& inWorld, MessageBroadcaster& inMessageBroadcaster, const DungeonMap& inDungeonMap, const std::vector<MonsterSpawnInfo>& inMonsterInfo )
+static void sCreateMoneyInDungeon(const DungeonMap& inDungeonMap, World& inWorld, MessageBroadcaster& inMessageBroadcaster, int inCount)
+{
+	for (int i = 0; i < inCount; ++i)
+	{
+		IVec2 position = sGetRandomValidRoomPosition(inDungeonMap) + sGetRandomOffsetInRoom();
+		CoinEntity::Create(inWorld, inMessageBroadcaster, position);
+	}
+}
+
+static void sCreateMonstersInDungeon(const DungeonMap& inDungeonMap, World& inWorld, MessageBroadcaster& inMessageBroadcaster, const std::vector<MonsterSpawnInfo>& inMonsterInfo )
 {
 	for (auto& monsterInfo : inMonsterInfo)
 	{
@@ -121,8 +126,7 @@ static void sFillDungeonWithMonsters(World& inWorld, MessageBroadcaster& inMessa
 
 			do
 			{
-				IVec2 roomIndex		= sGetRandomValidRoomIndex(inDungeonMap);
-				IVec2 roomPosition	= inDungeonMap.GetRoomEntities().Get(roomIndex).GetComponent<PositionComponent>()->GetPosition();
+				IVec2 roomPosition = sGetRandomValidRoomPosition(inDungeonMap);
 			
 				int x = rand() % ERoomDimensions_Width;
 				int y = rand() % ERoomDimensions_Height;
@@ -144,9 +148,11 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, Ga
 
 	sAddDoors(dungeon, inWorld, inMessageBroadcaster);
 
-	sPlaceItemInDungeon( ItemEntity::Create<DoorKey>(inWorld, inGameData), dungeon );
+	sPlaceItemInDungeon(dungeon, ItemEntity::Create<DoorKey>(inWorld, inGameData));
 
-	sFillDungeonWithMonsters(inWorld, inMessageBroadcaster, dungeon, inLevelData.mMonsterSpawnInfo);
+	sCreateMoneyInDungeon(dungeon, inWorld, inMessageBroadcaster, inLevelData.mMoneyCount);
+
+	sCreateMonstersInDungeon(dungeon, inWorld, inMessageBroadcaster, inLevelData.mMonsterSpawnInfo);
 
 	return dungeon;
 }

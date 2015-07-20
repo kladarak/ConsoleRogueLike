@@ -22,7 +22,7 @@ static const AsciiMesh kSpinnerFrames[] =
 
 static const Animation kSpinnerAnimation(kSpinnerFrames, sizeof(kSpinnerFrames)/sizeof(AsciiMesh), kStateChangeRate, Animation::EPlaybackStyle_Loop);
 
-void Create(World& inWorld, const IVec2& inPos)
+Entity Create(World& inWorld, MessageBroadcaster&, const IVec2& inPos)
 {
 	Entity entity = inWorld.CreateEntity();
 
@@ -30,6 +30,8 @@ void Create(World& inWorld, const IVec2& inPos)
 	entity.AddComponent<RenderableComponent>( kSpinnerFrames[0] );
 	entity.AddComponent<CollisionComponent>( CollisionMesh(0, 0) );
 	entity.AddComponent<AnimationComponent>(kSpinnerAnimation);
+
+	return entity;
 }
 
 }

@@ -35,6 +35,7 @@
     <ClCompile Include="src\GameEntities\Monsters\ArcherMonster.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\MonsterBuilder.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\MonsterDeathAnimation.cpp" />
+    <ClCompile Include="src\GameEntities\Monsters\SpinnerEntity.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\WormMonster.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\WallSparkMonster.cpp" />
     <ClCompile Include="src\GameEntities\Obstacles\LockedDoor.cpp" />
@@ -45,7 +46,6 @@
     <ClCompile Include="src\GameEntities\Player\PlayerBehaviours\PlayerIdleBehaviour.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerEntity.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerComponent.cpp" />
-    <ClCompile Include="src\GameEntities\SpinnerEntity.cpp" />
     <ClCompile Include="src\GameSystems\CameraSystem.cpp" />
     <ClCompile Include="src\GameSystems\ItemDropHandler.cpp" />
     <ClCompile Include="src\Input\InputBuffer.cpp" />
@@ -118,6 +118,7 @@
     <ClInclude Include="src\GameEntities\Monsters\ArcherMonster.h" />
     <ClInclude Include="src\GameEntities\Monsters\MonsterBuilder.h" />
     <ClInclude Include="src\GameEntities\Monsters\MonsterDeathAnimation.h" />
+    <ClInclude Include="src\GameEntities\Monsters\SpinnerEntity.h" />
     <ClInclude Include="src\GameEntities\Monsters\WormMonster.h" />
     <ClInclude Include="src\GameEntities\Monsters\WallSparkMonster.h" />
     <ClInclude Include="src\GameEntities\Obstacles\DoorConstants.h" />
@@ -131,7 +132,6 @@
     <ClInclude Include="src\GameEntities\Player\PlayerData.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerEntity.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerEnums.h" />
-    <ClInclude Include="src\GameEntities\SpinnerEntity.h" />
     <ClInclude Include="src\GameSystems\CameraSystem.h" />
     <ClInclude Include="src\GameSystems\ItemDropHandler.h" />
     <ClInclude Include="src\Input\InputBuffer.h" />

@@ -1,7 +1,6 @@
 #include "InGameState.h"
 
 #include <GameEntities/Player/PlayerEntity.h>
-#include <GameEntities/SpinnerEntity.h>
 
 #include <Dungeon/DungeonFactory.h>
 #include <Dungeon/RoomEntity.h>
