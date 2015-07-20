@@ -17,6 +17,7 @@ public:
 	void					SetAnimations(const std::vector<Animation>& inAnimations);
 	void					SetAnimation(const Animation& inAnimation);
 
+	bool					IsSelectedAnimationFinished() const;
 	void					ResetSelectedAnimation();
 	void					Update(float inFrameTime);
 	const AsciiMesh&		GetCurrentKeyFrame() const;

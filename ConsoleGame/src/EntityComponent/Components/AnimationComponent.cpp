@@ -66,6 +66,17 @@ void AnimationComponent::SetSelectedAnimation(uint32_t inSelected, bool inResetI
 	}
 }
 
+bool AnimationComponent::IsSelectedAnimationFinished() const
+{
+	if (mAnimations.size() > 0)
+	{
+		assert(mSelectedAnimation < mAnimations.size());
+		return mAnimations[mSelectedAnimation].IsFinished();
+	}
+
+	return false;
+}
+
 void AnimationComponent::ResetSelectedAnimation()
 {
 	if (mAnimations.size() > 0)

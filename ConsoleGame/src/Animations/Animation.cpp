@@ -5,6 +5,7 @@ Animation::Animation()
 	, mKeyFrameDuration	( 0.0f )
 	, mRunningTime		( 0.0f )
 	, mPlaybackStyle	( EPlaybackStyle_Loop )
+	, mIsFinished		( false )
 {
 }
 
@@ -14,6 +15,7 @@ Animation::Animation(Animation&& inRHS)
 	, mKeyFrameDuration	( inRHS.mKeyFrameDuration		)
 	, mRunningTime		( inRHS.mRunningTime			)
 	, mPlaybackStyle	( inRHS.mPlaybackStyle			)
+	, mIsFinished		( inRHS.mIsFinished				)
 {
 }
 
@@ -23,14 +25,16 @@ Animation::Animation(const Animation& inRHS)
 	, mKeyFrameDuration	( inRHS.mKeyFrameDuration	)
 	, mRunningTime		( inRHS.mRunningTime		)
 	, mPlaybackStyle	( inRHS.mPlaybackStyle		)
+	, mIsFinished		( inRHS.mIsFinished			)
 {
 }
 
 Animation::Animation(const AsciiMesh* inMeshes, uint32_t inCount, float inKeyFrameDuration, EPlaybackStyle inPlaybackStyle)
-	: mCurrentKeyFrame(0)
-	, mKeyFrameDuration(inKeyFrameDuration)
-	, mRunningTime(0.0f)
-	, mPlaybackStyle(inPlaybackStyle)
+	: mCurrentKeyFrame	(0)
+	, mKeyFrameDuration	(inKeyFrameDuration)
+	, mRunningTime		(0.0f)
+	, mPlaybackStyle	(inPlaybackStyle)
+	, mIsFinished		(false)
 {
 	for (uint32_t i = 0; i < inCount; ++i)
 	{
@@ -55,8 +59,8 @@ void Animation::Update(float inFrameTime)
 		{
 			switch (mPlaybackStyle)
 			{
-				case EPlaybackStyle_Once: mCurrentKeyFrame = mKeyFrames.size() - 1; break;
-				case EPlaybackStyle_Loop: mCurrentKeyFrame = 0;						break;
+				case EPlaybackStyle_Once: mCurrentKeyFrame = mKeyFrames.size() - 1; mIsFinished = true; break;
+				case EPlaybackStyle_Loop: mCurrentKeyFrame = 0;											break;
 			}
 		}
 
@@ -74,4 +78,10 @@ void Animation::Reset()
 {
 	mCurrentKeyFrame	= 0;
 	mRunningTime		= 0.0f;
+	mIsFinished			= false;
+}
+
+bool Animation::IsFinished() const
+{
+	return mIsFinished;
 }

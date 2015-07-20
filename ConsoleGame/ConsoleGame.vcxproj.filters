@@ -262,6 +262,9 @@
     <ClCompile Include="src\GameEntities\Monsters\SpinnerEntity.cpp">
       <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Monsters\CaterpillarMonster.cpp">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -541,6 +544,9 @@
       <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEntities\Monsters\SpinnerEntity.h">
+      <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Monsters\CaterpillarMonster.h">
       <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClInclude>
   </ItemGroup>

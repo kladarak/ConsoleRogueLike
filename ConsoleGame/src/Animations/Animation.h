@@ -20,6 +20,7 @@ public:
 	void					Update(float inFrameTime);
 	const AsciiMesh&		GetCurrentKeyFrame() const;
 	void					Reset();
+	bool					IsFinished() const;
 
 private:
 	std::vector<AsciiMesh>	mKeyFrames;
@@ -27,4 +28,5 @@ private:
 	float					mKeyFrameDuration;
 	float					mRunningTime;
 	EPlaybackStyle			mPlaybackStyle;
+	bool					mIsFinished;
 };
