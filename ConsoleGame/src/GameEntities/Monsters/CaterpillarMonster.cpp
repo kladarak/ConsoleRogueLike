@@ -21,7 +21,7 @@ namespace Animations
 	{
 		static const Fragment kKF1Fragments[] = 
 		{
-			Fragment('o', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen),	Fragment('-', ETextGreen),
+			Fragment('o', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen),
 		};
 		static const AsciiMesh kKF1In(kKF1Fragments, 4, 1, IVec2(0, 0));
 		static const AsciiMesh kKF1Out(kKF1Fragments, 4, 1, IVec2(-2, 0));
@@ -70,7 +70,7 @@ namespace Animations
 	{
 		static const Fragment kKF1Fragments[] = 
 		{
-			Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen),	Fragment('o', ETextGreen),
+			Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('o', ETextGreen),
 		};
 		static const AsciiMesh kKF1In(kKF1Fragments, 4, 1, IVec2(-3, 0));
 		static const AsciiMesh kKF1Out(kKF1Fragments, 4, 1, IVec2(-1, 0));
@@ -148,6 +148,66 @@ namespace Animations
 
 		static const Animation kAnimation(kKeyFrames, gElemCount(kKeyFrames), kKFDuration, Animation::EPlaybackStyle_Once);
 	}
+
+	namespace IdleFaceLeft
+	{
+		static const Fragment kKF1Fragments[] = 
+		{
+			Fragment('o', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('/', ETextGreen),
+		};
+		static const AsciiMesh kKF1(kKF1Fragments, 4, 1, IVec2(0, 0));
+
+		static const Fragment kKF2Fragments[] = 
+		{
+			Fragment('o', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen),
+		};
+		static const AsciiMesh kKF2(kKF2Fragments, 4, 1, IVec2(0, 0));
+
+		static const Fragment kKF3Fragments[] = 
+		{
+			Fragment('o', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('\\', ETextGreen),
+		};
+		static const AsciiMesh kKF3(kKF3Fragments, 4, 1, IVec2(0, 0));
+		
+		static const AsciiMesh kKeyFrames[] =
+		{
+			kKF1,
+			kKF2,
+			kKF3,
+		};
+
+		static const Animation kAnimation(kKeyFrames, gElemCount(kKeyFrames), kKFDuration, Animation::EPlaybackStyle_Loop);
+	}
+
+	namespace IdleFaceRight
+	{
+		static const Fragment kKF1Fragments[] = 
+		{
+			Fragment('\\', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('o', ETextGreen),
+		};
+		static const AsciiMesh kKF1(kKF1Fragments, 4, 1, IVec2(-3, 0));
+
+		static const Fragment kKF2Fragments[] = 
+		{
+			Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('o', ETextGreen),
+		};
+		static const AsciiMesh kKF2(kKF2Fragments, 4, 1, IVec2(-3, 0));
+
+		static const Fragment kKF3Fragments[] = 
+		{
+			Fragment('/', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('o', ETextGreen),
+		};
+		static const AsciiMesh kKF3(kKF3Fragments, 4, 1, IVec2(-3, 0));
+		
+		static const AsciiMesh kKeyFrames[] =
+		{
+			kKF1,
+			kKF2,
+			kKF3,
+		};
+
+		static const Animation kAnimation(kKeyFrames, gElemCount(kKeyFrames), kKFDuration, Animation::EPlaybackStyle_Loop);
+	}
 }
 
 class CaterpillarMonsterComponent
@@ -184,30 +244,35 @@ void CaterpillarMonsterComponent::Update(Entity inThis, float /*inFrameTime*/)
 
 		++mMovemntCycleCount;
 
-		if (mMovemntCycleCount > 3)
+		const Animation& nextAnimation = [&]
 		{
-			mMovemntCycleCount = 0;
-			switch (mDirection)
+			if (mMovemntCycleCount > 3)
 			{
-				case ELeft:
-					mDirection = ERight;
-					animComp->SetAnimation( Animations::MovementTurnRight::kAnimation );
-					break;
+				mMovemntCycleCount = 0;
+				switch (mDirection)
+				{
+					case ELeft:
+						mDirection = ERight;
+						return Animations::MovementTurnRight::kAnimation;
 
-				case ERight:
-					mDirection = ELeft;
-					animComp->SetAnimation( Animations::MovementTurnLeft::kAnimation );
-					break;
+					case ERight:
+						mDirection = ELeft;
+						return Animations::MovementTurnLeft::kAnimation;
+				}
 			}
-		}
-		else
-		{
-			switch (mDirection)
+			else
 			{
-				case ELeft:		animComp->SetAnimation( Animations::MovementLeft::kAnimation );		break;
-				case ERight:	animComp->SetAnimation( Animations::MovementRight::kAnimation );	break;
+				switch (mDirection)
+				{
+					case ELeft:		return Animations::MovementLeft::kAnimation;
+					case ERight:	return Animations::MovementRight::kAnimation;
+				}
 			}
-		}
+
+			return Animations::Idle::kAnimation;
+		} ();
+
+		animComp->SetAnimation( nextAnimation );
 	}
 }
 
