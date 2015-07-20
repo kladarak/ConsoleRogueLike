@@ -5,6 +5,7 @@
 
 #include <Dungeon/DungeonFactory.h>
 #include <Dungeon/RoomEntity.h>
+#include <Dungeon/LevelData.h>
 
 #include <EntityComponent/Systems/AnimationSystem.h>
 #include <EntityComponent/Systems/InputHandlerSystem.h>
@@ -30,8 +31,9 @@
 InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
 	: StateBase(inStateMachineMsgBroadcaster, inGameData)
 {
-	mGameData->mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster, inGameData);
-	
+	auto levelDataIndex = inGameData->mCurrentLevel <= (int) kLevelDataCount ? inGameData->mCurrentLevel : kLevelDataCount;
+	mGameData->mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster, inGameData, kLevelData[levelDataIndex - 1]);
+
 	mCameraSystem.Init(mWorld, mGameData->mDungeonMap);
 
 	mGameData->mPlayer = PlayerEntity::Create(mWorld, mMessageBroadcaster, inGameData);

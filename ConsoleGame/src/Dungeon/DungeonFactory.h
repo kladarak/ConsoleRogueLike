@@ -6,8 +6,9 @@
 
 class MessageBroadcaster;
 class GameData;
+struct LevelData;
 
 namespace DungeonFactory
 {
-	DungeonMap Generate(World& inGlobalSystems, MessageBroadcaster& inMessageBroadcaster, GameData* inGameData);
+	DungeonMap Generate(World& inGlobalSystems, MessageBroadcaster& inMessageBroadcaster, GameData* inGameData, const LevelData& inLevelData);
 }

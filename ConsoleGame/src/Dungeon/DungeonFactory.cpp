@@ -24,6 +24,7 @@
 #include "ScreenConstants.h"
 #include "DungeonLayoutGenerator.h"
 #include "DungeonDoorPlacer.h"
+#include "LevelData.h"
 
 namespace DungeonFactory
 {
@@ -110,62 +111,42 @@ static void sPlaceItemInDungeon(Entity inItem, const DungeonMap& inDungeon)
 	inItem.GetComponent<PositionComponent>()->SetPosition(position);
 }
 
-static void SpawnRandomEntities(World& inWorld, const IVec2& inRoomPos, int inCount, const std::function<void (const IVec2& inPos)>& inEntitySpawner)
+static void sFillDungeonWithMonsters(World& inWorld, MessageBroadcaster& inMessageBroadcaster, const DungeonMap& inDungeonMap, const std::vector<MonsterSpawnInfo>& inMonsterInfo )
 {
-	for (int i = 0; i < inCount; ++i)
+	for (auto& monsterInfo : inMonsterInfo)
 	{
-		int x = rand() % ERoomDimensions_Width;
-		int y = rand() % ERoomDimensions_Height;
-		IVec2 entityPos(x, y);
-		entityPos += inRoomPos;
-
-		if ( !CollisionSystem::CollidesWithAnyEntity(inWorld, entityPos) )
+		for (int i = 0; i < monsterInfo.mMonsterCount; ++i)
 		{
-			inEntitySpawner(entityPos);
+			IVec2 entityPos(0, 0);
+
+			do
+			{
+				IVec2 roomIndex		= sGetRandomValidRoomIndex(inDungeonMap);
+				IVec2 roomPosition	= inDungeonMap.GetRoomEntities().Get(roomIndex).GetComponent<PositionComponent>()->GetPosition();
+			
+				int x = rand() % ERoomDimensions_Width;
+				int y = rand() % ERoomDimensions_Height;
+				entityPos = IVec2(x, y) + roomPosition;
+			}
+			while ( CollisionSystem::CollidesWithAnyEntity(inWorld, entityPos) );
+
+			monsterInfo.mFactoryFunc(inWorld, inMessageBroadcaster, entityPos);
 		}
 	}
 }
 
-static void FillRoom(Entity inRoom, MessageBroadcaster& inMessageBroadcaster)
+DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, GameData* inGameData, const LevelData& inLevelData)
 {
-	World& world = *inRoom.GetWorld();
-	auto roomPos = inRoom.GetComponent<PositionComponent>()->GetPosition();
-	
-	SpawnRandomEntities(world, roomPos, rand()%4, [&] (const IVec2& inPos) { SpinnerEntity::Create(world, inPos); } );
-	SpawnRandomEntities(world, roomPos, rand()%4, [&] (const IVec2& inPos) { WormMonster::Create(world, inMessageBroadcaster, inPos); } );
-	SpawnRandomEntities(world, roomPos, rand()%5, [&] (const IVec2& inPos) { CoinEntity::Create(world, inMessageBroadcaster, inPos); } );
-	SpawnRandomEntities(world, roomPos, rand()%3, [&] (const IVec2& inPos) { WallSparkMonster::Create(world, inMessageBroadcaster, inPos); } );
-	SpawnRandomEntities(world, roomPos, rand()%3, [&] (const IVec2& inPos) { ArcherMonster::Create(world, inMessageBroadcaster, inPos); } );
-}
-
-DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, GameData* inGameData)
-{
-	const int kRoomCount = 5;
-
-	Dynamic2DVector<RoomData>	roomData		= DungeonLayoutGenerator(kRoomCount).Generate();
+	Dynamic2DVector<RoomData>	roomData		= DungeonLayoutGenerator( inLevelData.mRoomCount ).Generate();
 	Dynamic2DVector<Entity>		roomEntities	= sCreateRoomEntities(inWorld, roomData);
 
 	DungeonMap dungeon(roomData, roomEntities);
 
 	sAddDoors(dungeon, inWorld, inMessageBroadcaster);
 
-	// Place key somewhere.
-	{
-		auto doorKey = ItemEntity::Create<DoorKey>(inWorld, inGameData);
-		sPlaceItemInDungeon(doorKey, dungeon);
-	}
+	sPlaceItemInDungeon( ItemEntity::Create<DoorKey>(inWorld, inGameData), dungeon );
 
-	// Fill rooms after creating all rooms, to fix draw order problems.
-	// A better way would be to either have an initial clearing screen pass then skip rendering any whitespace,
-	// or render white space only if no other character has been written to a fragment yet,
-	// or sort the renderables based on some sort of mark up on each renderable.
-	dungeon.GetRoomEntities().ForEach( [&] (size_t, size_t, const Entity& inRoom)
-	{
-		if (inRoom.IsValid())
-		{
-			FillRoom(inRoom, inMessageBroadcaster);
-		}
-	} );
+	sFillDungeonWithMonsters(inWorld, inMessageBroadcaster, dungeon, inLevelData.mMonsterSpawnInfo);
 
 	return dungeon;
 }

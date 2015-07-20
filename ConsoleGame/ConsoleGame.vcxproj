@@ -15,6 +15,7 @@
     <ClCompile Include="src\Dungeon\DungeonDoorPlacer.cpp" />
     <ClCompile Include="src\Dungeon\DungeonFactory.cpp" />
     <ClCompile Include="src\Dungeon\DungeonLayoutGenerator.cpp" />
+    <ClCompile Include="src\Dungeon\LevelData.cpp" />
     <ClCompile Include="src\Dungeon\RoomEntity.cpp" />
     <ClCompile Include="src\EntityComponent\Components\AnimationComponent.cpp" />
     <ClCompile Include="src\EntityComponent\Components\CollisionComponent.cpp" />
@@ -84,6 +85,7 @@
     <ClInclude Include="src\Dungeon\DungeonFactory.h" />
     <ClInclude Include="src\Dungeon\DungeonLayoutGenerator.h" />
     <ClInclude Include="src\Dungeon\DungeonMap.h" />
+    <ClInclude Include="src\Dungeon\LevelData.h" />
     <ClInclude Include="src\Dungeon\RoomEntity.h" />
     <ClInclude Include="src\Dungeon\WallFragments.h" />
     <ClInclude Include="src\EntityComponent\Components\AnimationComponent.h" />

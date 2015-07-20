@@ -259,6 +259,9 @@
     <ClCompile Include="src\EntityComponent\Components\MonsterComponent.cpp">
       <Filter>Source Files\ComponentsSystems\Components</Filter>
     </ClCompile>
+    <ClCompile Include="src\Dungeon\LevelData.cpp">
+      <Filter>Source Files\Dungeon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -536,6 +539,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Monsters\MonsterDeathAnimation.h">
       <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dungeon\LevelData.h">
+      <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
