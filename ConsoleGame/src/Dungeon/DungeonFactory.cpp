@@ -150,6 +150,11 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, Ga
 
 	sPlaceItemInDungeon(dungeon, ItemEntity::Create<DoorKey>(inWorld, inGameData));
 
+	if (inLevelData.mItemFactoryFunc)
+	{
+		sPlaceItemInDungeon(dungeon, inLevelData.mItemFactoryFunc(inWorld, inGameData));
+	}
+
 	sCreateMoneyInDungeon(dungeon, inWorld, inMessageBroadcaster, inLevelData.mMoneyCount);
 
 	sCreateMonstersInDungeon(dungeon, inWorld, inMessageBroadcaster, inLevelData.mMonsterSpawnInfo);
