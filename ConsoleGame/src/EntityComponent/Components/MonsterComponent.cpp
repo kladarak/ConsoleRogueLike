@@ -13,8 +13,9 @@
 #include <Messages/Messages.h>
 
 MonsterComponent::MonsterComponent()
-	: mTimeUntilDeath	(FLT_MAX)
-	, mIsDying			(false)
+	: mTimeUntilDeath		(FLT_MAX)
+	, mIsDying				(false)
+	, mPassiveWhenTouched	(false)
 {
 }
 

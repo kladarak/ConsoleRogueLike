@@ -66,17 +66,17 @@ Entity Create(World& inWorld, const AsciiMesh& inMesh, const IVec2& inPosition, 
 	entity.AddComponent<RenderableComponent>( inMesh );
 
 	entity.AddComponent<TriggerBoxComponent>()->RegisterOnEnterCallback( 
-		[] (Entity inArrow, const Entity& inTriggerer)
+		[] (Entity inThis, const Entity& inTriggerer)
 		{
 			auto msgRecComp = inTriggerer.GetComponent<MessageReceiverComponent>();
 			if (nullptr != msgRecComp)
 			{
-				auto position = inArrow.GetComponent<PositionComponent>()->GetPosition();
-				auto direction = inArrow.GetComponent<ProjectileUpdateState>()->mDirection;
-				msgRecComp->Broadcast( AttackMsg(inArrow, position, direction, AttackMsg::EEffect_None) );
+				auto position = inThis.GetComponent<PositionComponent>()->GetPosition();
+				auto direction = inThis.GetComponent<ProjectileUpdateState>()->mDirection;
+				msgRecComp->Broadcast( AttackMsg(inThis, position, direction, AttackMsg::EEffect_None) );
 			}
 
-			inArrow.Kill();
+			inThis.Kill();
 		} );
 
 	return entity;

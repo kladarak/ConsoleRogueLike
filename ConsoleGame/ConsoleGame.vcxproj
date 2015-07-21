@@ -34,6 +34,7 @@
     <ClCompile Include="src\GameEntities\HealthEntity.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\ArcherMonster.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\CaterpillarMonster.cpp" />
+    <ClCompile Include="src\GameEntities\Monsters\GunTurretEntity.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\MonsterBuilder.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\MonsterDeathAnimation.cpp" />
     <ClCompile Include="src\GameEntities\Monsters\SpinnerEntity.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="src\GameEntities\ItemEntity.h" />
     <ClInclude Include="src\GameEntities\Monsters\ArcherMonster.h" />
     <ClInclude Include="src\GameEntities\Monsters\CaterpillarMonster.h" />
+    <ClInclude Include="src\GameEntities\Monsters\GunTurretEntity.h" />
     <ClInclude Include="src\GameEntities\Monsters\MonsterBuilder.h" />
     <ClInclude Include="src\GameEntities\Monsters\MonsterDeathAnimation.h" />
     <ClInclude Include="src\GameEntities\Monsters\SpinnerEntity.h" />

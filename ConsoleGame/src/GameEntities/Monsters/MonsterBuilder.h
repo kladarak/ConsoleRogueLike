@@ -19,6 +19,7 @@ public:
 	MonsterBuilder&		SetRenderable(const AsciiMesh& inAsciiMesh);
 
 	MonsterBuilder&		SetInvulnerable();
+	MonsterBuilder&		SetPassiveWhenTouched();
 
 	Entity				Create();
 
@@ -37,4 +38,5 @@ private:
 
 	uint32_t			mOptionalComponents;
 	bool				mCanBeKilled;
+	bool				mAttacksWhenTouched;
 };

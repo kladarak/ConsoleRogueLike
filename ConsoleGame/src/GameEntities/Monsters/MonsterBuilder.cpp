@@ -17,11 +17,12 @@
 
 
 MonsterBuilder::MonsterBuilder(World& inWorld, MessageBroadcaster* inMsgBroadcaster)
-	: mWorld			(inWorld)
-	, mMsgBroadcaster	(inMsgBroadcaster)
-	, mRenderMesh		(Fragment('!', EColour_Background_Red))
-	, mPosition			(0, 0)
-	, mCanBeKilled		(true)
+	: mWorld				(inWorld)
+	, mMsgBroadcaster		(inMsgBroadcaster)
+	, mRenderMesh			(Fragment('!', EColour_Background_Red))
+	, mPosition				(0, 0)
+	, mCanBeKilled			(true)
+	, mAttacksWhenTouched	(true)
 {
 }
 
@@ -53,6 +54,12 @@ MonsterBuilder&	MonsterBuilder::SetRenderable(const AsciiMesh& inAsciiMesh)
 MonsterBuilder& MonsterBuilder::SetInvulnerable()
 {
 	mCanBeKilled = false;
+	return *this;
+}
+
+MonsterBuilder& MonsterBuilder::SetPassiveWhenTouched()
+{
+	mAttacksWhenTouched = false;
 	return *this;
 }
 
@@ -90,14 +97,20 @@ Entity MonsterBuilder::Create()
 		);
 	}
 	
-	entity.AddComponent<TriggerBoxComponent>()->RegisterOnEnterCallback
-	(
-		[] (const Entity& inThis, const Entity& inEntity)
-		{
-			inThis.GetComponent<MonsterComponent>()->OnEntityCollidedWith(inThis, inEntity);
-		}
-	);
+	if (mAttacksWhenTouched)
+	{
+		entity.AddComponent<TriggerBoxComponent>()->RegisterOnEnterCallback
+		(
+			[] (const Entity& inThis, const Entity& inEntity)
+			{
+				inThis.GetComponent<MonsterComponent>()->OnEntityCollidedWith(inThis, inEntity);
+			}
+		);
+	}
+	else
+	{
+		entity.GetComponent<MonsterComponent>()->SetPassiveWhenTouched(true);
+	}
 
-	
 	return entity;
 }

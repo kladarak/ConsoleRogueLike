@@ -7,6 +7,7 @@
 #include <GameEntities/Monsters/ArcherMonster.h>
 #include <GameEntities/Monsters/SpinnerEntity.h>
 #include <GameEntities/Monsters/CaterpillarMonster.h>
+#include <GameEntities/Monsters/GunTurretEntity.h>
 
 // Macros defined to make level data easier to read.
 // JSON might be more of an approriate format for this.
@@ -24,6 +25,7 @@
 #define ARCHER_MONSTER		&ArcherMonster::Create
 #define SPINNER_OBJECT		&SpinnerEntity::Create
 #define CATERPILLAR_OBJECT	&CaterpillarMonster::Create
+#define GUN_TURRET_OBJECT	&GunTurretEntity::Create
 
 const LevelData kLevelData[]
 {
@@ -32,6 +34,7 @@ const LevelData kLevelData[]
 		MONEY_COUNT(1)
 		START_MONSTER_FACTORIES
 			ADD_MONSTER_FACTORY(1, CATERPILLAR_OBJECT)
+			ADD_MONSTER_FACTORY(1, GUN_TURRET_OBJECT)
 		END_MONSTER_FACTORIES
 	END_LEVEL_DATA
 
