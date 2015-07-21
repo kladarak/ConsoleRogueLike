@@ -15,6 +15,7 @@
 #include <Inventory/Items/Bow.h>
 #include <Inventory/Items/Shield.h>
 #include <Inventory/Items/Bomb.h>
+#include <Inventory/Items/Pig.h>
 
 // Macros defined to make level data easier to read.
 // JSON might be more of an approriate format for this.
@@ -41,7 +42,7 @@ const LevelData kLevelData[]
 	START_LEVEL_DATA
 		ROOM_COUNT(1)
 		MONEY_COUNT(1)
-		ITEM_FACTORY( Sword )
+		ITEM_FACTORY( Pig )
 		START_MONSTER_FACTORIES
 			ADD_MONSTER_FACTORY(1, CATERPILLAR_MONSTER)
 			ADD_MONSTER_FACTORY(1, GUN_TURRET_OBJECT)

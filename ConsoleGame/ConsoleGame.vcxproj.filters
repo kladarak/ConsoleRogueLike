@@ -274,6 +274,9 @@
     <ClCompile Include="src\GameEntities\Monsters\GunTurretEntity.cpp">
       <Filter>Source Files\GameEntities\Monsters</Filter>
     </ClCompile>
+    <ClCompile Include="src\Inventory\Items\Pig.cpp">
+      <Filter>Source Files\Inventory\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -563,6 +566,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Monsters\GunTurretEntity.h">
       <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\Items\Pig.h">
+      <Filter>Source Files\Inventory\Items</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

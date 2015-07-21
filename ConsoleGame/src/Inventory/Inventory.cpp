@@ -4,12 +4,7 @@
 
 Inventory::~Inventory()
 {
-	for (auto item : mItems)
-	{
-		delete item;
-	}
-
-	mItems.clear();
+	DeleteAll();
 }
 
 void Inventory::AddItem(ItemBase* inItem)
@@ -43,3 +38,12 @@ void Inventory::RemoveAndDeleteItem(ItemBase* inItem)
 	}
 }
 
+void Inventory::DeleteAll()
+{
+	for (auto item : mItems)
+	{
+		delete item;
+	}
+
+	mItems.clear();
+}

@@ -2,10 +2,13 @@
 
 #include "ItemBase.h"
 
-class SwordPlayerBehaviour : public PlayerBehaviourBase
+class MessageBroadcaster;
+struct IVec2;
+
+class PigRiderPlayerBehaviour : public PlayerBehaviourBase
 {
 public:
-	SwordPlayerBehaviour() : mSwipeTimeElapsed(0.0f) { }
+	PigRiderPlayerBehaviour() : mTimeSinceMovement(0.0f) { }
 	virtual void OnStart(Entity inPlayer);
 	virtual void OnRestart(Entity inPlayer);
 	virtual void Update(Entity inPlayer, float inFrameTime);
@@ -13,17 +16,17 @@ public:
 	virtual bool IsFinished() const;
 
 private:
-	float mSwipeTimeElapsed;
+	float mTimeSinceMovement;
 };
 
-class Sword : public ItemBase
+class Pig : public ItemBase
 {
 public:
-	Sword();
+	Pig();
 	
 	virtual PlayerBehaviourBase*	GetPlayerBehaviour() { return &mBehaviour; }
 
 private:
-	SwordPlayerBehaviour			mBehaviour;
+	PigRiderPlayerBehaviour			mBehaviour;
 
 };

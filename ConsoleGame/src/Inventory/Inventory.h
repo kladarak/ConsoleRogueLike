@@ -16,6 +16,7 @@ public:
 	void							AddItem(ItemBase* inItem);
 	ItemBase*						FindItem(const std::string& inName) const;
 	void							RemoveAndDeleteItem(ItemBase* inItem);
+	void							DeleteAll();
 
 	const std::vector<ItemBase*>&	GetAllItems() const						{ return mItems; }
 
