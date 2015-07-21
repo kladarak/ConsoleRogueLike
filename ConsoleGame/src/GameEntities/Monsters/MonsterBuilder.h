@@ -18,6 +18,8 @@ public:
 	MonsterBuilder&		SetPosition(const IVec2& inPosition);
 	MonsterBuilder&		SetRenderable(const AsciiMesh& inAsciiMesh);
 
+	MonsterBuilder&		SetInvulnerable();
+
 	Entity				Create();
 
 private:
@@ -34,4 +36,5 @@ private:
 	IVec2				mPosition;
 
 	uint32_t			mOptionalComponents;
+	bool				mCanBeKilled;
 };

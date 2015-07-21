@@ -1,11 +1,6 @@
 #include "SpinnerEntity.h"
 
-#include <EntityComponentSystem/World/World.h>
-
-#include <EntityComponent/Components/AnimationComponent.h>
-#include <EntityComponent/Components/CollisionComponent.h>
-#include <EntityComponent/Components/PositionComponent.h>
-#include <EntityComponent/Components/RenderableComponent.h>
+#include "MonsterBuilder.h"
 
 namespace SpinnerEntity
 {
@@ -22,16 +17,14 @@ static const AsciiMesh kSpinnerFrames[] =
 
 static const Animation kSpinnerAnimation(kSpinnerFrames, sizeof(kSpinnerFrames)/sizeof(AsciiMesh), kStateChangeRate, Animation::EPlaybackStyle_Loop);
 
-Entity Create(World& inWorld, MessageBroadcaster&, const IVec2& inPos)
+Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& inPos)
 {
-	Entity entity = inWorld.CreateEntity();
-
-	entity.AddComponent<PositionComponent>(inPos);
-	entity.AddComponent<RenderableComponent>( kSpinnerFrames[0] );
-	entity.AddComponent<CollisionComponent>( CollisionMesh(0, 0) );
-	entity.AddComponent<AnimationComponent>(kSpinnerAnimation);
-
-	return entity;
+	return MonsterBuilder(inWorld, &inMsgBroadcaster)
+			.SetPosition(inPos)
+			.SetRenderable( kSpinnerFrames[0] )
+			.SetAnimation(kSpinnerAnimation)
+			.SetInvulnerable()
+			.Create();
 }
 
 }

@@ -21,6 +21,7 @@ MonsterBuilder::MonsterBuilder(World& inWorld, MessageBroadcaster* inMsgBroadcas
 	, mMsgBroadcaster	(inMsgBroadcaster)
 	, mRenderMesh		(Fragment('!', EColour_Background_Red))
 	, mPosition			(0, 0)
+	, mCanBeKilled		(true)
 {
 }
 
@@ -49,6 +50,12 @@ MonsterBuilder&	MonsterBuilder::SetRenderable(const AsciiMesh& inAsciiMesh)
 	return *this;
 }
 
+MonsterBuilder& MonsterBuilder::SetInvulnerable()
+{
+	mCanBeKilled = false;
+	return *this;
+}
+
 Entity MonsterBuilder::Create()
 {
 	EntityBuilder builder(mWorld);
@@ -62,13 +69,26 @@ Entity MonsterBuilder::Create()
 
 	auto entity = builder.Create();
 
-	entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>
-	(
-		[=] (const AttackMsg&)
-		{
-			entity.GetComponent<MonsterComponent>()->StartDeath(entity); 
-		}
-	);
+	if (mCanBeKilled)
+	{
+		entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>
+		(
+			[=] (const AttackMsg&)
+			{
+				entity.GetComponent<MonsterComponent>()->StartDeath(entity); 
+			}
+		);
+		
+		MessageBroadcaster* broadcaster = mMsgBroadcaster;
+
+		entity.AddComponent<ProgramComponent>()->RegisterProgram
+		(
+			[=] (const Entity& inThis, float inFrameTime)
+			{
+				inThis.GetComponent<MonsterComponent>()->Update(inThis, inFrameTime, *broadcaster); 
+			} 
+		);
+	}
 	
 	entity.AddComponent<TriggerBoxComponent>()->RegisterOnEnterCallback
 	(
@@ -78,15 +98,6 @@ Entity MonsterBuilder::Create()
 		}
 	);
 
-	MessageBroadcaster* broadcaster = mMsgBroadcaster;
-
-	entity.AddComponent<ProgramComponent>()->RegisterProgram
-	(
-		[=] (const Entity& inThis, float inFrameTime)
-		{
-			inThis.GetComponent<MonsterComponent>()->Update(inThis, inFrameTime, *broadcaster); 
-		} 
-	);
 	
 	return entity;
 }
