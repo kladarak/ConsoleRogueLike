@@ -65,19 +65,25 @@ Pig::Pig()
 
 void PigRiderPlayerBehaviour::OnStart(Entity inPlayer)
 {
-	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( kAnimations, 4 );
-	inPlayer.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh( kPigCollisionMesh );
+	mIsOnPig = !mIsOnPig;
+
+	if (mIsOnPig)
+	{
+		inPlayer.GetComponent<AnimationComponent>()->SetAnimations( kAnimations, 4 );
+		inPlayer.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh( kPigCollisionMesh );
+	}
 }
 
-void PigRiderPlayerBehaviour::OnRestart(Entity /*inPlayer*/)
+void PigRiderPlayerBehaviour::OnRestart(Entity inPlayer)
 {
+	OnStart(inPlayer);
 }
 
 void PigRiderPlayerBehaviour::Update(Entity inPlayer, float inFrameTime)
 {
 	mTimeSinceMovement += inFrameTime;
 
-	if (mTimeSinceMovement < kTimeBetweenMovement)
+	if (mTimeSinceMovement < kTimeBetweenMovement || !mIsOnPig)
 	{
 		return;
 	}
@@ -107,9 +113,10 @@ void PigRiderPlayerBehaviour::Update(Entity inPlayer, float inFrameTime)
 
 void PigRiderPlayerBehaviour::OnFinish(Entity /*inPlayer*/)
 {
+	mIsOnPig = false;
 }
 
 bool PigRiderPlayerBehaviour::IsFinished() const
 { 
-	return false;
+	return !mIsOnPig;
 }

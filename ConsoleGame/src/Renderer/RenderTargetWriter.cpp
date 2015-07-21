@@ -14,7 +14,7 @@ void RenderTargetWriter::Write(char inChar, int inX, int inY)
 
 void RenderTargetWriter::Write(const Fragment& inFragment, int inX, int inY)
 {
-	if ((inFragment.mColour & EInvisible) == 0)
+	if ((inFragment.mColour & EColour_Alpha0) == 0)
 	{
 		mRenderTarget.Set(inX, inY, inFragment);
 	}

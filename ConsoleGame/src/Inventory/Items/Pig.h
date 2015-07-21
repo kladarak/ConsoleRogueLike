@@ -8,7 +8,7 @@ struct IVec2;
 class PigRiderPlayerBehaviour : public PlayerBehaviourBase
 {
 public:
-	PigRiderPlayerBehaviour() : mTimeSinceMovement(0.0f) { }
+	PigRiderPlayerBehaviour() : mTimeSinceMovement(0.0f), mIsOnPig(false) { }
 	virtual void OnStart(Entity inPlayer);
 	virtual void OnRestart(Entity inPlayer);
 	virtual void Update(Entity inPlayer, float inFrameTime);
@@ -16,7 +16,8 @@ public:
 	virtual bool IsFinished() const;
 
 private:
-	float mTimeSinceMovement;
+	float	mTimeSinceMovement;
+	bool	mIsOnPig;
 };
 
 class Pig : public ItemBase
