@@ -25,7 +25,7 @@ namespace
 		Fragment(' ', EInvisible),		Fragment(' ', EInvisible),		Fragment('\"', ETextMagenta), Fragment(' ', EInvisible),	Fragment('\"', ETextMagenta), Fragment(' ', EInvisible),
 	};
 
-	const AsciiMesh kPigMesh(kPigFrags, 6, 3);
+	const AsciiMesh kPigMesh(kPigFrags, 6, 3, IVec2(-3, 0));
 
 	const Animation kAnimations[] =
 	{
