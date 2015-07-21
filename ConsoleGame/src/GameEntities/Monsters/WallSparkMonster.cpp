@@ -4,21 +4,18 @@
 
 #include <EntityComponentSystem/World/EntityBuilder.h>
 
-#include <EntityComponent/Components/AnimationComponent.h>
-#include <EntityComponent/Components/CollisionComponent.h>
-#include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Components/MonsterComponent.h>
 #include <EntityComponent/Components/PlayerComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
-#include <EntityComponent/Components/RenderableComponent.h>
-#include <EntityComponent/Components/TriggerBoxComponent.h>
 
 #include <EntityComponent/Systems/CollisionSystem.h>
 
 #include <Containers/ContainerMacros.h>
 
 #include <Messages/Messages.h>
+
+#include "MonsterBuilder.h"
 
 namespace WallSparkMonster
 {
@@ -79,7 +76,6 @@ public:
 	WallSparkMonsterComponent();
 	~WallSparkMonsterComponent() { }
 
-	void			OnEntityCollidedWith(Entity inThis, Entity inCollidingEntity);
 	void			Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster);
 
 private:
@@ -95,17 +91,6 @@ WallSparkMonsterComponent::WallSparkMonsterComponent()
 	, mTimeUntilNextMove(0.0f)
 	, mFoundWall(false)
 {
-}
-
-void WallSparkMonsterComponent::OnEntityCollidedWith(Entity inThis, Entity inCollidingEntity)
-{
-	auto msgRecComp = inCollidingEntity.GetComponent<MessageReceiverComponent>();
-	if (nullptr != msgRecComp)
-	{
-		auto position = inThis.GetComponent<PositionComponent>()->GetPosition();
-		AttackMsg attackMsg(inThis, position, IVec2(0, 0), AttackMsg::EEffect_PushBack);
-		msgRecComp->Broadcast( attackMsg );
-	}
 }
 
 void WallSparkMonsterComponent::Update(Entity inThis, float inFrameTime, MessageBroadcaster&)
@@ -180,22 +165,14 @@ void WallSparkMonsterComponent::sSnapToWallInDirection(Entity inThis, const IVec
 
 Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& inPosition)
 {
-	auto entity = EntityBuilder(inWorld)
-					.AddComponent<AnimationComponent>( kAnimation )
-					.AddComponent<CollisionComponent>( CollisionMesh(0, 0) )
-					.AddComponent<MonsterComponent>()
-					.AddComponent<WallSparkMonsterComponent>()
-					.AddComponent<PositionComponent>(inPosition)
-					.AddComponent<RenderableComponent>( kKeyFrames[0] )
+	auto entity = MonsterBuilder(inWorld, &inMsgBroadcaster)
+					.SetAnimation( kAnimation )
+					.SetPosition( inPosition )
+					.SetRenderable( kKeyFrames[0] )
+					.SetInvulnerable()
 					.Create();
 	
-	entity.AddComponent<TriggerBoxComponent>()->RegisterOnEnterCallback
-	(
-		[] (const Entity& inThis, const Entity& inEntity)
-		{
-			inThis.GetComponent<WallSparkMonsterComponent>()->OnEntityCollidedWith(inThis, inEntity);
-		}
-	);
+	entity.AddComponent<WallSparkMonsterComponent>();
 
 	entity.AddComponent<ProgramComponent>()->RegisterProgram
 	(
