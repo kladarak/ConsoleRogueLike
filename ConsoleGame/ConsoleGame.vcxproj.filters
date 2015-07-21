@@ -68,6 +68,9 @@
     <Filter Include="Source Files\Inventory\Items">
       <UniqueIdentifier>{738840c9-0861-47dd-9475-cc8a58f7b360}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameEntities\Other">
+      <UniqueIdentifier>{4792975e-7fe6-4ca3-a214-652229c587cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -264,6 +267,9 @@
     </ClCompile>
     <ClCompile Include="src\GameEntities\Monsters\CaterpillarMonster.cpp">
       <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEntities\Other\ProjectileEntity.cpp">
+      <Filter>Source Files\GameEntities\Other</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -548,6 +554,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Monsters\CaterpillarMonster.h">
       <Filter>Source Files\GameEntities\Monsters</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Other\ProjectileEntity.h">
+      <Filter>Source Files\GameEntities\Other</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

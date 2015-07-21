@@ -1,20 +1,12 @@
 #include "Arrow.h"
 
-#include <EntityComponentSystem/World/World.h>
+#include <Renderer/AsciiMesh.h>
 
-#include <EntityComponent/Components/PositionComponent.h>
-#include <EntityComponent/Components/ProgramComponent.h>
-#include <EntityComponent/Components/RenderableComponent.h>
-#include <EntityComponent/Components/TriggerBoxComponent.h>
-
-#include <EntityComponent/Systems/CollisionSystem.h>
-
-#include <Messages/Messages.h>
+#include <GameEntities/Other/ProjectileEntity.h>
 
 namespace Arrow
 {
 
-static const float kMovementTime = 0.05f;
 static const AsciiMesh kMeshes[] = 
 {
 	Fragment(24, ETextYellow),
@@ -22,47 +14,6 @@ static const AsciiMesh kMeshes[] =
 	Fragment(26, ETextYellow),
 	Fragment(27, ETextYellow),
 };
-
-class ArrowUpdateState
-{
-public:
-	ArrowUpdateState(const IVec2& inDirection) 
-		: mTimeUntilMovementStep(kMovementTime)
-		, mDirection(inDirection)
-	{ 
-	}
-
-	~ArrowUpdateState() { }
-
-	IVec2 mDirection;
-	float mTimeUntilMovementStep;
-};
-
-static void Update(Entity inThis, float inFrameTime)
-{
-	auto state		= inThis.GetComponent<ArrowUpdateState>();
-	auto posComp	= inThis.GetComponent<PositionComponent>();
-
-	state->mTimeUntilMovementStep -= inFrameTime;
-			
-	if (state->mTimeUntilMovementStep <= 0.0f)
-	{
-		state->mTimeUntilMovementStep += kMovementTime;
-
-		auto position = posComp->GetPosition();
-		position += state->mDirection;
-		posComp->SetPosition(position);
-		
-		AttackMsg attackMsg(inThis, position, state->mDirection, AttackMsg::EEffect_None);
-		MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, position, attackMsg);
-
-		bool collides = CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, position);
-		if (collides)
-		{
-			inThis.Kill();
-		}
-	}
-}
 
 void Create(World& inWorld, const IVec2& inPosition, const IVec2& inDirection)
 {
@@ -73,26 +24,7 @@ void Create(World& inWorld, const IVec2& inPosition, const IVec2& inDirection)
 	else if	(inDirection.mX > 0) { meshIndex = 2; }
 	else if (inDirection.mX < 0) { meshIndex = 3; }
 
-	auto entity = inWorld.CreateEntity();
-
-	entity.AddComponent<ArrowUpdateState>(inDirection);
-	entity.AddComponent<PositionComponent>(inPosition);
-	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Update );
-	entity.AddComponent<RenderableComponent>( kMeshes[meshIndex] );
-
-	entity.AddComponent<TriggerBoxComponent>( IRect(0, 0, 1, 1) )->RegisterOnEnterCallback( 
-		[] (Entity inArrow, const Entity& inTriggerer)
-		{
-			auto msgRecComp = inTriggerer.GetComponent<MessageReceiverComponent>();
-			if (nullptr != msgRecComp)
-			{
-				auto position = inArrow.GetComponent<PositionComponent>()->GetPosition();
-				auto direction = inArrow.GetComponent<ArrowUpdateState>()->mDirection;
-				msgRecComp->Broadcast( AttackMsg(inArrow, position, direction, AttackMsg::EEffect_None) );
-			}
-
-			inArrow.Kill();
-		} );
+	ProjectileEntity::Create(inWorld, kMeshes[meshIndex], inPosition, inDirection);
 }
 
 }
