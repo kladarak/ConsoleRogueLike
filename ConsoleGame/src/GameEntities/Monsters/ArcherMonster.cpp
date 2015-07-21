@@ -133,8 +133,12 @@ void ArcherMonsterComponent::Update(Entity inThis, float inFrameTime)
 			{
 				thisPosition.mY += GetSign(diffPos.mY);
 			}
-
-			inThis.GetComponent<PositionComponent>()->SetPosition(thisPosition);
+			
+			bool isValidPos = !CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, thisPosition);
+			if (isValidPos)
+			{
+				inThis.GetComponent<PositionComponent>()->SetPosition(thisPosition);
+			}
 		}
 	}
 }
