@@ -18,15 +18,7 @@ bool PlayerBehaviourBase::CanMoveToPosition(Entity inPlayer, const IVec2& inPosi
 
 	for (auto& collidable : entitiesCollidedWith)
 	{
-		if (collidable == inPlayer)
-		{
-			// Ignore player
-			continue;
-		}
-		
-		// If it's not a monster, or the monster is passive when touched, then prevent movement into this space.
-		auto monsterComponent = collidable.GetComponent<MonsterComponent>();
-		if (nullptr == monsterComponent || monsterComponent->IsPassiveWhenTouched())
+		if (collidable != inPlayer && !collidable.HasComponent<MonsterComponent>())
 		{
 			return false;
 		}

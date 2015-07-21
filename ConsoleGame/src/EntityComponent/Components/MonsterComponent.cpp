@@ -15,7 +15,6 @@
 MonsterComponent::MonsterComponent()
 	: mTimeUntilDeath		(FLT_MAX)
 	, mIsDying				(false)
-	, mPassiveWhenTouched	(false)
 {
 }
 

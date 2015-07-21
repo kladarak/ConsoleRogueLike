@@ -2,14 +2,15 @@
 
 #include <Containers/ContainerMacros.h>
 
+#include <EntityComponentSystem/World/EntityBuilder.h>
+
+#include <EntityComponent/Components/AnimationComponent.h>
+#include <EntityComponent/Components/CollisionComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
 #include <EntityComponent/Components/RenderableComponent.h>
 
 #include <GameEntities/Other/ProjectileEntity.h>
-
-#include "MonsterBuilder.h"
-
 
 namespace GunTurretEntity
 {
@@ -82,17 +83,15 @@ void GunTurretComponent::Update(Entity inThis, float inFrameTime)
 	}
 }
 
-Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, const IVec2& inPos)
+Entity Create(World& inWorld, MessageBroadcaster&, const IVec2& inPos)
 {
-	auto entity =  MonsterBuilder(inWorld, &inMsgBroadcaster)
-					.SetPosition(inPos)
-					.SetRenderable( kKeyFrames[0] )
-					.SetAnimation(kAnimation)
-					.SetInvulnerable()
-					.SetPassiveWhenTouched()
+	auto entity =  EntityBuilder(inWorld)
+					.AddComponent<CollisionComponent>( CollisionMesh(0, 0) )
+					.AddComponent<PositionComponent>( inPos )
+					.AddComponent<RenderableComponent>( kKeyFrames[0] )
+					.AddComponent<AnimationComponent>( kAnimation )
+					.AddComponent<GunTurretComponent>()
 					.Create();
-	
-	entity.AddComponent<GunTurretComponent>();
 
 	entity.AddComponent<ProgramComponent>()->RegisterProgram
 	(
