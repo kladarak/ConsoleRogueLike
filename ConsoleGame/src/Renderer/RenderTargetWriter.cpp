@@ -14,7 +14,10 @@ void RenderTargetWriter::Write(char inChar, int inX, int inY)
 
 void RenderTargetWriter::Write(const Fragment& inFragment, int inX, int inY)
 {
-	mRenderTarget.Set(inX, inY, inFragment);
+	if ((inFragment.mColour & EInvisible) == 0)
+	{
+		mRenderTarget.Set(inX, inY, inFragment);
+	}
 }
 
 void RenderTargetWriter::Write(const std::string& inString, int inX, int inY)
@@ -36,7 +39,7 @@ void RenderTargetWriter::Write(const std::string& inString, EColour inColour, in
 		}
 		else
 		{
-			mRenderTarget.Set(x, y, Fragment(inString[i], inColour));
+			Write(Fragment(inString[i], inColour), x, y);
 			x++;
 		}
 	}
