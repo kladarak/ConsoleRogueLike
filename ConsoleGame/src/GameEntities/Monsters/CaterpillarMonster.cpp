@@ -3,20 +3,25 @@
 #include <EntityComponentSystem/World/EntityBuilder.h>
 
 #include <EntityComponent/Components/AnimationComponent.h>
+#include <EntityComponent/Components/MonsterComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/ProgramComponent.h>
 
+#include <EntityComponent/Systems/CollisionSystem.h>
+
 #include <Containers/ContainerMacros.h>
+
+#include <Messages/Messages.h>
 
 #include "MonsterBuilder.h"
 
 namespace CaterpillarMonster
 {
 
-static const float kKFDuration = 0.1f;
-
 namespace Animations
 {
+	static const float kKFDuration = 0.1f;
+
 	namespace MovementLeft
 	{
 		static const Fragment kKF1Fragments[] = 
@@ -153,27 +158,26 @@ namespace Animations
 	{
 		static const Fragment kKF1Fragments[] = 
 		{
-			Fragment('o', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('/', ETextGreen),
+			Fragment('o', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen),
 		};
 		static const AsciiMesh kKF1(kKF1Fragments, 4, 1, IVec2(0, 0));
 
 		static const Fragment kKF2Fragments[] = 
 		{
-			Fragment('o', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen),
+			Fragment('O', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen),
 		};
 		static const AsciiMesh kKF2(kKF2Fragments, 4, 1, IVec2(0, 0));
-
-		static const Fragment kKF3Fragments[] = 
-		{
-			Fragment('o', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('\\', ETextGreen),
-		};
-		static const AsciiMesh kKF3(kKF3Fragments, 4, 1, IVec2(0, 0));
 		
 		static const AsciiMesh kKeyFrames[] =
 		{
 			kKF1,
+			kKF1,
+			kKF1,
+			kKF1,
+			kKF1,
 			kKF2,
-			kKF3,
+			kKF1,
+			kKF2,
 		};
 
 		static const Animation kAnimation(kKeyFrames, gElemCount(kKeyFrames), kKFDuration, Animation::EPlaybackStyle_Loop);
@@ -183,96 +187,220 @@ namespace Animations
 	{
 		static const Fragment kKF1Fragments[] = 
 		{
-			Fragment('\\', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('o', ETextGreen),
+			Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('o', ETextGreen),
 		};
 		static const AsciiMesh kKF1(kKF1Fragments, 4, 1, IVec2(-3, 0));
 
 		static const Fragment kKF2Fragments[] = 
 		{
-			Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('o', ETextGreen),
+			Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('O', ETextGreen),
 		};
 		static const AsciiMesh kKF2(kKF2Fragments, 4, 1, IVec2(-3, 0));
-
-		static const Fragment kKF3Fragments[] = 
-		{
-			Fragment('/', ETextGreen), Fragment('-', ETextGreen), Fragment('-', ETextGreen), Fragment('o', ETextGreen),
-		};
-		static const AsciiMesh kKF3(kKF3Fragments, 4, 1, IVec2(-3, 0));
 		
 		static const AsciiMesh kKeyFrames[] =
 		{
 			kKF1,
+			kKF1,
+			kKF1,
+			kKF1,
+			kKF1,
 			kKF2,
-			kKF3,
+			kKF1,
+			kKF2,
 		};
 
 		static const Animation kAnimation(kKeyFrames, gElemCount(kKeyFrames), kKFDuration, Animation::EPlaybackStyle_Loop);
 	}
 }
 
+static const float kIdleTime = Animations::kKFDuration * gElemCount(Animations::IdleFaceRight::kKeyFrames);
+
 class CaterpillarMonsterComponent
 {
 public:
-	CaterpillarMonsterComponent() : mDirection(ELeft), mMovemntCycleCount(0) { }
+	CaterpillarMonsterComponent() : mState(EIdle), mDirection(ELeft), mTimeUntilNextDecision(0.0f) { }
 	~CaterpillarMonsterComponent() { }
 
 	void Update(Entity inThis, float inFrameTime); 
 
 private:
-
 	enum EMovementDirection
 	{
 		ELeft,
 		ERight,
 	};
 
+	enum EState
+	{
+		EIdle,
+		EMoving,
+	};
+
+	EState				mState;
 	EMovementDirection	mDirection;
-	int					mMovemntCycleCount;
+	float				mTimeUntilNextDecision;
 
 };
 
-void CaterpillarMonsterComponent::Update(Entity inThis, float /*inFrameTime*/)
+void CaterpillarMonsterComponent::Update(Entity inThis, float inFrameTime)
 {
-	auto animComp = inThis.GetComponent<AnimationComponent>();
-
-	if (animComp->IsSelectedAnimationFinished())
+	if (inThis.GetComponent<MonsterComponent>()->IsDying())
 	{
-		auto posComp = inThis.GetComponent<PositionComponent>();
-		auto position = posComp->GetPosition();
-		position.mX += (mDirection == ELeft) ? -2 : 2;
-		posComp->SetPosition(position);
+		return;
+	}
 
-		++mMovemntCycleCount;
-
-		const Animation& nextAnimation = [&]
+	switch (mState)
+	{
+		case EIdle:
 		{
-			if (mMovemntCycleCount > 3)
-			{
-				mMovemntCycleCount = 0;
-				switch (mDirection)
-				{
-					case ELeft:
-						mDirection = ERight;
-						return Animations::MovementTurnRight::kAnimation;
+			mTimeUntilNextDecision -= inFrameTime;
 
-					case ERight:
-						mDirection = ELeft;
-						return Animations::MovementTurnLeft::kAnimation;
-				}
+			if (mTimeUntilNextDecision > 0.0f)
+			{
+				// Early out.
+				return;
 			}
 			else
 			{
-				switch (mDirection)
-				{
-					case ELeft:		return Animations::MovementLeft::kAnimation;
-					case ERight:	return Animations::MovementRight::kAnimation;
-				}
+				// Reset timer, and continue to select new action.
+				mTimeUntilNextDecision = kIdleTime;
 			}
+			break;
+		}
 
-			return Animations::IdleFaceLeft::kAnimation;
-		} ();
+		case EMoving:
+		{
+			if (!inThis.GetComponent<AnimationComponent>()->IsSelectedAnimationFinished())
+			{
+				// Early out.
+				return;
+			}
+			else
+			{
+				// Update position, and attack all positions in between previous and last.
+				auto posComp		= inThis.GetComponent<PositionComponent>();
+				IVec2 position		= posComp->GetPosition();
+				IVec2 stepDirection = (mDirection == ELeft) ? IVec2(-1, 0) : IVec2(1, 0);
 
-		animComp->SetAnimation( nextAnimation );
+				IVec2 positionStep1 = position + stepDirection;
+				IVec2 newPosition	= positionStep1 + stepDirection;
+
+				AttackMsg attackMsg1(inThis, positionStep1, stepDirection, AttackMsg::EEffect_PushBack);
+				MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, positionStep1, attackMsg1);
+
+				AttackMsg attackMsg2(inThis, newPosition, stepDirection, AttackMsg::EEffect_PushBack);
+				MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, positionStep1, attackMsg2);
+
+				posComp->SetPosition( newPosition );
+			}
+		}
+	}
+	
+	// Select a new action
+	enum EAction
+	{
+		EAction_Idle,
+		EAction_TurnAround,
+		EAction_Move,
+	};
+
+	EAction action		= EAction_Idle;
+	EState	nextState	= (EState) (rand() % 2);
+
+	switch (nextState)
+	{
+		case EIdle:
+		{
+			action = EAction_Idle;
+			break;
+		}
+
+		case EMoving:
+		{
+			EMovementDirection newDirection	= (EMovementDirection) (rand() % 2);
+
+			if (newDirection != mDirection)
+			{
+				action = EAction_TurnAround;
+			}
+			else
+			{
+				action = EAction_Move;
+			}
+			
+			break;
+		}
+	}
+
+	if (action != EAction_Idle)
+	{
+		// Validate whether or not we can move to new position.
+		IVec2				position		= inThis.GetComponent<PositionComponent>()->GetPosition();
+
+		EMovementDirection	newDirection	= (action == EAction_Move) ? mDirection : (EMovementDirection) (mDirection ^ 1);
+		IVec2				step			= (newDirection == ELeft) ? IVec2(-1, 0) : IVec2(1, 0);
+
+		
+		bool isValidPos =	!CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, position + step)
+						&&	!CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, position + step + step);
+
+		if (!isValidPos)
+		{
+			action = EAction_Idle;
+		}
+	}
+	
+	// Update state and direction
+	mState		= (action == EAction_Idle) ? EIdle : EMoving;
+	mDirection	= (action != EAction_TurnAround) ? mDirection : (EMovementDirection) (mDirection ^ 1);
+
+	// Select appropriate animation
+	const Animation* nextAnimation = nullptr;
+
+	switch (action)
+	{
+		case EAction_Idle:
+		{
+			switch (mDirection) // Use current direction
+			{
+				case ELeft:		nextAnimation = &Animations::IdleFaceLeft::kAnimation; break;
+				case ERight:	nextAnimation = &Animations::IdleFaceRight::kAnimation; break;
+			}
+			break;
+		}
+		
+		case EAction_TurnAround:
+		{
+			switch (mDirection)
+			{
+				case ELeft: nextAnimation = &Animations::MovementTurnLeft::kAnimation; break; 
+				case ERight: nextAnimation = &Animations::MovementTurnRight::kAnimation; break;
+			}
+			break;
+		}
+		
+		case EAction_Move:
+		{
+			switch (mDirection)
+			{
+				case ELeft: nextAnimation = &Animations::MovementLeft::kAnimation; break; 
+				case ERight: nextAnimation = &Animations::MovementRight::kAnimation; break;
+			}
+			break;
+		}
+	}
+
+	inThis.GetComponent<AnimationComponent>()->SetAnimation( *nextAnimation );
+
+	// Attack in direction ahead of caterpillar.
+	if (action != EAction_Idle)
+	{
+		IVec2 position		= inThis.GetComponent<PositionComponent>()->GetPosition();
+		IVec2 stepDirection	= (mDirection == ELeft) ? IVec2(-1, 0) : IVec2(1, 0);
+		IVec2 attackPos		= position + stepDirection;
+
+		AttackMsg attackMsg(inThis, attackPos, stepDirection, AttackMsg::EEffect_PushBack);
+		MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, attackPos, attackMsg);
 	}
 }
 
