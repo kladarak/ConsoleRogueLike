@@ -58,7 +58,7 @@ namespace
 		const Fragment kPigFrags[] =
 		{
 			Fragment('&', ETextMagenta),	Fragment('_', ETextMagenta),	PlayerConstants::kSprite,		Fragment('_', ETextMagenta),	Fragment(' ', EInvisible),		Fragment(' ', EInvisible),
-			Fragment('(', ETextMagenta),	Fragment(' ', EInvisible),		Fragment('_', ETextMagenta),	Fragment('^', ETextMagenta),	Fragment('\'', ETextMagenta),	Fragment('g', ETextMagenta),
+			Fragment('(', ETextMagenta),	Fragment(' ', ETextMagenta),	Fragment('_', ETextMagenta),	Fragment('^', ETextMagenta),	Fragment('\'', ETextMagenta),	Fragment('g', ETextMagenta),
 			Fragment(' ', EInvisible),		Fragment('"', ETextMagenta),	Fragment(' ', EInvisible),		Fragment('"', ETextMagenta),	Fragment(' ', EInvisible),		Fragment(' ', EInvisible),
 		};
 
