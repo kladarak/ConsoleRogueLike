@@ -12,7 +12,6 @@ typedef Entity (*ItemFactoryFunc)(World&, GameData*);
 
 struct MonsterSpawnInfo
 {
-
 	int					mMonsterCount;
 	MonsterFactoryFunc	mFactoryFunc;
 };
@@ -25,5 +24,5 @@ struct LevelData
 	std::vector<MonsterSpawnInfo>	mMonsterSpawnInfo;
 };
 
-extern const LevelData	kLevelData[];
-extern const uint32_t	kLevelDataCount;
+LevelData gGenerateLevelData(uint32_t inLevelIndex);
+

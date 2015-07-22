@@ -1,5 +1,7 @@
 #include "LevelData.h"
 
+#include <algorithm>
+
 #include <Containers/ContainerMacros.h>
 
 #include <GameEntities/Monsters/WormMonster.h>
@@ -17,80 +19,67 @@
 #include <Inventory/Items/Bomb.h>
 #include <Inventory/Items/Pig.h>
 
-// Macros defined to make level data easier to read.
-// JSON might be more of an approriate format for this.
 
-#define START_LEVEL_DATA				{
-#define ROOM_COUNT(n)						n,
-#define MONEY_COUNT(n)						n,
-#define	ITEM_FACTORY(item)					&ItemEntity::Create< item >,
-#define	NO_ITEM_FACTORY						nullptr,
-#define START_MONSTER_FACTORIES				{
-#define ADD_MONSTER_FACTORY(n, funcPtr)			{ n, funcPtr },
-#define END_MONSTER_FACTORIES				},
-#define END_LEVEL_DATA					},
-
-#define WORM_MONSTER		&WormMonster::Create
-#define SPARK_MONSTER		&WallSparkMonster::Create
-#define ARCHER_MONSTER		&ArcherMonster::Create
-#define SPINNER_OBJECT		&SpinnerEntity::Create
-#define CATERPILLAR_MONSTER	&CaterpillarMonster::Create
-#define GUN_TURRET_OBJECT	&GunTurretEntity::Create
-
-const LevelData kLevelData[]
+static const ItemFactoryFunc kItemFactoryFunctions[] =
 {
-	START_LEVEL_DATA
-		ROOM_COUNT(1)
-		MONEY_COUNT(1)
-		ITEM_FACTORY( Pig )
-		START_MONSTER_FACTORIES
-			ADD_MONSTER_FACTORY(1, CATERPILLAR_MONSTER)
-			ADD_MONSTER_FACTORY(1, GUN_TURRET_OBJECT)
-		END_MONSTER_FACTORIES
-	END_LEVEL_DATA
-
-	START_LEVEL_DATA
-		ROOM_COUNT(3)
-		MONEY_COUNT(3)
-		ITEM_FACTORY( Shield )
-		START_MONSTER_FACTORIES
-			ADD_MONSTER_FACTORY(3, WORM_MONSTER)
-			ADD_MONSTER_FACTORY(3, SPINNER_OBJECT)
-		END_MONSTER_FACTORIES
-	END_LEVEL_DATA
-
-	START_LEVEL_DATA
-		ROOM_COUNT(5)
-		MONEY_COUNT(5)
-		ITEM_FACTORY( Bow )
-		START_MONSTER_FACTORIES
-			ADD_MONSTER_FACTORY(4, WORM_MONSTER)
-			ADD_MONSTER_FACTORY(4, SPARK_MONSTER)
-			ADD_MONSTER_FACTORY(4, ARCHER_MONSTER)
-		END_MONSTER_FACTORIES
-	END_LEVEL_DATA
-
-	START_LEVEL_DATA
-		ROOM_COUNT(5)
-		MONEY_COUNT(5)
-		ITEM_FACTORY( Bomb )
-		START_MONSTER_FACTORIES
-			ADD_MONSTER_FACTORY(4, WORM_MONSTER)
-			ADD_MONSTER_FACTORY(4, SPARK_MONSTER)
-			ADD_MONSTER_FACTORY(4, ARCHER_MONSTER)
-		END_MONSTER_FACTORIES
-	END_LEVEL_DATA
-
-	START_LEVEL_DATA
-		ROOM_COUNT(5)
-		MONEY_COUNT(5)
-		NO_ITEM_FACTORY
-		START_MONSTER_FACTORIES
-			ADD_MONSTER_FACTORY(4, WORM_MONSTER)
-			ADD_MONSTER_FACTORY(4, SPARK_MONSTER)
-			ADD_MONSTER_FACTORY(4, ARCHER_MONSTER)
-		END_MONSTER_FACTORIES
-	END_LEVEL_DATA
+	&ItemEntity::Create< Sword >,
+	&ItemEntity::Create< Shield >,
+	&ItemEntity::Create< Bow >,
+	&ItemEntity::Create< Bomb >,
+	&ItemEntity::Create< Pig >,
 };
 
-const uint32_t kLevelDataCount = gElemCount(kLevelData);
+static const MonsterFactoryFunc kMonsterFactoryFunctions[] =
+{
+	&WormMonster::Create,
+	&SpinnerEntity::Create,
+	&CaterpillarMonster::Create,
+	&WallSparkMonster::Create,
+	&ArcherMonster::Create,
+	&GunTurretEntity::Create,
+};
+
+LevelData gGenerateLevelData(uint32_t inLevelIndex)
+{
+	LevelData data;
+
+	// Room count will equal the level index.
+	data.mRoomCount		= inLevelIndex;
+
+	// Money count will be double the room count.
+	data.mMoneyCount	= data.mRoomCount * 2;
+
+	// Every other level, place a new item into the dungeon.
+	if ((inLevelIndex % 2) == 1 && ((inLevelIndex / 2) < gElemCount(kItemFactoryFunctions)))
+	{
+		data.mItemFactoryFunc = kItemFactoryFunctions[ inLevelIndex / 2 ];
+	}
+	else
+	{
+		data.mItemFactoryFunc = nullptr;
+	}
+	
+	{
+		// Create random monster list, whose count and types are based on level index.
+
+		int maxMonsterTypeIndex = std::min((inLevelIndex / 2) + 1, gElemCount(kMonsterFactoryFunctions));
+		int avgMonstersPerRoom	= (inLevelIndex / 4) + 1;
+		int totalMonstersCount	= avgMonstersPerRoom * data.mRoomCount;
+
+		for (int i = 0; i < maxMonsterTypeIndex; ++i)
+		{
+			MonsterSpawnInfo spawnInfo;
+			spawnInfo.mMonsterCount = 0;
+			spawnInfo.mFactoryFunc	= kMonsterFactoryFunctions[i];
+			data.mMonsterSpawnInfo.push_back(spawnInfo);
+		}
+	
+		for (int i = 0; i < totalMonstersCount; ++i)
+		{
+			int monsterIndex = rand() % data.mMonsterSpawnInfo.size();
+			data.mMonsterSpawnInfo[monsterIndex].mMonsterCount++;
+		}
+	}
+
+	return data;
+}

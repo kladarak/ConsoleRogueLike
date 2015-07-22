@@ -30,8 +30,7 @@
 InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameData* inGameData)
 	: StateBase(inStateMachineMsgBroadcaster, inGameData)
 {
-	auto levelDataIndex = inGameData->mCurrentLevel <= (int) kLevelDataCount ? inGameData->mCurrentLevel : kLevelDataCount;
-	mGameData->mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster, inGameData, kLevelData[levelDataIndex - 1]);
+	mGameData->mDungeonMap = DungeonFactory::Generate(mWorld, mMessageBroadcaster, inGameData, gGenerateLevelData(inGameData->mCurrentLevel));
 
 	mCameraSystem.Init(mWorld, mGameData->mDungeonMap);
 
