@@ -21,12 +21,12 @@ RenderTarget HealthBarUI::GetRenderTarget() const
 	int current = health->GetCurrentHealth();
 	int max		= health->GetMaxHealth();
 	
-	RenderTargetWriter writer(max, 1);
+	RenderTargetWriter writer(max, 2);
 
 	for (int i = 0; i < max; ++i)
 	{
 		const Fragment& heart = (i < current) ? kFullHeartIcon : kEmptyHeartIcon;
-		writer.Write(heart, i, 0);
+		writer.Write(heart, i % 10, (i / 10));
 	}
 	
 	return writer.GetRenderTarget();

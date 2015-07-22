@@ -44,7 +44,7 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, GameData* in
 	
 	entity.AddComponent<AnimationComponent>();
 	entity.AddComponent<CollisionComponent>();
-	entity.AddComponent<HealthComponent>(3);
+	entity.AddComponent<HealthComponent>( inGameData->mPlayerData.mMaxHealth );
 	entity.AddComponent<PlayerComponent>( &inGameData->mPlayerData );
 	entity.AddComponent<OrientationComponent>( EOrientation_FaceDown );
 	entity.AddComponent<PositionComponent>( roomPosition + IVec2(10, 10) );

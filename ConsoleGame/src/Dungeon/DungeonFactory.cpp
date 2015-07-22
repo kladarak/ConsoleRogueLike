@@ -13,6 +13,7 @@
 
 #include <GameEntities/CoinEntity.h>
 #include <GameEntities/ItemEntity.h>
+#include <GameEntities/Other/HeartContainer.h>
 
 #include <Inventory/Items/DoorKey.h>
 
@@ -116,6 +117,14 @@ static void sCreateMoneyInDungeon(const DungeonMap& inDungeonMap, World& inWorld
 	}
 }
 
+static void sCreateHeartContainerInDungeon(const DungeonMap& inDungeon, World& inWorld, GameData* inGameData)
+{
+	auto heartContainer = HeartContainer::Create(inWorld, inGameData);
+	auto& mesh = heartContainer.GetComponent<RenderableComponent>()->GetMesh();
+	IVec2 position = sGetRandomValidRoomPosition(inDungeon) + sGetRandomOffsetInRoom( mesh.GetLocalBounds() );
+	heartContainer.GetComponent<PositionComponent>()->SetPosition(position);
+}
+
 static void sCreateMonstersInDungeon(const DungeonMap& inDungeonMap, World& inWorld, MessageBroadcaster& inMessageBroadcaster, const std::vector<MonsterSpawnInfo>& inMonsterInfo )
 {
 	for (auto& monsterInfo : inMonsterInfo)
@@ -126,11 +135,7 @@ static void sCreateMonstersInDungeon(const DungeonMap& inDungeonMap, World& inWo
 
 			do
 			{
-				IVec2 roomPosition = sGetRandomValidRoomPosition(inDungeonMap);
-			
-				int x = rand() % ERoomDimensions_Width;
-				int y = rand() % ERoomDimensions_Height;
-				entityPos = IVec2(x, y) + roomPosition;
+				entityPos = sGetRandomValidRoomPosition(inDungeonMap) + sGetRandomOffsetInRoom();
 			}
 			while ( CollisionSystem::CollidesWithAnyEntity(inWorld, entityPos) );
 
@@ -153,6 +158,11 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, Ga
 	if (inLevelData.mItemFactoryFunc)
 	{
 		sPlaceItemInDungeon(dungeon, inLevelData.mItemFactoryFunc(inWorld, inGameData));
+	}
+	
+	if (inLevelData.mAddHeartContainer)
+	{
+		sCreateHeartContainerInDungeon(dungeon, inWorld, inGameData);
 	}
 
 	sCreateMoneyInDungeon(dungeon, inWorld, inMessageBroadcaster, inLevelData.mMoneyCount);

@@ -43,6 +43,7 @@
     <ClCompile Include="src\GameEntities\Obstacles\LockedDoor.cpp" />
     <ClCompile Include="src\GameEntities\Obstacles\OpenDoor.cpp" />
     <ClCompile Include="src\GameEntities\Obstacles\Stairs.cpp" />
+    <ClCompile Include="src\GameEntities\Other\HeartContainer.cpp" />
     <ClCompile Include="src\GameEntities\Other\ProjectileEntity.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerBehaviours\PlayerBehaviourBase.cpp" />
     <ClCompile Include="src\GameEntities\Player\PlayerBehaviours\PlayerDeadBehaviour.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="src\GameEntities\Obstacles\LockedDoor.h" />
     <ClInclude Include="src\GameEntities\Obstacles\OpenDoor.h" />
     <ClInclude Include="src\GameEntities\Obstacles\Stairs.h" />
+    <ClInclude Include="src\GameEntities\Other\HeartContainer.h" />
     <ClInclude Include="src\GameEntities\Other\ProjectileEntity.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerBehaviourBase.h" />
     <ClInclude Include="src\GameEntities\Player\PlayerBehaviours\PlayerDeadBehaviour.h" />

@@ -20,6 +20,7 @@ struct LevelData
 {
 	int								mRoomCount;
 	int								mMoneyCount;
+	bool							mAddHeartContainer;
 	ItemFactoryFunc					mItemFactoryFunc;
 	std::vector<MonsterSpawnInfo>	mMonsterSpawnInfo;
 };

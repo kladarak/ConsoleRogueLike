@@ -58,6 +58,8 @@ LevelData gGenerateLevelData(uint32_t inLevelIndex)
 	{
 		data.mItemFactoryFunc = nullptr;
 	}
+
+	data.mAddHeartContainer = ((inLevelIndex % 2) == 0) && (inLevelIndex <= (17*2));
 	
 	{
 		// Create random monster list, whose count and types are based on level index.

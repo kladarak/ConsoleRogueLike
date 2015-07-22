@@ -41,6 +41,7 @@ InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameD
 	mMessageBroadcaster.Register<BackToStartMenuMsg>( [&] (const BackToStartMenuMsg&)
 	{
 		mGameData->mCurrentLevel = 1;
+		mGameData->mPlayerData.mMaxHealth = 3;
 		mGameData->mPlayerData.mInventory.DeleteAll();
 		mGameData->mPlayerData.SetItemInSlot(nullptr, Player::EItemSlot_Slot0);
 		mGameData->mPlayerData.SetItemInSlot(nullptr, Player::EItemSlot_Slot1);

@@ -277,6 +277,9 @@
     <ClCompile Include="src\Inventory\Items\Pig.cpp">
       <Filter>Source Files\Inventory\Items</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEntities\Other\HeartContainer.cpp">
+      <Filter>Source Files\GameEntities\Other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -569,6 +572,9 @@
     </ClInclude>
     <ClInclude Include="src\Inventory\Items\Pig.h">
       <Filter>Source Files\Inventory\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEntities\Other\HeartContainer.h">
+      <Filter>Source Files\GameEntities\Other</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
