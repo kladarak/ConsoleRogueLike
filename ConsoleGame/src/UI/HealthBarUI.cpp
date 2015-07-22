@@ -3,7 +3,8 @@
 #include <EntityComponent/Components/HealthComponent.h>
 #include <Renderer/RenderTargetWriter.h>
 
-static const Fragment kHeartIcon( 3, ETextRed );
+static const Fragment kFullHeartIcon( 3, ETextRed );
+static const Fragment kEmptyHeartIcon( gCastUCharToChar(250), ETextRed );
 
 HealthBarUI::HealthBarUI()
 {
@@ -22,9 +23,10 @@ RenderTarget HealthBarUI::GetRenderTarget() const
 	
 	RenderTargetWriter writer(max, 1);
 
-	for (int i = 0; i < current; ++i)
+	for (int i = 0; i < max; ++i)
 	{
-		writer.Write(kHeartIcon, i, 0);
+		const Fragment& heart = (i < current) ? kFullHeartIcon : kEmptyHeartIcon;
+		writer.Write(heart, i, 0);
 	}
 	
 	return writer.GetRenderTarget();
