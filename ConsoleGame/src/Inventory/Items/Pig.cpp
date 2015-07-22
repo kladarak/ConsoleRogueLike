@@ -15,34 +15,74 @@
 
 namespace
 {
-	//    ___&
-	//  e'^_ )
-	//    " "
-	const Fragment kPigFrags[] =
+
+	namespace FaceLeft
 	{
-		Fragment(' ', EInvisible),		Fragment(' ', EInvisible),		Fragment('_', ETextMagenta),  PlayerConstants::kSprite,		Fragment('_', ETextMagenta),  Fragment('&', ETextMagenta),
-		Fragment('e', ETextMagenta),	Fragment('\'', ETextMagenta),	Fragment('^', ETextMagenta),  Fragment('_', ETextMagenta),	Fragment(' ', ETextMagenta),  Fragment(')', ETextMagenta),
-		Fragment(' ', EInvisible),		Fragment(' ', EInvisible),		Fragment('\"', ETextMagenta), Fragment(' ', EInvisible),	Fragment('\"', ETextMagenta), Fragment(' ', EInvisible),
-	};
+		//    ___&
+		//  e'^_ )
+		//    " "
+		const Fragment kPigFrags[] =
+		{
+			Fragment(' ', EInvisible),		Fragment(' ', EInvisible),		Fragment('_', ETextMagenta),  PlayerConstants::kSprite,		Fragment('_', ETextMagenta),  Fragment('&', ETextMagenta),
+			Fragment('e', ETextMagenta),	Fragment('\'', ETextMagenta),	Fragment('^', ETextMagenta),  Fragment('_', ETextMagenta),	Fragment(' ', ETextMagenta),  Fragment(')', ETextMagenta),
+			Fragment(' ', EInvisible),		Fragment(' ', EInvisible),		Fragment('\"', ETextMagenta), Fragment(' ', EInvisible),	Fragment('\"', ETextMagenta), Fragment(' ', EInvisible),
+		};
 
-	const AsciiMesh kPigMesh(kPigFrags, 6, 3, IVec2(-3, 0));
+		const bool kPigCollisionMeshFrags[] =
+		{
+			false,	false,	true,	true,	true,	true,
+			true,	true,	true,	true,	true,	true,
+			false,	false,	true,	false,	true,	false,
+		};
 
-	const Animation kAnimations[] =
+		const AsciiMesh		kPigRenderMesh(kPigFrags, 6, 3, IVec2(-3, 0));
+		const CollisionMesh kPigCollisionMesh(kPigCollisionMeshFrags, 6, 3);
+
+		const Animation kPigIdleAnimation(&kPigRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Loop);
+
+		// One for each EOrientation.
+		const Animation kAnimationSet[] =
+		{
+			kPigIdleAnimation,
+			kPigIdleAnimation,
+			kPigIdleAnimation,
+			kPigIdleAnimation,
+		};
+	}
+
+	namespace FaceRight
 	{
-		Animation(&kPigMesh, 1, 0.0f, Animation::EPlaybackStyle_Loop),
-		Animation(&kPigMesh, 1, 0.0f, Animation::EPlaybackStyle_Loop),
-		Animation(&kPigMesh, 1, 0.0f, Animation::EPlaybackStyle_Loop),
-		Animation(&kPigMesh, 1, 0.0f, Animation::EPlaybackStyle_Loop),
-	};
+		//  &___
+		//  ( _^'g
+		//   " "
+		const Fragment kPigFrags[] =
+		{
+			Fragment('&', ETextMagenta),	Fragment('_', ETextMagenta),	PlayerConstants::kSprite,		Fragment('_', ETextMagenta),	Fragment(' ', EInvisible),		Fragment(' ', EInvisible),
+			Fragment('(', ETextMagenta),	Fragment(' ', EInvisible),		Fragment('_', ETextMagenta),	Fragment('^', ETextMagenta),	Fragment('\'', ETextMagenta),	Fragment('g', ETextMagenta),
+			Fragment(' ', EInvisible),		Fragment('"', ETextMagenta),	Fragment(' ', EInvisible),		Fragment('"', ETextMagenta),	Fragment(' ', EInvisible),		Fragment(' ', EInvisible),
+		};
 
-	const bool kPigCollisionMeshFrags[] =
-	{
-		false,	false,	true,	true,	true,	true,
-		true,	true,	true,	true,	true,	true,
-		false,	false,	true,	false,	true,	false,
-	};
+		const bool kPigCollisionMeshFrags[] =
+		{
+			true,	true,	true,	true,	false,	false,
+			true,	true,	true,	true,	true,	true,
+			false,	true,	false,	true,	false,	false,
+		};
 
-	const CollisionMesh kPigCollisionMesh(kPigCollisionMeshFrags, 6, 3);
+		const AsciiMesh		kPigRenderMesh(kPigFrags, 6, 3, IVec2(-2, 0));
+		const CollisionMesh kPigCollisionMesh(kPigCollisionMeshFrags, 6, 3);
+
+		const Animation kPigIdleAnimation(&kPigRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Loop);
+
+		// One for each EOrientation.
+		const Animation kAnimationSet[] =
+		{
+			kPigIdleAnimation,
+			kPigIdleAnimation,
+			kPigIdleAnimation,
+			kPigIdleAnimation,
+		};
+	}
 }
 
 static const Fragment kHUDIcon[] =
@@ -69,8 +109,8 @@ void PigRiderPlayerBehaviour::OnStart(Entity inPlayer)
 
 	if (mIsOnPig)
 	{
-		inPlayer.GetComponent<AnimationComponent>()->SetAnimations( kAnimations, 4 );
-		inPlayer.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh( kPigCollisionMesh );
+		inPlayer.GetComponent<AnimationComponent>()->SetAnimations( FaceLeft::kAnimationSet, 4 );
+		inPlayer.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh( FaceLeft::kPigCollisionMesh );
 	}
 }
 
@@ -101,9 +141,20 @@ void PigRiderPlayerBehaviour::Update(Entity inPlayer, float inFrameTime)
 	{
 		posComp->SetPosition(newPosition);
 		position = newPosition;
+
+		if (direction == EOrientation_FaceLeft)
+		{
+			inPlayer.GetComponent<AnimationComponent>()->SetAnimations( FaceLeft::kAnimationSet, 4 );
+			inPlayer.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh( FaceLeft::kPigCollisionMesh );
+		}
+		else if (direction == EOrientation_FaceRight)
+		{
+			inPlayer.GetComponent<AnimationComponent>()->SetAnimations( FaceRight::kAnimationSet, 4 );
+			inPlayer.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh( FaceRight::kPigCollisionMesh );
+		}
 	}
 
-	kPigCollisionMesh.ForEachCollidablePosition( [&] (int inX, int inY)
+	inPlayer.GetComponent<CollisionComponent>()->GetDefaultCollisionMesh().ForEachCollidablePosition( [&] (int inX, int inY)
 	{
 		IVec2		attackPos = position + IVec2(inX, inY);
 		AttackMsg	attackMsg(inPlayer, attackPos, IVec2(0, 0), AttackMsg::EEffect_None);
