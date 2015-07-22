@@ -21,7 +21,7 @@ RenderTarget HealthBarUI::GetRenderTarget() const
 	int current = health->GetCurrentHealth();
 	int max		= health->GetMaxHealth();
 	
-	RenderTargetWriter writer(max, 2);
+	RenderTargetWriter writer(10, 2);
 
 	for (int i = 0; i < max; ++i)
 	{
