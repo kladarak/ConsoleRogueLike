@@ -36,7 +36,22 @@ namespace ItemEntity
 			{
 				if (inPlayer.HasComponent<PlayerComponent>())
 				{
-					inGameData->mPlayerData.mInventory.AddItem( new TItemBase() );
+					using namespace Player;
+
+					auto& playerData = inGameData->mPlayerData;
+
+					auto item = new TItemBase();
+					playerData.mInventory.AddItem( item );
+
+					EItemSlot emptySlot = (playerData.GetItemInSlot(EItemSlot_Slot0) == nullptr) ? EItemSlot_Slot0
+											: ((playerData.GetItemInSlot(EItemSlot_Slot1) == nullptr) ? EItemSlot_Slot1 
+												: EItemSlot_None);
+
+					if (emptySlot != EItemSlot_None)
+					{
+						inGameData->mPlayerData.SetItemInSlot(item, emptySlot);
+					}
+
 					inItemEntity.Kill();
 				}
 			}
