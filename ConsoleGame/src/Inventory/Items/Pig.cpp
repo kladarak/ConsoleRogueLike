@@ -13,6 +13,8 @@
 
 #include <Messages/Messages.h>
 
+#include "EAttackStrength.h"
+
 namespace
 {
 
@@ -94,7 +96,6 @@ static const Fragment kHUDIcon[] =
 
 static const ItemData	kPigItemData("Pig", AsciiMesh(kHUDIcon, gElemCount(kHUDIcon), 1), ERequiresNoAmmo);
 static const float		kTimeBetweenMovement	= 0.05f;
-static const int		kAttackStrength			= 1;
 
 
 using namespace Player;
@@ -158,7 +159,7 @@ void PigRiderPlayerBehaviour::Update(Entity inPlayer, float inFrameTime)
 	inPlayer.GetComponent<CollisionComponent>()->GetDefaultCollisionMesh().ForEachCollidablePosition( [&] (int inX, int inY)
 	{
 		IVec2		attackPos = position + IVec2(inX, inY);
-		AttackMsg	attackMsg(inPlayer, attackPos, IVec2(0, 0), AttackMsg::EEffect_None, kAttackStrength);
+		AttackMsg	attackMsg(inPlayer, attackPos, IVec2(0, 0), AttackMsg::EEffect_None, EAttackStrength_Normal);
 		MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, attackPos, attackMsg);
 	} );
 }

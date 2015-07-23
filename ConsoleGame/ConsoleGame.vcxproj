@@ -148,6 +148,7 @@
     <ClInclude Include="src\Input\InputMonitor.h" />
     <ClInclude Include="src\Inventory\Inventory.h" />
     <ClInclude Include="src\Inventory\Items\Arrow.h" />
+    <ClInclude Include="src\Inventory\Items\EAttackStrength.h" />
     <ClInclude Include="src\Inventory\Items\Bomb.h" />
     <ClInclude Include="src\Inventory\Items\Boomerang.h" />
     <ClInclude Include="src\Inventory\Items\Bow.h" />

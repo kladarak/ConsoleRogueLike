@@ -19,7 +19,6 @@
 #include "Arrow.h"
 #include "BowAnimations.h"
 
-
 static const Fragment	kBowIcon[]	= { Fragment('D', ETextDarkYellow), ' ', Fragment(26, ETextYellow) };
 static const ItemData	kBowData("Bow", AsciiMesh(kBowIcon, gElemCount(kBowIcon), 1), ERequiresAmmo );
 static const float		kAnimTime	= 0.5f;

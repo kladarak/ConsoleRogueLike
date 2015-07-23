@@ -13,6 +13,7 @@
 
 #include "SwordAnimations.h"
 #include "ItemData.h"
+#include "EAttackStrength.h"
 
 static const Fragment kSwordIcon[] = // -|---
 {
@@ -24,8 +25,7 @@ static const Fragment kSwordIcon[] = // -|---
 }; 
 
 static const ItemData	kSwordData("Sword", AsciiMesh(kSwordIcon, gElemCount(kSwordIcon), 1), ERequiresNoAmmo);
-static const float		kSwipeTime		= 0.5f;
-static const int		kAttackStrength	= 1;
+static const float		kSwipeTime = 0.5f;
 
 using namespace Player;
 
@@ -54,7 +54,7 @@ void SwordPlayerBehaviour::Update(Entity inPlayer, float inFrameTime)
 	IVec2	attackDir	= gGetOrientationVector(orientation);
 
 	IVec2		attackPos = playerPos + attackDir;
-	AttackMsg	attackMsg(inPlayer, attackPos, attackDir, AttackMsg::EEffect_None, kAttackStrength);
+	AttackMsg	attackMsg(inPlayer, attackPos, attackDir, AttackMsg::EEffect_None, EAttackStrength_Normal);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, attackPos, attackMsg);
 }
 

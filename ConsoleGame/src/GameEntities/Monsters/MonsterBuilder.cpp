@@ -22,7 +22,7 @@ MonsterBuilder::MonsterBuilder(World& inWorld, MessageBroadcaster* inMsgBroadcas
 	, mMsgBroadcaster		(inMsgBroadcaster)
 	, mRenderMesh			(Fragment('!', EColour_Background_Red))
 	, mPosition				(0, 0)
-	, mHealthAmount			(1)
+	, mHealthAmount			(2) // Default 2, so that a standard attack will kill it, a weak attack will not.
 {
 }
 

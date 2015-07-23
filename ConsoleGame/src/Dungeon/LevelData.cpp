@@ -23,11 +23,11 @@
 
 static const ItemFactoryFunc kItemFactoryFunctions[] =
 {
+	&ItemEntity::Create< Boomerang >,
 	&ItemEntity::Create< Sword >,
 	&ItemEntity::Create< Shield >,
 	&ItemEntity::Create< Bomb >,
 	&ItemEntity::Create< Bow >,
-	&ItemEntity::Create< Boomerang >,
 	&ItemEntity::Create< Pig >,
 };
 

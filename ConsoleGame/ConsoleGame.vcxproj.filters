@@ -582,5 +582,8 @@
     <ClInclude Include="src\Inventory\Items\Boomerang.h">
       <Filter>Source Files\Inventory\Items</Filter>
     </ClInclude>
+    <ClInclude Include="src\Inventory\Items\EAttackStrength.h">
+      <Filter>Source Files\Inventory\Items</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
