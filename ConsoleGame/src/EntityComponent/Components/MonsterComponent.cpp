@@ -7,18 +7,23 @@
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
 #include <EntityComponent/Components/MessageReceiverComponent.h>
+#include <EntityComponent/Components/RenderableComponent.h>
 
 #include <GameEntities/Monsters/MonsterDeathAnimation.h>
 
 #include <Messages/Messages.h>
 
+static const float kTotalDamageFlashTime	= 2.0f;
+static const float kDamageFlashRate			= 10.0f;
+
 MonsterComponent::MonsterComponent()
-	: mTimeUntilDeath		(FLT_MAX)
+	: mDamageAnimationTime	(0.0f)
+	, mTimeUntilDeath		(FLT_MAX)
 	, mIsDying				(false)
 {
 }
 
-void MonsterComponent::Update(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
+void MonsterComponent::UpdateDamageAnimations(Entity inThis, float inFrameTime, MessageBroadcaster& inMsgBroadcaster)
 {
 	if (mIsDying)
 	{
@@ -30,6 +35,19 @@ void MonsterComponent::Update(Entity inThis, float inFrameTime, MessageBroadcast
 			inThis.Kill();
 			inMsgBroadcaster.Broadcast( MonsterDiedMsg(position) );
 		}
+	}
+	else if (mDamageAnimationTime > 0.0f)
+	{
+		mDamageAnimationTime -= inFrameTime;
+		
+		int		flashState	= (int) (mDamageAnimationTime * kDamageFlashRate);
+		bool	visible		= (flashState % 2) == 0;
+
+		inThis.GetComponent<RenderableComponent>()->SetVisible(visible);
+	}
+	else
+	{
+		inThis.GetComponent<RenderableComponent>()->SetVisible(true);
 	}
 }
 
@@ -44,6 +62,12 @@ void MonsterComponent::StartDeath(const Entity& inThis)
 	mTimeUntilDeath	= MonsterDeathAnimation::sGetDuration();
 
 	inThis.GetComponent<AnimationComponent>()->SetAnimation( MonsterDeathAnimation::sGetAnimation() );
+	inThis.GetComponent<RenderableComponent>()->SetVisible(true);
+}
+
+void MonsterComponent::StartDamagedAnimation()
+{
+	mDamageAnimationTime = kTotalDamageFlashTime;
 }
 
 void MonsterComponent::OnEntityCollidedWith(Entity inThis, Entity inCollidingEntity) const

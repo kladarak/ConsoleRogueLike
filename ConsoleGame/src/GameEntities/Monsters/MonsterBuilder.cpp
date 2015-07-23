@@ -85,11 +85,19 @@ Entity MonsterBuilder::Create()
 			[=] (const AttackMsg& inMsg)
 			{
 				auto healthComp = entity.GetComponent<HealthComponent>();
-				healthComp->DecHealth(inMsg.mDamage);
-
-				if (healthComp->IsDead())
+				
+				if (!healthComp->IsDead())
 				{
-					entity.GetComponent<MonsterComponent>()->StartDeath(entity); 
+					healthComp->DecHealth(inMsg.mDamage);
+
+					if (healthComp->IsDead())
+					{
+						entity.GetComponent<MonsterComponent>()->StartDeath(entity); 
+					}
+					else
+					{
+						entity.GetComponent<MonsterComponent>()->StartDamagedAnimation(); 
+					}
 				}
 			}
 		);
@@ -101,7 +109,7 @@ Entity MonsterBuilder::Create()
 			[=] (const Entity& inThis, float inFrameTime)
 			{
 				// Badly named function: Update updates its time until death.
-				inThis.GetComponent<MonsterComponent>()->Update(inThis, inFrameTime, *broadcaster); 
+				inThis.GetComponent<MonsterComponent>()->UpdateDamageAnimations(inThis, inFrameTime, *broadcaster); 
 			} 
 		);
 	}
