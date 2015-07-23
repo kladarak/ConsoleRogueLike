@@ -57,7 +57,7 @@ void MonsterComponent::OnEntityCollidedWith(Entity inThis, Entity inCollidingEnt
 	if (nullptr != msgRecComp)
 	{
 		auto position = inThis.GetComponent<PositionComponent>()->GetPosition();
-		AttackMsg attackMsg(inThis, position, IVec2(0, 0), AttackMsg::EEffect_PushBack);
+		AttackMsg attackMsg(inThis, position, IVec2(0, 0), AttackMsg::EEffect_PushBack, 1);
 		msgRecComp->Broadcast( attackMsg );
 	}
 }

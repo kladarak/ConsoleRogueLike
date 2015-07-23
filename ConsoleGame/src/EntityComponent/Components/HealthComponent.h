@@ -14,8 +14,9 @@ public:
 
 	void	IncHealth()						{ if (!IsFullHealth())	{ ++mCurrentHealth; } }
 	void	DecHealth()						{ if (!IsDead())		{ --mCurrentHealth; } }
+	void	DecHealth(int inAmount)			{ if (!IsDead())		{ mCurrentHealth -= inAmount; } }
 
-	bool	IsDead() const					{ return GetCurrentHealth() == 0;				}
+	bool	IsDead() const					{ return GetCurrentHealth() <= 0;				}
 	bool	IsFullHealth() const			{ return GetCurrentHealth() == GetMaxHealth();	}
 
 private:

@@ -22,6 +22,7 @@ namespace
 
 	const float		kCooldownTime	= 0.5f;
 	const float		kBombTickTime	= 2.0f;
+	const int		kAttackStrength	= 1;
 
 	namespace FlashAnimation
 	{
@@ -192,7 +193,7 @@ void BombTimer::Update(Entity inThis, float inFrameTime)
 				{
 					IVec2		offset(i, j);
 					IVec2		position = bombPos + offset;
-					AttackMsg	attackMsg(inThis, position, offset, AttackMsg::EEffect_PushBack);
+					AttackMsg	attackMsg(inThis, position, offset, AttackMsg::EEffect_PushBack, kAttackStrength);
 					MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, position, attackMsg);
 				}
 			}

@@ -19,6 +19,7 @@ public:
 	MonsterBuilder&		SetRenderable(const AsciiMesh& inAsciiMesh);
 
 	MonsterBuilder&		SetInvulnerable();
+	MonsterBuilder&		SetHealthAmount(int inAmount);
 
 	Entity				Create();
 
@@ -36,5 +37,5 @@ private:
 	IVec2				mPosition;
 
 	uint32_t			mOptionalComponents;
-	bool				mCanBeKilled;
+	int					mHealthAmount;
 };

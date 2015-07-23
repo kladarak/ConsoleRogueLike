@@ -18,16 +18,18 @@ static const float kMovementTime = 0.05f;
 class ProjectileUpdateState
 {
 public:
-	ProjectileUpdateState(const IVec2& inDirection) 
+	ProjectileUpdateState(const IVec2& inDirection, int inAttackStrength) 
 		: mTimeUntilMovementStep(kMovementTime)
 		, mDirection(inDirection)
+		, mAttackStrength(inAttackStrength)
 	{ 
 	}
 
 	~ProjectileUpdateState() { }
 
-	IVec2 mDirection;
-	float mTimeUntilMovementStep;
+	IVec2	mDirection;
+	float	mTimeUntilMovementStep;
+	int		mAttackStrength;
 };
 
 static void Update(Entity inThis, float inFrameTime)
@@ -45,7 +47,7 @@ static void Update(Entity inThis, float inFrameTime)
 		position += state->mDirection;
 		posComp->SetPosition(position);
 		
-		AttackMsg attackMsg(inThis, position, state->mDirection, AttackMsg::EEffect_None);
+		AttackMsg attackMsg(inThis, position, state->mDirection, AttackMsg::EEffect_None, state->mAttackStrength);
 		MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, position, attackMsg);
 
 		bool collides = CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, position);
@@ -56,11 +58,11 @@ static void Update(Entity inThis, float inFrameTime)
 	}
 }
 
-Entity Create(World& inWorld, const AsciiMesh& inMesh, const IVec2& inPosition, const IVec2& inDirection)
+Entity Create(World& inWorld, const AsciiMesh& inMesh, const IVec2& inPosition, const IVec2& inDirection, int inAttackStrength)
 {
 	auto entity = inWorld.CreateEntity();
 
-	entity.AddComponent<ProjectileUpdateState>(inDirection);
+	entity.AddComponent<ProjectileUpdateState>(inDirection, inAttackStrength);
 	entity.AddComponent<PositionComponent>(inPosition);
 	entity.AddComponent<ProgramComponent>()->RegisterProgram( &Update );
 	entity.AddComponent<RenderableComponent>( inMesh );
@@ -71,9 +73,10 @@ Entity Create(World& inWorld, const AsciiMesh& inMesh, const IVec2& inPosition, 
 			auto msgRecComp = inTriggerer.GetComponent<MessageReceiverComponent>();
 			if (nullptr != msgRecComp)
 			{
-				auto position = inThis.GetComponent<PositionComponent>()->GetPosition();
-				auto direction = inThis.GetComponent<ProjectileUpdateState>()->mDirection;
-				msgRecComp->Broadcast( AttackMsg(inThis, position, direction, AttackMsg::EEffect_None) );
+				auto	position	= inThis.GetComponent<PositionComponent>()->GetPosition();
+				auto	direction	= inThis.GetComponent<ProjectileUpdateState>()->mDirection;
+				int		atkStrength = inThis.GetComponent<ProjectileUpdateState>()->mAttackStrength;
+				msgRecComp->Broadcast( AttackMsg(inThis, position, direction, AttackMsg::EEffect_None, atkStrength) );
 			}
 
 			inThis.Kill();

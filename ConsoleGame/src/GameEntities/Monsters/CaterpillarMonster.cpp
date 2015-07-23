@@ -213,7 +213,8 @@ namespace Animations
 	}
 }
 
-static const float kIdleTime = Animations::kKFDuration * gElemCount(Animations::IdleFaceRight::kKeyFrames);
+static const float	kIdleTime		= Animations::kKFDuration * gElemCount(Animations::IdleFaceRight::kKeyFrames);
+static const int	kAttackStrength = 1;
 
 class CaterpillarMonsterComponent
 {
@@ -285,10 +286,10 @@ void CaterpillarMonsterComponent::Update(Entity inThis, float inFrameTime)
 				IVec2 positionStep1 = position + stepDirection;
 				IVec2 newPosition	= positionStep1 + stepDirection;
 
-				AttackMsg attackMsg1(inThis, positionStep1, stepDirection, AttackMsg::EEffect_PushBack);
+				AttackMsg attackMsg1(inThis, positionStep1, stepDirection, AttackMsg::EEffect_PushBack, kAttackStrength);
 				MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, positionStep1, attackMsg1);
 
-				AttackMsg attackMsg2(inThis, newPosition, stepDirection, AttackMsg::EEffect_PushBack);
+				AttackMsg attackMsg2(inThis, newPosition, stepDirection, AttackMsg::EEffect_PushBack, kAttackStrength);
 				MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, positionStep1, attackMsg2);
 
 				posComp->SetPosition( newPosition );
@@ -399,7 +400,7 @@ void CaterpillarMonsterComponent::Update(Entity inThis, float inFrameTime)
 		IVec2 stepDirection	= (mDirection == ELeft) ? IVec2(-1, 0) : IVec2(1, 0);
 		IVec2 attackPos		= position + stepDirection;
 
-		AttackMsg attackMsg(inThis, attackPos, stepDirection, AttackMsg::EEffect_PushBack);
+		AttackMsg attackMsg(inThis, attackPos, stepDirection, AttackMsg::EEffect_PushBack, kAttackStrength);
 		MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, attackPos, attackMsg);
 	}
 }

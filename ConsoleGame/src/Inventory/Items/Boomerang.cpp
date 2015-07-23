@@ -40,6 +40,7 @@ static const Animation kAnimation(kKeyFrames, gElemCount(kKeyFrames), 0.1f, Anim
 static const int	kThrowDistance = 6;
 static const float	kFlightTimeBetweenMovement = 0.1f;
 static const float	kFlightTimeAwayFromPlayer = kFlightTimeBetweenMovement * kThrowDistance;
+static const int	kAttackStrength	= 1;
 
 //------------------------------------------------------------------------------------
 
@@ -169,7 +170,7 @@ void BoomerangComponent::Update(Entity inThis, float inFrameTime, Entity inPlaye
 		IVec2	newPos	= thisPos + deltaPos;
 		posComp->SetPosition(newPos);
 
-		AttackMsg attackMsg(inThis, newPos, IVec2(0, 0), AttackMsg::EEffect_None);
+		AttackMsg attackMsg(inThis, newPos, IVec2(0, 0), AttackMsg::EEffect_None, kAttackStrength);
 		MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inPlayer, newPos, attackMsg);
 	}
 }

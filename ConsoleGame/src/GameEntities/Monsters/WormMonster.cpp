@@ -15,7 +15,8 @@
 namespace WormMonster
 {
 
-static const float kMovementCooldownDuration = 1.0f;
+static const float	kMovementCooldownDuration	= 1.0f;
+static const int	kAttackStrength				= 1;
 
 namespace MonsterAnimation
 {
@@ -71,7 +72,7 @@ void WormMonsterComponent::Update(Entity inThis, float inFrameTime, MessageBroad
 	auto position	= posComp->GetPosition();
 	auto newPos		= position + intendedMovement;
 
-	AttackMsg attackMsg(inThis, newPos, intendedMovement, AttackMsg::EEffect_None);
+	AttackMsg attackMsg(inThis, newPos, intendedMovement, AttackMsg::EEffect_None, kAttackStrength);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, newPos, attackMsg);
 
 	bool isValidPos = !CollisionSystem::CollidesWithAnyEntity(*inThis.GetWorld(), inThis, newPos);

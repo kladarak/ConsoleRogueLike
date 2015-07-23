@@ -7,6 +7,8 @@
 namespace Arrow
 {
 
+static const int kAttackStrength = 1;
+
 static const AsciiMesh kMeshes[] = 
 {
 	Fragment(24, ETextYellow),
@@ -24,7 +26,7 @@ void Create(World& inWorld, const IVec2& inPosition, const IVec2& inDirection)
 	else if	(inDirection.mX > 0) { meshIndex = 2; }
 	else if (inDirection.mX < 0) { meshIndex = 3; }
 
-	ProjectileEntity::Create(inWorld, kMeshes[meshIndex], inPosition, inDirection);
+	ProjectileEntity::Create(inWorld, kMeshes[meshIndex], inPosition, inDirection, kAttackStrength);
 }
 
 }

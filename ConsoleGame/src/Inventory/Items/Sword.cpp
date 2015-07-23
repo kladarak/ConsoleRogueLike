@@ -25,6 +25,7 @@ static const Fragment kSwordIcon[] = // -|---
 
 static const ItemData	kSwordData("Sword", AsciiMesh(kSwordIcon, gElemCount(kSwordIcon), 1), ERequiresNoAmmo);
 static const float		kSwipeTime		= 0.5f;
+static const int		kAttackStrength	= 1;
 
 using namespace Player;
 
@@ -53,7 +54,7 @@ void SwordPlayerBehaviour::Update(Entity inPlayer, float inFrameTime)
 	IVec2	attackDir	= gGetOrientationVector(orientation);
 
 	IVec2		attackPos = playerPos + attackDir;
-	AttackMsg	attackMsg(inPlayer, attackPos, attackDir, AttackMsg::EEffect_None);
+	AttackMsg	attackMsg(inPlayer, attackPos, attackDir, AttackMsg::EEffect_None, kAttackStrength);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, attackPos, attackMsg);
 }
 

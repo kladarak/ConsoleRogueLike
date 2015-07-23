@@ -7,5 +7,5 @@ struct IVec2;
 
 namespace ProjectileEntity
 {
-	Entity Create(World& inWorld, const AsciiMesh& inMesh, const IVec2& inPosition, const IVec2& inDirection);
+	Entity Create(World& inWorld, const AsciiMesh& inMesh, const IVec2& inPosition, const IVec2& inDirection, int inAttackStrength);
 }

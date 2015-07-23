@@ -4,6 +4,7 @@
 
 #include <EntityComponent/Components/AnimationComponent.h>
 #include <EntityComponent/Components/CollisionComponent.h>
+#include <EntityComponent/Components/HealthComponent.h>
 #include <EntityComponent/Components/MessageReceiverComponent.h>
 #include <EntityComponent/Components/MonsterComponent.h>
 #include <EntityComponent/Components/PositionComponent.h>
@@ -21,7 +22,7 @@ MonsterBuilder::MonsterBuilder(World& inWorld, MessageBroadcaster* inMsgBroadcas
 	, mMsgBroadcaster		(inMsgBroadcaster)
 	, mRenderMesh			(Fragment('!', EColour_Background_Red))
 	, mPosition				(0, 0)
-	, mCanBeKilled			(true)
+	, mHealthAmount			(1)
 {
 }
 
@@ -52,7 +53,13 @@ MonsterBuilder&	MonsterBuilder::SetRenderable(const AsciiMesh& inAsciiMesh)
 
 MonsterBuilder& MonsterBuilder::SetInvulnerable()
 {
-	mCanBeKilled = false;
+	mHealthAmount = 0;
+	return *this;
+}
+
+MonsterBuilder& MonsterBuilder::SetHealthAmount(int inAmount)
+{
+	mHealthAmount = inAmount;
 	return *this;
 }
 
@@ -69,13 +76,21 @@ Entity MonsterBuilder::Create()
 
 	auto entity = builder.Create();
 
-	if (mCanBeKilled)
+	if (mHealthAmount > 0)
 	{
+		entity.AddComponent<HealthComponent>(mHealthAmount);
+
 		entity.AddComponent<MessageReceiverComponent>()->Register<AttackMsg>
 		(
-			[=] (const AttackMsg&)
+			[=] (const AttackMsg& inMsg)
 			{
-				entity.GetComponent<MonsterComponent>()->StartDeath(entity); 
+				auto healthComp = entity.GetComponent<HealthComponent>();
+				healthComp->DecHealth(inMsg.mDamage);
+
+				if (healthComp->IsDead())
+				{
+					entity.GetComponent<MonsterComponent>()->StartDeath(entity); 
+				}
 			}
 		);
 		
@@ -85,6 +100,7 @@ Entity MonsterBuilder::Create()
 		(
 			[=] (const Entity& inThis, float inFrameTime)
 			{
+				// Badly named function: Update updates its time until death.
 				inThis.GetComponent<MonsterComponent>()->Update(inThis, inFrameTime, *broadcaster); 
 			} 
 		);

@@ -15,7 +15,8 @@
 namespace GunTurretEntity
 {
 
-static const float kKeyFrameDuration = 1.0f; // seconds
+static const float	kKeyFrameDuration	= 1.0f; // seconds
+static const int	kAttackStrength		= 1;
 
 static const char kFaceUpChar		= gCastUCharToChar(193);
 static const char kFaceRightChar	= gCastUCharToChar(195);
@@ -79,7 +80,7 @@ void GunTurretComponent::Update(Entity inThis, float inFrameTime)
 
 		IVec2 position = inThis.GetComponent<PositionComponent>()->GetPosition() + direction;
 
-		ProjectileEntity::Create(*inThis.GetWorld(), kMissileMesh, position, direction);
+		ProjectileEntity::Create(*inThis.GetWorld(), kMissileMesh, position, direction, kAttackStrength);
 	}
 }
 
