@@ -57,6 +57,7 @@
     <ClCompile Include="src\Inventory\Inventory.cpp" />
     <ClCompile Include="src\Inventory\Items\Arrow.cpp" />
     <ClCompile Include="src\Inventory\Items\Bomb.cpp" />
+    <ClCompile Include="src\Inventory\Items\Boomerang.cpp" />
     <ClCompile Include="src\Inventory\Items\Bow.cpp" />
     <ClCompile Include="src\Inventory\Items\BowAnimations.cpp" />
     <ClCompile Include="src\Inventory\Items\DoorKey.cpp" />
@@ -148,6 +149,7 @@
     <ClInclude Include="src\Inventory\Inventory.h" />
     <ClInclude Include="src\Inventory\Items\Arrow.h" />
     <ClInclude Include="src\Inventory\Items\Bomb.h" />
+    <ClInclude Include="src\Inventory\Items\Boomerang.h" />
     <ClInclude Include="src\Inventory\Items\Bow.h" />
     <ClInclude Include="src\Inventory\Items\BowAnimations.h" />
     <ClInclude Include="src\Inventory\Items\DoorKey.h" />

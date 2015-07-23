@@ -280,6 +280,9 @@
     <ClCompile Include="src\GameEntities\Other\HeartContainer.cpp">
       <Filter>Source Files\GameEntities\Other</Filter>
     </ClCompile>
+    <ClCompile Include="src\Inventory\Items\Boomerang.cpp">
+      <Filter>Source Files\Inventory\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -575,6 +578,9 @@
     </ClInclude>
     <ClInclude Include="src\GameEntities\Other\HeartContainer.h">
       <Filter>Source Files\GameEntities\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\Items\Boomerang.h">
+      <Filter>Source Files\Inventory\Items</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

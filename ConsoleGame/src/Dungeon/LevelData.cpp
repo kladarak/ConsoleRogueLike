@@ -18,14 +18,16 @@
 #include <Inventory/Items/Shield.h>
 #include <Inventory/Items/Bomb.h>
 #include <Inventory/Items/Pig.h>
+#include <Inventory/Items/Boomerang.h>
 
 
 static const ItemFactoryFunc kItemFactoryFunctions[] =
 {
 	&ItemEntity::Create< Sword >,
 	&ItemEntity::Create< Shield >,
-	&ItemEntity::Create< Bow >,
 	&ItemEntity::Create< Bomb >,
+	&ItemEntity::Create< Bow >,
+	&ItemEntity::Create< Boomerang >,
 	&ItemEntity::Create< Pig >,
 };
 
