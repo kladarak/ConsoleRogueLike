@@ -45,13 +45,38 @@ namespace
 	{
 		static const float kKFTime = 0.125f;
 		
+		static const bool kSmokeMask[] =
+		{
+			false,	false,	true,	false,	false,
+			false,	true,	true,	true,	false,
+			true,	true,	true,	true,	true,
+			false,	true,	true,	true,	false,
+			false,	false,	true,	false,	false,
+		};
+
+		static const IVec2	kMeshCentreOffset(-2, -2);
+		static const int	kMeshWidth = 5;
+		static const int	kMeshHeight = 5;
+
 		static const char kSmokeThick	= gCastUCharToChar(178);
 		static const char kSmokeNormal	= gCastUCharToChar(177);
 		static const char kSmokeThin	= gCastUCharToChar(176);
 		
-		static const AsciiMesh kSmokeThickMesh	(kSmokeThick,	3, 3, IVec2(-1, -1));
-		static const AsciiMesh kSmokeNormalMesh	(kSmokeNormal,	3, 3, IVec2(-1, -1));
-		static const AsciiMesh kSmokeThinMesh	(kSmokeThin,	3, 3, IVec2(-1, -1));
+		static AsciiMesh sGenerateMesh(char inChar)
+		{
+			char smoke[kMeshWidth * kMeshHeight];
+
+			for (int i = 0; i < kMeshWidth * kMeshHeight; ++i)
+			{
+				smoke[i] = kSmokeMask[i] ? inChar : ' ';
+			}
+
+			return AsciiMesh(smoke, kMeshWidth, kMeshHeight, kMeshCentreOffset);
+		}
+
+		static const AsciiMesh kSmokeThickMesh	= sGenerateMesh(kSmokeThick);
+		static const AsciiMesh kSmokeNormalMesh	= sGenerateMesh(kSmokeNormal);
+		static const AsciiMesh kSmokeThinMesh	= sGenerateMesh(kSmokeThin);
 
 		static const AsciiMesh kKeyFrames[] =
 		{
@@ -70,6 +95,15 @@ namespace
 											Animation::EPlaybackStyle_Once );
 
 		static const float kAnimationDuration = gElemCount(kKeyFrames) * kKFTime;
+
+		static const EAttackStrength kDamageMask[] =
+		{
+			EAttackStrength_None,		EAttackStrength_None,		EAttackStrength_Weak,		EAttackStrength_None,		EAttackStrength_None,
+			EAttackStrength_None,		EAttackStrength_Weak,		EAttackStrength_Normal,		EAttackStrength_Weak,		EAttackStrength_None,
+			EAttackStrength_Weak,		EAttackStrength_Normal,		EAttackStrength_Strong,		EAttackStrength_Normal,		EAttackStrength_Weak,
+			EAttackStrength_None,		EAttackStrength_Weak,		EAttackStrength_Normal,		EAttackStrength_Weak,		EAttackStrength_None,
+			EAttackStrength_None,		EAttackStrength_None,		EAttackStrength_Weak,		EAttackStrength_None,		EAttackStrength_None,
+		};
 	}
 }
 
@@ -180,28 +214,25 @@ void BombTimer::Update(Entity inThis, float inFrameTime)
 	if (wasTicking && mTimeRemaining <= 0.0f)
 	{
 		inThis.GetComponent<AnimationComponent>()->SetAnimation( ExplosionAnimation::kAnimation );
-	}
-				
-	if (mTimeRemaining <= 0.0f)
-	{
-		if (mTimeRemaining >= -ExplosionAnimation::kAnimationDuration)
-		{
-			auto bombPos = inThis.GetComponent<PositionComponent>()->GetPosition();
+		
+		auto bombPos = inThis.GetComponent<PositionComponent>()->GetPosition();
 
-			for (int i = -1; i <= 1; ++i)
+		for (int row = 0; row < ExplosionAnimation::kMeshHeight; ++row)
+		{
+			for (int col = 0; col < ExplosionAnimation::kMeshWidth; ++col)
 			{
-				for (int j = -1; j <= 1; ++j)
-				{
-					IVec2		offset(i, j);
-					IVec2		position = bombPos + offset;
-					AttackMsg	attackMsg(inThis, position, offset, AttackMsg::EEffect_PushBack, EAttackStrength_Normal);
-					MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, position, attackMsg);
-				}
+				IVec2			offset		= IVec2(col, row) + ExplosionAnimation::kMeshCentreOffset;
+				IVec2			position	= bombPos + offset;
+				EAttackStrength	atkStrength = ExplosionAnimation::kDamageMask[(row * ExplosionAnimation::kMeshWidth) + col];
+
+
+				AttackMsg	attackMsg(inThis, position, offset, AttackMsg::EEffect_PushBack, atkStrength);
+				MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inThis, position, attackMsg);
 			}
 		}
-		else
-		{
-			inThis.Kill();
-		}
+	}
+	else if (mTimeRemaining < -ExplosionAnimation::kAnimationDuration)
+	{
+		inThis.Kill();
 	}
 }

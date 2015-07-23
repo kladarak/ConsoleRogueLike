@@ -170,7 +170,7 @@ void BoomerangComponent::Update(Entity inThis, float inFrameTime, Entity inPlaye
 		IVec2	newPos	= thisPos + deltaPos;
 		posComp->SetPosition(newPos);
 
-		AttackMsg attackMsg(inThis, newPos, IVec2(0, 0), AttackMsg::EEffect_None, EAttackStrength_Weak);
+		AttackMsg attackMsg(inThis, newPos, IVec2(0, 0), AttackMsg::EEffect_None, EAttackStrength_VeryWeak);
 		MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inThis.GetWorld(), inPlayer, newPos, attackMsg);
 	}
 }

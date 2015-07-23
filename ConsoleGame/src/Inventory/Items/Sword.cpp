@@ -54,7 +54,7 @@ void SwordPlayerBehaviour::Update(Entity inPlayer, float inFrameTime)
 	IVec2	attackDir	= gGetOrientationVector(orientation);
 
 	IVec2		attackPos = playerPos + attackDir;
-	AttackMsg	attackMsg(inPlayer, attackPos, attackDir, AttackMsg::EEffect_None, EAttackStrength_Normal);
+	AttackMsg	attackMsg(inPlayer, attackPos, attackDir, AttackMsg::EEffect_None, EAttackStrength_Strong);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, attackPos, attackMsg);
 }
 

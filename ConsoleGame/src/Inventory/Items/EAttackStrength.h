@@ -2,7 +2,10 @@
 
 enum EAttackStrength
 {
-	EAttackStrength_Weak	= 1,
-	EAttackStrength_Normal	= 2,
-	EAttackStrength_Strong	= 3,
+	EAttackStrength_None		= 0,
+	EAttackStrength_VeryWeak	= 1,
+	EAttackStrength_Weak		= 2,
+	EAttackStrength_Normal		= 3,
+	EAttackStrength_Strong		= 4,
+	EAttackStrength_VeryStrong	= 5,
 };
