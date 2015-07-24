@@ -14,24 +14,24 @@ public:
 	Dynamic2DVector(Dynamic2DVector&& inRHS)					: mData( std::move(inRHS.mData) )				{ }
 	Dynamic2DVector(const Dynamic2DVector& inRHS)				: mData( inRHS.mData )							{ }
 
-	void		Set(size_t inX, size_t inY, const T& inData);
-	T			Get(size_t inX, size_t inY) const;
-	T&			Get(size_t inX, size_t inY);
+	void										Set(size_t inX, size_t inY, const T& inData);
+	typename std::vector<T>::const_reference	Get(size_t inX, size_t inY) const;
+	typename std::vector<T>::reference			Get(size_t inX, size_t inY);
 
-	void		Set(const IVec2& inIndex, const T& inData)	{ Set(inIndex.mX, inIndex.mY, inData);	}
-	T			Get(const IVec2& inIndex) const				{ return Get(inIndex.mX, inIndex.mY);	}
-	T&			Get(const IVec2& inIndex)					{ return Get(inIndex.mX, inIndex.mY);	}
+	void										Set(const IVec2& inIndex, const T& inData)	{ Set(inIndex.mX, inIndex.mY, inData);	}
+	typename std::vector<T>::const_reference	Get(const IVec2& inIndex) const				{ return Get(inIndex.mX, inIndex.mY);	}
+	typename std::vector<T>::reference			Get(const IVec2& inIndex)					{ return Get(inIndex.mX, inIndex.mY);	}
 
-	void		Clear();
+	void										Clear();
 
-	size_t		GetRowCount() const							{ return mData.size(); }
-	size_t		GetColCount() const							{ return (mData.size() > 0) ? mData[0].size() : 0; }
+	size_t										GetRowCount() const							{ return mData.size(); }
+	size_t										GetColCount() const							{ return (mData.size() > 0) ? mData[0].size() : 0; }
 
 	template<typename TFunctor>
-	void		ForEach(const TFunctor& inFunctor) const;
+	void										ForEach(const TFunctor& inFunctor) const;
 	
 private:
-	std::vector< std::vector<T> >	mData;
+	std::vector< std::vector<T> >				mData;
 };
 
 template<typename T>
@@ -62,7 +62,7 @@ void Dynamic2DVector<T>::Set(size_t inX, size_t inY, const T& inData)
 }
 
 template<typename T>
-T Dynamic2DVector<T>::Get(size_t inX, size_t inY) const
+typename std::vector<T>::const_reference Dynamic2DVector<T>::Get(size_t inX, size_t inY) const
 {
 	assert(inX < GetColCount());
 	assert(inY < GetRowCount());
@@ -71,7 +71,7 @@ T Dynamic2DVector<T>::Get(size_t inX, size_t inY) const
 }
 
 template<typename T>
-T& Dynamic2DVector<T>::Get(size_t inX, size_t inY)
+typename std::vector<T>::reference Dynamic2DVector<T>::Get(size_t inX, size_t inY)
 {
 	assert(inX < GetColCount());
 	assert(inY < GetRowCount());
