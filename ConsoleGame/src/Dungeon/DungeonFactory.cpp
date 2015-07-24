@@ -127,7 +127,7 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, Ga
 
 	sAddDoors(dungeon, inWorld, inMessageBroadcaster);
 
-	DungeonLockedDoorsAndKeysPlacer::sPlaceThem(dungeon, inWorld, inGameData, inLevelData.mLockedDoorsCount);
+	DungeonLockedDoorsAndKeysPlacer::sPlaceThem(dungeon, inWorld, inGameData, inLevelData.mLockedDoorsCount, inLevelData.mRoomCount);
 
 	sPlaceItemInDungeon(dungeon, ItemEntity::Create< ColouredDoorKey<ETextDarkYellow> >(inWorld, inGameData));
 

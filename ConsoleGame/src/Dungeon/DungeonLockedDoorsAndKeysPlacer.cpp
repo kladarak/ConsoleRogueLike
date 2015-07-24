@@ -14,12 +14,6 @@
 
 namespace DungeonLockedDoorsAndKeysPlacer
 {
-	
-enum EMode
-{
-	EPlaceKey,
-	EPlaceLockedDoor,
-};
 
 static const EColour kColours[] = 
 {
@@ -45,7 +39,7 @@ public:
 
 	LockedDoorAndKeyPlacer& operator=(const LockedDoorAndKeyPlacer&) = delete;
 
-	void					DoIt(uint32_t inMaxLockedDoors);
+	void					DoIt(uint32_t inMaxLockedDoors, uint32_t inRoomCount);
 
 private:
 	bool					PlaceDoorAndKey(const RoomData& inRoomData, const IVec2& inLockedDoorRoomIndex, const IVec2& inKeyRoomIndex, uint32_t inKeyNum);
@@ -57,9 +51,9 @@ private:
 
 };
 
-void sPlaceThem(const DungeonMap& inDungeon, World& inWorld, GameData* inGameData, uint32_t inMaxLockedDoors)
+void sPlaceThem(const DungeonMap& inDungeon, World& inWorld, GameData* inGameData, uint32_t inMaxLockedDoors, uint32_t inRoomCount)
 {
-	LockedDoorAndKeyPlacer(inDungeon, inWorld, inGameData).DoIt(inMaxLockedDoors);
+	LockedDoorAndKeyPlacer(inDungeon, inWorld, inGameData).DoIt(inMaxLockedDoors, inRoomCount);
 }
 
 LockedDoorAndKeyPlacer::LockedDoorAndKeyPlacer(const DungeonMap& inDungeon, World& inWorld, GameData* inGameData)
@@ -70,7 +64,7 @@ LockedDoorAndKeyPlacer::LockedDoorAndKeyPlacer(const DungeonMap& inDungeon, Worl
 {
 }
 
-void LockedDoorAndKeyPlacer::DoIt(uint32_t inMaxLockedDoors)
+void LockedDoorAndKeyPlacer::DoIt(uint32_t inMaxLockedDoors, uint32_t inRoomCount)
 {
 	// From player starting position, do breadth-search walk around the dungeon. Place a key first, then a matching door.
 
@@ -81,14 +75,18 @@ void LockedDoorAndKeyPlacer::DoIt(uint32_t inMaxLockedDoors)
 	// If 1 door is unvisited, advance this node into that room, mark it as visited. // Could skip this step by always removing *this* node and adding new nodes for each door.
 	// If more doors are unvisited, create additional nodes for each door and mark them all visited.
 
-	// Limit invalid input
+	// Sanitise input
+	if (inMaxLockedDoors == 0)
+	{
+		return;
+	}
+
 	inMaxLockedDoors = std::min(inMaxLockedDoors, gElemCount(kColours));
 	
 	std::vector<IVec2>	nodes;
 	size_t				nodeIndex	= 0;
 	uint32_t			locksPlaced = 0;
-	EMode				mode		= EPlaceKey;
-	IVec2				keyRoomIndex(-1, -1);
+	const uint32_t		randModulo	= std::max(inRoomCount / inMaxLockedDoors, (uint32_t) 1);
 
 	{
 		// Seed node list
@@ -106,29 +104,14 @@ void LockedDoorAndKeyPlacer::DoIt(uint32_t inMaxLockedDoors)
 		assert(roomData.mIsValid);
 
 		// Place a key or a locked door from this room.
-		if (rand() % 3 == 0)
+		if (rand() % randModulo == 0)
 		{
-			switch (mode)
+			uint32_t	keyNum			= locksPlaced;
+			IVec2		keyRoomIndex	= nodes[(rand() % nodeIndex)]; // pick a room that has already been walked through.
+
+			if ( PlaceDoorAndKey(roomData, roomIndex, keyRoomIndex, keyNum) )
 			{
-				case EPlaceKey:
-				{
-					// Store index, but delay creating a key until a matching door is placed.
-					keyRoomIndex	= roomIndex;
-					mode			= EPlaceLockedDoor;
-					break;
-				}
-
-				case EPlaceLockedDoor:
-				{
-					uint32_t keyNum = locksPlaced;
-					if ( PlaceDoorAndKey(roomData, roomIndex, keyRoomIndex, keyNum) )
-					{
-						mode = EPlaceKey;
-						++locksPlaced;
-					}
-
-					break;
-				}
+				++locksPlaced;
 			}
 		}
 		

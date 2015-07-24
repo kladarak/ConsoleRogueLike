@@ -8,5 +8,5 @@ class GameData;
 
 namespace DungeonLockedDoorsAndKeysPlacer
 {
-	void sPlaceThem(const DungeonMap& inDungeon, World& inWorld, GameData* inGameData, uint32_t inMaxLockedDoors);
+	void sPlaceThem(const DungeonMap& inDungeon, World& inWorld, GameData* inGameData, uint32_t inMaxLockedDoors, uint32_t inRoomCount);
 }
