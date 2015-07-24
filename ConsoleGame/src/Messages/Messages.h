@@ -4,6 +4,7 @@
 
 #include <Maths/IVec2.h>
 #include <Containers/ContainerMacros.h>
+#include <Renderer/Colour.h>
 
 #include <EntityComponent/Components/MessageReceiverComponent.h>
 
@@ -58,8 +59,9 @@ public:
 class UnlockDoorMsg
 {
 public:
-	UnlockDoorMsg(const IVec2& inPosition) : mPosition(inPosition) { }
-	IVec2 mPosition;
+	UnlockDoorMsg(const IVec2& inPosition, EColour inKeyColour) : mPosition(inPosition), mKeyColour(inKeyColour) { }
+	IVec2	mPosition;
+	EColour mKeyColour;
 };
 
 class MonsterDiedMsg

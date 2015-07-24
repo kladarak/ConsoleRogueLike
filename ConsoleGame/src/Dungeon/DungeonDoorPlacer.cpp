@@ -91,9 +91,9 @@ void DungeonDoorPlacer::AddOpenDoor(const RoomLink& inRoomLink)
 	ConstructDoor(mDungeonMap, inRoomLink.mRoomIndex1, inRoomLink.mRoomSide1, constructOpenDoor);
 }
 
-void DungeonDoorPlacer::AddLockedDoor(const RoomLink& inRoomLink)
+void DungeonDoorPlacer::AddLockedDoor(const RoomLink& inRoomLink, EColour inColour)
 {
-	auto constructLockedDoor = [&] (const IVec2& inPosition, EOrientation inOrientation) { return LockedDoor::Create(mWorld, inPosition, inOrientation); };
+	auto constructLockedDoor = [&] (const IVec2& inPosition, EOrientation inOrientation) { return LockedDoor::Create(mWorld, inPosition, inOrientation, inColour); };
 	
 	auto door0 = ConstructDoor(mDungeonMap, inRoomLink.mRoomIndex0, inRoomLink.mRoomSide0, constructLockedDoor);
 	auto door1 = ConstructDoor(mDungeonMap, inRoomLink.mRoomIndex1, inRoomLink.mRoomSide1, constructLockedDoor);
@@ -105,7 +105,7 @@ void DungeonDoorPlacer::AddDungeonExit(const IVec2& inRoomIndex, MessageBroadcas
 {
 	ConstructDoor( mDungeonMap, inRoomIndex, EDoorSide_Top, [&] (const IVec2& inPosition, EOrientation inOrientation) 
 	{
-		LockedDoor::Create(mWorld, inPosition, inOrientation);
+		LockedDoor::Create(mWorld, inPosition, inOrientation, ETextDarkYellow);
 		IVec2 stairsPos(inPosition.mX, inPosition.mY-1);
 		return Stairs::Create(mWorld, inMessageBroadcaster, stairsPos);
 	} );

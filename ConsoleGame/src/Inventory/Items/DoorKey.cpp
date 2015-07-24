@@ -40,13 +40,18 @@ static const AsciiMesh kDoorKeyRenderMeshes[EOrientation_Count] =
 
 //--------------------------------------------------------------------
 
-static const Animation kAnimations[] =
+static std::vector<Animation> sGenerateAnimations(EColour inKeyColour)
 {
-	Animation( &kDoorKeyRenderMeshes[0], 1, 0.0f, Animation::EPlaybackStyle_Once ),
-	Animation( &kDoorKeyRenderMeshes[1], 1, 0.0f, Animation::EPlaybackStyle_Once ),
-	Animation( &kDoorKeyRenderMeshes[2], 1, 0.0f, Animation::EPlaybackStyle_Once ),
-	Animation( &kDoorKeyRenderMeshes[3], 1, 0.0f, Animation::EPlaybackStyle_Once ),
-};
+	std::vector<Animation> animations;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		AsciiMesh newMesh = gReColourAsciiMesh(kDoorKeyRenderMeshes[i], inKeyColour);
+		animations.push_back( Animation(&newMesh, 1, 0.0f, Animation::EPlaybackStyle_Once) );
+	}
+
+	return animations;
+}
 
 //--------------------------------------------------------------------
 
@@ -55,19 +60,26 @@ const std::string DoorKey::kName = "Key";
 static const CollisionMesh	kDoorKeyCollisionMesh( 0, 0 );
 
 static const Fragment		kDoorKeyIcon[]	= { Fragment('0', ETextYellow), Fragment('-', ETextYellow), Fragment('m', ETextYellow) };
-static const ItemData		kDoorKeyData(DoorKey::kName, AsciiMesh(kDoorKeyIcon, gElemCount(kDoorKeyIcon), 1), ERequiresNoAmmo);
+static const AsciiMesh		kDoorKeyIconMesh( AsciiMesh(kDoorKeyIcon, gElemCount(kDoorKeyIcon), 1) );
+static const ItemData		kDoorKeyData( DoorKey::kName, kDoorKeyIconMesh, ERequiresNoAmmo );
 static const float			kAnimTime	= 0.15f;
+
+static const ItemData sGenerateDoorKeyData(EColour inKeyColour)
+{
+	return ItemData(DoorKey::kName, gReColourAsciiMesh(kDoorKeyIconMesh, inKeyColour), ERequiresNoAmmo);
+}
 
 using namespace Player;
 
-DoorKey::DoorKey() 
-	: ItemBase(kDoorKeyData)
+DoorKey::DoorKey(EColour inKeyColour) 
+	: ItemBase		(sGenerateDoorKeyData(inKeyColour))
+	, mBehaviour	(inKeyColour)
 {
 }
 
 void DoorKeyPlayerBehaviour::OnStart(Entity inPlayer)
 {
-	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( gCArrayToVector(kAnimations, gElemCount(kAnimations)) );
+	inPlayer.GetComponent<AnimationComponent>()->SetAnimations( sGenerateAnimations(mKeyColour) );
 	inPlayer.GetComponent<CollisionComponent>()->SetDefaultCollisionMesh( kDoorKeyCollisionMesh );
 
 	mAnimTimeElapsed = 0.0f;
@@ -77,7 +89,7 @@ void DoorKeyPlayerBehaviour::OnStart(Entity inPlayer)
 	IVec2	unlockDir	= gGetOrientationVector(orientation);
 
 	IVec2			unlockPos = playerPos + unlockDir;
-	UnlockDoorMsg	unlockDoorkMsg(unlockPos);
+	UnlockDoorMsg	unlockDoorkMsg(unlockPos, mKeyColour);
 	MessageHelpers::BroadcastMessageToEntitiesAtPosition(*inPlayer.GetWorld(), inPlayer, unlockPos, unlockDoorkMsg);
 }
 

@@ -26,3 +26,5 @@ public:
 	void ForEachFrag(const TFunctor& inFunctor) const					{ ForEach(inFunctor); }
 
 };
+
+AsciiMesh gReColourAsciiMesh(const AsciiMesh& inMesh, EColour inColour);

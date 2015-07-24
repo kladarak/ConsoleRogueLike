@@ -2,30 +2,6 @@
 
 #include <EntityComponent/Components/EOrientation.h>
 
-namespace
-{
-	IVec2 sGetNeighbourIndex(const IVec2& inIndex, EDoorSide inDoorSide)
-	{
-		return inIndex + gGetOrientationVector((EOrientation) inDoorSide);
-	}
-
-	EDoorSide sOppositeSide(EDoorSide inDoorSide)
-	{
-		switch (inDoorSide)
-		{
-			case EDoorSide_Top:		return EDoorSide_Bottom;
-			case EDoorSide_Bottom:	return EDoorSide_Top;
-			case EDoorSide_Left:	return EDoorSide_Right;
-			case EDoorSide_Right:	return EDoorSide_Left;
-			default: assert(false); return inDoorSide;
-		}
-	}
-
-	bool sRandomBool()
-	{
-		return ((rand() % 2) == 0);
-	};
-}
 
 DungeonLayoutGenerator::DungeonLayoutGenerator(uint32_t inRoomCount)
 	: mTargetRoomCount(inRoomCount)
@@ -102,12 +78,9 @@ void DungeonLayoutGenerator::RecurseIntoRoom(const IVec2& inPosition, EDoorSide 
 
 		if (mLayout.Get(neighbourPos).mIsValid)
 		{
-			if (sRandomBool())
-			{
-				// Add a door into this, and try another direction.
-				mLayout.Get(inPosition).mDoors[doorSide] = true;
-				mLayout.Get(neighbourPos).mDoors[ sOppositeSide(doorSide) ] = true;
-			}
+			// Add a door into this, and try another direction.
+			mLayout.Get(inPosition).mDoors[doorSide] = true;
+			mLayout.Get(neighbourPos).mDoors[ sOppositeSide(doorSide) ] = true;
 		}
 		else
 		{

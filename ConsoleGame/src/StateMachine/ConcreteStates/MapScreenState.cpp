@@ -84,7 +84,7 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 	auto hasVisitedRoom = [&] (int inCol, int inRow)
 	{
 		bool inRange = gIsBetween(inCol, 0, colCount) && gIsBetween(inRow, 0, rowCount);
-		return inRange && roomsVisited.Get(inCol, inRow);
+		return inRange && roomDataMap.Get(inCol, inRow).mIsValid;// roomsVisited.Get(inCol, inRow);
 	};
 
 	auto ifWallWriteChar = [&] (int inCol, int inRow, EDoorSide inDoorSide, const Fragment& inWallChar, int inX, int inY)

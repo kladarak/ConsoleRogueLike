@@ -59,25 +59,30 @@ InGameState::InGameState(MessageBroadcaster* inStateMachineMsgBroadcaster, GameD
 
 InGameState::~InGameState()
 {
-	// Remove Dungeon key.
+	// Remove all Keys.
 	{
 		auto& playerData = mGameData->mPlayerData;
 		auto& inventory = playerData.mInventory;
 		
-		// Might be null; this is handled appropriately.
-		auto key = inventory.FindItem(DoorKey::kName);
+		std::vector<ItemBase*> allItems = inventory.GetAllItems();
 
-		if (key == playerData.GetItemInSlot(Player::EItemSlot_Slot0))
+		for (auto item : allItems)
 		{
-			playerData.SetItemInSlot(nullptr, Player::EItemSlot_Slot0);
-		}
+			if (item->GetName() == DoorKey::kName)
+			{
+				if (item == playerData.GetItemInSlot(Player::EItemSlot_Slot0))
+				{
+					playerData.SetItemInSlot(nullptr, Player::EItemSlot_Slot0);
+				}
 
-		if (key == playerData.GetItemInSlot(Player::EItemSlot_Slot1))
-		{
-			playerData.SetItemInSlot(nullptr, Player::EItemSlot_Slot1);
-		}
+				if (item == playerData.GetItemInSlot(Player::EItemSlot_Slot1))
+				{
+					playerData.SetItemInSlot(nullptr, Player::EItemSlot_Slot1);
+				}
 
-		inventory.RemoveAndDeleteItem(key);
+				inventory.RemoveAndDeleteItem(item);
+			}
+		}
 	}
 
 	// Clear Player.

@@ -16,6 +16,7 @@ public:
 	Animation(Animation&& inRHS);
 	Animation(const Animation& inRHS);
 	Animation(const AsciiMesh* inMeshes, uint32_t inCount, float inKeyFrameDuration, EPlaybackStyle inPlaybackStyle);
+	Animation(const std::vector<AsciiMesh>& inMeshes, float inKeyFrameDuration, EPlaybackStyle inPlaybackStyle);
 
 	void					Update(float inFrameTime);
 	const AsciiMesh&		GetCurrentKeyFrame() const;

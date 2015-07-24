@@ -27,3 +27,18 @@ AsciiMesh::AsciiMesh(const Fragment* inFrags, size_t inCols, size_t inRows, cons
 
 	SetCentreOffset(inCentreOffset);
 }
+
+AsciiMesh gReColourAsciiMesh(const AsciiMesh& inMesh, EColour inColour)
+{
+	AsciiMesh newMesh;
+	newMesh.SetCentreOffset( inMesh.GetCentreOffset() );
+
+	inMesh.ForEachFrag( [&] (size_t inCol, size_t inRow, const Fragment& inFrag)
+	{
+		Fragment newFrag = inFrag;
+		newFrag.mColour = inColour;
+		newMesh.Set(inCol, inRow, newFrag);
+	} );
+
+	return newMesh;
+}

@@ -51,6 +51,8 @@ LevelData gGenerateLevelData(uint32_t inLevelIndex)
 	// Money count will be double the room count.
 	data.mMoneyCount	= data.mRoomCount * 2;
 
+	data.mLockedDoorsCount = std::min(data.mRoomCount / 5, 4);
+
 	// Every other level, place a new item into the dungeon.
 	if ((inLevelIndex % 2) == 1 && ((inLevelIndex / 2) < gElemCount(kItemFactoryFunctions)))
 	{

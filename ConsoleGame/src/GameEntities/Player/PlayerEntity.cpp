@@ -28,19 +28,9 @@ Entity Create(World& inWorld, MessageBroadcaster& inMsgBroadcaster, GameData* in
 {
 	Entity entity = inWorld.CreateEntity();
 
-	IVec2 roomPosition(-1, -1);
-
-	while (roomPosition.mX < 0)
-	{
-		size_t randomX = rand() % inGameData->mDungeonMap.GetColCount();
-		size_t randomY = rand() % inGameData->mDungeonMap.GetRowCount();
-
-		Entity room = inGameData->mDungeonMap.GetRoomEntities().Get(randomX, randomY);
-		if (room.IsValid())
-		{
-			roomPosition = room.GetComponent<PositionComponent>()->GetPosition();
-		}
-	}
+	IVec2	startingRoomIndex	= inGameData->mDungeonMap.GetPlayerStartingRoomIndex();
+	Entity	room				= inGameData->mDungeonMap.GetRoomEntities().Get(startingRoomIndex);
+	IVec2	roomPosition		= room.GetComponent<PositionComponent>()->GetPosition();
 	
 	entity.AddComponent<AnimationComponent>();
 	entity.AddComponent<CollisionComponent>();

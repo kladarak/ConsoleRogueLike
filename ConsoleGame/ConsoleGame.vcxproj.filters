@@ -283,6 +283,12 @@
     <ClCompile Include="src\Inventory\Items\Boomerang.cpp">
       <Filter>Source Files\Inventory\Items</Filter>
     </ClCompile>
+    <ClCompile Include="src\Dungeon\DungeonLockedDoorsAndKeysPlacer.cpp">
+      <Filter>Source Files\Dungeon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dungeon\DungeonGeneratorUtils.cpp">
+      <Filter>Source Files\Dungeon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -584,6 +590,12 @@
     </ClInclude>
     <ClInclude Include="src\Inventory\Items\EAttackStrength.h">
       <Filter>Source Files\Inventory\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dungeon\DungeonLockedDoorsAndKeysPlacer.h">
+      <Filter>Source Files\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dungeon\DungeonGeneratorUtils.h">
+      <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

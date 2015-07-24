@@ -1,6 +1,7 @@
 #include "DungeonFactory.h"
 
 #include <string>
+#include <algorithm>
 
 #include <EntityComponentSystem/World/World.h>
 
@@ -15,52 +16,22 @@
 #include <GameEntities/ItemEntity.h>
 #include <GameEntities/Other/HeartContainer.h>
 
+#include <Containers/ContainerMacros.h>
+
 #include <Inventory/Items/DoorKey.h>
 
 #include "RoomEntity.h"
 #include "ScreenConstants.h"
 #include "DungeonLayoutGenerator.h"
 #include "DungeonDoorPlacer.h"
+#include "DungeonLockedDoorsAndKeysPlacer.h"
+#include "DungeonGeneratorUtils.h"
 #include "LevelData.h"
+
+using namespace DungeonGeneratorUtils;
 
 namespace DungeonFactory
 {
-
-static IVec2 sGetRandomValidRoomIndex(const DungeonMap& inDungeon)
-{
-	int col, row;
-
-	do
-	{
-		col = rand() % inDungeon.GetColCount();
-		row = rand() % inDungeon.GetRowCount();
-	}
-	while ( !inDungeon.GetRoomData().Get(col, row).mIsValid );
-
-	return IVec2(col, row);
-}
-
-static IVec2 sGetRandomValidRoomPosition(const DungeonMap& inDungeon)
-{
-	IVec2	roomIndex	= sGetRandomValidRoomIndex(inDungeon);
-	auto	room		= inDungeon.GetRoomEntities().Get(roomIndex);
-	return room.GetComponent<PositionComponent>()->GetPosition();
-}
-
-static IVec2 sGetRandomOffsetInRoom(const IRect& inObjectBounds = IRect(0, 0, 1, 1))
-{
-	// Generate random offset considering wall/door margins and item size.
-	static const int kRoomMargin = 2;
-
-	int validAreaWidth = ERoomDimensions_Width - (kRoomMargin*2 + inObjectBounds.mWidth);
-	int validAreaHeight = ERoomDimensions_Height - (kRoomMargin*2 + inObjectBounds.mHeight);
-	int x = rand() % validAreaWidth;
-	int y = rand() % validAreaHeight;
-	x += kRoomMargin + inObjectBounds.mX;
-	y += kRoomMargin + inObjectBounds.mY;
-
-	return IVec2(x, y);
-}
 
 static Dynamic2DVector<Entity> sCreateRoomEntities(World& inWorld, const Dynamic2DVector<RoomData>& inLayout)
 {
@@ -151,9 +122,14 @@ DungeonMap Generate(World& inWorld, MessageBroadcaster& inMessageBroadcaster, Ga
 
 	DungeonMap dungeon(roomData, roomEntities);
 
+	IVec2 playerStartingRoomIndex = sGetRandomValidRoomIndex(dungeon);
+	dungeon.SetPlayerStartingRoomIndex( playerStartingRoomIndex );
+
 	sAddDoors(dungeon, inWorld, inMessageBroadcaster);
 
-	sPlaceItemInDungeon(dungeon, ItemEntity::Create<DoorKey>(inWorld, inGameData));
+	DungeonLockedDoorsAndKeysPlacer::sPlaceThem(dungeon, inWorld, inGameData, inLevelData.mLockedDoorsCount);
+
+	sPlaceItemInDungeon(dungeon, ItemEntity::Create< ColouredDoorKey<ETextDarkYellow> >(inWorld, inGameData));
 
 	if (inLevelData.mItemFactoryFunc)
 	{

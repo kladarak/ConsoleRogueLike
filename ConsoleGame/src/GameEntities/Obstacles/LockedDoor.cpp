@@ -27,19 +27,20 @@ static const Fragment kLockPiece	( 'o',						ETextDarkYellow );
 enum EAnimationSlot
 {
 	EAnimationSlot_Idle,
-	EAnimationSlot_Open
+	EAnimationSlot_Open,
+
+	EAnimationSlot_Count
 };
 
 namespace FaceUpDown
 {
 	static const Fragment	kIdleRenderMeshData[] = { kLeftTPiece, kHorizPiece, kHorizPiece, kLockPiece, kHorizPiece, kHorizPiece, kRightTPiece }; // "|--o--|";
 	static const AsciiMesh	kIdleRenderMesh( kIdleRenderMeshData, 7, 1 );
-	static const Animation	kIdleAnimation( &kIdleRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Once );
 	
-	static const Fragment	kOpenRenderMeshKF1[] = { kLeftTPiece, kHorizPiece,	kHorizPiece,	' ', kHorizPiece,	kHorizPiece,	kRightTPiece }; // "|-- --|";
-	static const Fragment	kOpenRenderMeshKF2[] = { kLeftTPiece, kHorizPiece,	' ',			' ', ' ',			kHorizPiece,	kRightTPiece }; // "|-   -|";
-	static const Fragment	kOpenRenderMeshKF3[] = { kLeftTPiece, ' ',			' ',			' ', ' ',			' ',			kRightTPiece }; // "|-   -|"; // t pieces
-	static const Fragment	kOpenRenderMeshKF4[] = { kVertiPiece, ' ',			' ',			' ', ' ',			' ',			kVertiPiece };	// "|     |";
+	static const Fragment	kOpenRenderMeshKF1[] = { kLeftTPiece, kHorizPiece,	kHorizPiece,	' ',	kHorizPiece,	kHorizPiece,	kRightTPiece }; // "|-- --|";
+	static const Fragment	kOpenRenderMeshKF2[] = { kLeftTPiece, kHorizPiece,	' ',			' ',	' ',			kHorizPiece,	kRightTPiece }; // "|-   -|";
+	static const Fragment	kOpenRenderMeshKF3[] = { kLeftTPiece, ' ',			' ',			' ',	' ',			' ',			kRightTPiece }; // "|-   -|"; // t pieces
+	static const Fragment	kOpenRenderMeshKF4[] = { kVertiPiece, ' ',			' ',			' ',	' ',			' ',			kVertiPiece };	// "|     |";
 	
 	static const AsciiMesh	kOpenAnimKeyFrames[] =
 	{
@@ -47,16 +48,6 @@ namespace FaceUpDown
 		AsciiMesh( kOpenRenderMeshKF2,	7, 1 ),
 		AsciiMesh( kOpenRenderMeshKF3,	7, 1 ),
 		AsciiMesh( kOpenRenderMeshKF4,	7, 1 ),
-	};
-
-	static const Animation kOpenAnimation(	kOpenAnimKeyFrames, 
-											gElemCount(kOpenAnimKeyFrames), 
-											kOpenAnimKFDuration, 
-											Animation::EPlaybackStyle_Once );
-	static const Animation kAnimations[] =
-	{
-		kIdleAnimation,
-		kOpenAnimation,
 	};
 
 	static const bool			kIdleCollisionMeshData[]	= { true, true, true, true, true, true, true };
@@ -77,7 +68,6 @@ namespace FaceLeftRight
 	};
 
 	static const AsciiMesh kIdleRenderMesh(kIdleRenderMeshData, 1, 5);
-	static const Animation kIdleAnimation( &kIdleRenderMesh, 1, 0.0f, Animation::EPlaybackStyle_Once );
 	
 	static const Fragment kOpenRenderMeshKF1[] = 
 	{
@@ -111,20 +101,23 @@ namespace FaceLeftRight
 		AsciiMesh( kOpenRenderMeshKF3,	1, 5 ),
 	};
 
-	static const Animation kOpenAnimation(	kOpenAnimKeyFrames, 
-											gElemCount(kOpenAnimKeyFrames), 
-											kOpenAnimKFDuration, 
-											Animation::EPlaybackStyle_Once );
-	static const Animation kAnimations[] =
-	{
-		kIdleAnimation,
-		kOpenAnimation,
-	};
-
 	static const bool			kIdleCollisionMeshData[]	= { true, true, true, true, true };
 	static const bool			kOpenCollisionMeshData[]	= { true, false, false, false, true };
 	static const CollisionMesh	kIdleCollisionMesh(kIdleCollisionMeshData,	1, 5);
 	static const CollisionMesh	kOpenCollisionMesh(kOpenCollisionMeshData,	1, 5);
+}
+
+static const Animation sCreateAnimation(const AsciiMesh* inKeyFrames, size_t inCount, EColour inColour, float inKFDuration, Animation::EPlaybackStyle inStyle)
+{
+	std::vector<AsciiMesh> meshes;
+
+	for (size_t i = 0; i < inCount; ++i)
+	{
+		const AsciiMesh& oldMesh = inKeyFrames[i];
+		meshes.push_back( gReColourAsciiMesh(oldMesh, inColour) );
+	}
+
+	return Animation(meshes, inKFDuration, inStyle);
 }
 
 class LockedDoorProperties
@@ -146,16 +139,30 @@ static void sUnlockDoor(Entity inEntity)
 	inEntity.GetComponent<AnimationComponent>()->SetSelectedAnimation(EAnimationSlot_Open, false);
 }
 
-Entity Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation)
+Entity Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientation, EColour inDoorColour)
 {
 	auto entity = inWorld.CreateEntity();
 
 	bool	isLeftRight = (inOrientation == EOrientation_FaceLeft) || (inOrientation == EOrientation_FaceRight);
 	
-	auto&	animations		= isLeftRight ? FaceLeftRight::kAnimations			: FaceUpDown::kAnimations;
+	Animation animations[EAnimationSlot_Count];
+
+	if (isLeftRight)
+	{
+		using namespace FaceLeftRight;
+		animations[EAnimationSlot_Idle] = sCreateAnimation( &kIdleRenderMesh,	1,								inDoorColour, 0.0f,					Animation::EPlaybackStyle_Once );
+		animations[EAnimationSlot_Open] = sCreateAnimation( kOpenAnimKeyFrames, gElemCount(kOpenAnimKeyFrames), inDoorColour, kOpenAnimKFDuration,	Animation::EPlaybackStyle_Once );
+	}
+	else
+	{
+		using namespace FaceUpDown;
+		animations[EAnimationSlot_Idle] = sCreateAnimation( &kIdleRenderMesh,	1,								inDoorColour, 0.0f,					Animation::EPlaybackStyle_Once );
+		animations[EAnimationSlot_Open] = sCreateAnimation( kOpenAnimKeyFrames, gElemCount(kOpenAnimKeyFrames), inDoorColour, kOpenAnimKFDuration,	Animation::EPlaybackStyle_Once );
+	}
+
 	auto&	idleCollision	= isLeftRight ? FaceLeftRight::kIdleCollisionMesh	: FaceUpDown::kIdleCollisionMesh;
 	
-	entity.AddComponent<AnimationComponent>(animations, gElemCount(animations))->SetSelectedAnimation(EAnimationSlot_Idle);
+	entity.AddComponent<AnimationComponent>(animations, EAnimationSlot_Count)->SetSelectedAnimation(EAnimationSlot_Idle);
 	entity.AddComponent<CollisionComponent>(idleCollision);
 	entity.AddComponent<PositionComponent>(inPosition);
 	entity.AddComponent<RenderableComponent>();
@@ -165,7 +172,7 @@ Entity Create(World& inWorld, const IVec2& inPosition, EOrientation inOrientatio
 
 	entity.AddComponent<MessageReceiverComponent>()->Register<UnlockDoorMsg>( [=] (const UnlockDoorMsg& inMsg)
 	{
-		if (inMsg.mPosition == keyHolePosition)
+		if (inMsg.mPosition == keyHolePosition && inMsg.mKeyColour == inDoorColour)
 		{
 			sUnlockDoor(entity);
 

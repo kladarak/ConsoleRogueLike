@@ -3,6 +3,8 @@
 #include <vector>
 #include <Maths/IVec2.h>
 
+#include <Renderer/Colour.h>
+
 #include "DungeonMap.h"
 
 class World;
@@ -26,7 +28,7 @@ public:
 	DungeonDoorPlacer&	operator=(const DungeonDoorPlacer& inOther) = delete;
 
 	void				AddOpenDoor(const RoomLink& inRoomLink);
-	void				AddLockedDoor(const RoomLink& inRoomLink);
+	void				AddLockedDoor(const RoomLink& inRoomLink, EColour inColour);
 	void				AddDungeonExit(const IVec2& inRoomIndex, MessageBroadcaster& inMessageBroadcaster);
 
 private:

@@ -42,6 +42,16 @@ Animation::Animation(const AsciiMesh* inMeshes, uint32_t inCount, float inKeyFra
 	}
 }
 
+Animation::Animation(const std::vector<AsciiMesh>& inMeshes, float inKeyFrameDuration, EPlaybackStyle inPlaybackStyle)
+	: mKeyFrames		(inMeshes)
+	, mCurrentKeyFrame	(0)
+	, mKeyFrameDuration	(inKeyFrameDuration)
+	, mRunningTime		(0.0f)
+	, mPlaybackStyle	(inPlaybackStyle)
+	, mIsFinished		(false)
+{
+}
+
 void Animation::Update(float inFrameTime)
 {
 	if (mKeyFrames.size() <= 1 || mKeyFrameDuration < 0.001f)
