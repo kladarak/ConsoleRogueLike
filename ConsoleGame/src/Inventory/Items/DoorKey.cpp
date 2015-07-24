@@ -47,6 +47,15 @@ static std::vector<Animation> sGenerateAnimations(EColour inKeyColour)
 	for (int i = 0; i < 4; ++i)
 	{
 		AsciiMesh newMesh = gReColourAsciiMesh(kDoorKeyRenderMeshes[i], inKeyColour);
+
+		newMesh.ForEachFrag( [&] (size_t inCol, size_t inRow, const Fragment& inFrag)
+		{
+			if (inFrag.mChar == PlayerConstants::kSprite.mChar)
+			{
+				newMesh.SetFragAtPosition(inCol, inRow, PlayerConstants::kSprite);
+			}
+		} );
+
 		animations.push_back( Animation(&newMesh, 1, 0.0f, Animation::EPlaybackStyle_Once) );
 	}
 
