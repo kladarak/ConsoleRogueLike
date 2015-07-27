@@ -22,7 +22,7 @@ InventoryScreenState::InventoryScreenState(MessageBroadcaster* inStateMachineMsg
 void InventoryScreenState::Update(float /*inFrameTime*/, const InputBuffer& inInput)
 {
 	auto&	items		= mGameData->mPlayerData.mInventory.GetAllItems();
-	size_t	itemCount	= items.size();
+	int		itemCount	= (int) items.size();
 
 	if (inInput.IsPressed('w'))
 	{
@@ -102,7 +102,7 @@ RenderTarget InventoryScreenState::GetRenderTarget() const
 	static const int		kWindowMargin					= 2;
 	
 	static const int		kCellLeftOffset					= 2;
-	static const int		kCellWidth						= 15;
+	static const int		kCellWidth						= (ScreenConstants::EViewPortWidth - (2 * (kWindowMargin + kCellLeftOffset)) - 2) / 2;
 	static const int		kCellHeight						= 2;
 	static const int		kVerticalSpacingBetweenCells	= 1;
 
@@ -138,7 +138,7 @@ RenderTarget InventoryScreenState::GetRenderTarget() const
 
 		window.Write(renderedCell, col, row);
 
-		if (i == mHighlightedItem)
+		if ((int) i == mHighlightedItem)
 		{
 			window.Write(kCursor, col - kCellLeftOffset, row);
 		}
