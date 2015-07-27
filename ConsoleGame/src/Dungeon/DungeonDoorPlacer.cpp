@@ -105,7 +105,7 @@ void DungeonDoorPlacer::AddDungeonExit(const IVec2& inRoomIndex, MessageBroadcas
 {
 	ConstructDoor( mDungeonMap, inRoomIndex, EDoorSide_Top, [&] (const IVec2& inPosition, EOrientation inOrientation) 
 	{
-		LockedDoor::Create(mWorld, inPosition, inOrientation, ETextDarkYellow);
+		LockedDoor::Create(mWorld, inPosition, inOrientation, ETextWhite);
 		IVec2 stairsPos(inPosition.mX, inPosition.mY-1);
 		return Stairs::Create(mWorld, inMessageBroadcaster, stairsPos);
 	} );
