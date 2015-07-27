@@ -9,6 +9,7 @@
 
 #include <UI/Elements/BorderedFrame.h>
 
+#include <ScreenConstants.h>
 #include "GameData.h"
 
 
@@ -95,13 +96,13 @@ RenderTarget InventoryScreenState::GetRenderTarget() const
 {
 	assert(mPlayer.IsValid());
 	
-	static const int		kWindowWidth					= 50;
-	static const int		kWindowHeight					= 20;
+	static const int		kWindowWidth					= ScreenConstants::EViewPortWidth;
+	static const int		kWindowHeight					= ScreenConstants::EViewPortHeight;
 	
 	static const int		kWindowMargin					= 2;
 	
 	static const int		kCellLeftOffset					= 2;
-	static const int		kCellWidth						= 20;
+	static const int		kCellWidth						= 15;
 	static const int		kCellHeight						= 2;
 	static const int		kVerticalSpacingBetweenCells	= 1;
 
