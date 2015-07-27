@@ -13,5 +13,5 @@ public:
 	virtual RenderTarget	GetRenderTarget() const;
 
 private:
-	uint32_t				mHighlightedItem;
+	int32_t					mHighlightedItem;
 };
