@@ -98,6 +98,7 @@ void Game::Render()
 	printf( "%s\n", buffer.c_str() );
 
 #endif// _ENABLE_COLOUR_RENDERING
-
+	
+	SetConsoleTextAttribute( output, (WORD) ETextGrey );
 	printf("\n\n%04i FPS (%03.3fms)", (uint32_t) (1.0f / mTimer.GetDeltaTime()), mTimer.GetDeltaTime() * 1000.0f);
 }

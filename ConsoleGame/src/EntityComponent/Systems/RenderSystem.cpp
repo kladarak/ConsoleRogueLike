@@ -19,21 +19,11 @@ static void RenderEntityToTarget(const Entity& inEntity, const IVec2& inCameraPo
 		return;
 	}
 	
-	auto positionComp	= inEntity.GetComponent<PositionComponent>();
-	IVec2 position	= positionComp->GetPosition();
+	IVec2 position	= inEntity.GetComponent<PositionComponent>()->GetPosition();
 	position		-= inCameraPosition;
-
 	auto& mesh		= renderableComp->GetMesh();
 
-	mesh.ForEachFrag( [&] (int inX, int inY, const Fragment& inFrag)
-	{
-		if ((inFrag.mColour & EColour_Alpha0) == 0)
-		{
-			int x = inX + position.mX;
-			int y = inY + position.mY;
-			inTarget.Set(x, y, inFrag);
-		}
-	} );
+	inTarget.Write(mesh, position.mX, position.mY);
 }
 
 void Render(World& inWorld, const IVec2& inCameraPosition, RenderTarget& inTarget)

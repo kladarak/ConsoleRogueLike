@@ -8,14 +8,13 @@
 #include "Fragment.h"
 
 class AsciiMesh;
+struct IVec2;
 
 class RenderTarget
 {
 public:
+	RenderTarget(const IVec2& inSize);
 	RenderTarget(int inColumns, int inRows);
-
-	void						Set(int inCol, int inRow, char inChar);
-	void						Set(int inCol, int inRow, const Fragment& inFragment);
 
 	int							GetColCount() const						{ return mFragments.GetColCount(); }
 	int							GetRowCount() const						{ return mFragments.GetRowCount(); }

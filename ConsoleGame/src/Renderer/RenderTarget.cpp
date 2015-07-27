@@ -1,26 +1,17 @@
 #include "RenderTarget.h"
 
+#include <Maths/IVec2.h>
+
 #include "AsciiMesh.h"
+
+RenderTarget::RenderTarget(const IVec2& inSize)
+	: mFragments(inSize.mX, inSize.mY)
+{
+}
 
 RenderTarget::RenderTarget(int inColumns, int inRows)
 	: mFragments(inColumns, inRows)
 {
-}
-
-void RenderTarget::Set(int inCol, int inRow, char inChar)
-{
-	if (inCol >= 0 && inCol < GetColCount() && inRow >= 0 && inRow < GetRowCount())
-	{
-		mFragments.Set(inCol, inRow, inChar);
-	}
-}
-
-void RenderTarget::Set(int inCol, int inRow, const Fragment& inFragment)
-{
-	if (inCol >= 0 && inCol < GetColCount() && inRow >= 0 && inRow < GetRowCount())
-	{
-		mFragments.Set(inCol, inRow, inFragment);
-	}
 }
 
 bool RenderTarget::operator==(const RenderTarget& inRHS)
@@ -40,17 +31,20 @@ bool RenderTarget::operator==(const RenderTarget& inRHS)
 
 //----------------------------------------------------------------------------------------
 
+void RenderTarget::Write(const Fragment& inFragment, int inX, int inY)
+{
+	bool isNotAlpha0	= ((inFragment.mColour & EColour_Alpha0) == 0);
+	bool isInRange		= (inX >= 0 && inX < GetColCount() && inY >= 0 && inY < GetRowCount());
+
+	if (isNotAlpha0 && isInRange)
+	{
+		mFragments.Set(inX, inY, inFragment);
+	}
+}
+
 void RenderTarget::Write(char inChar, int inX, int inY)
 {
 	Write(Fragment(inChar), inX, inY);
-}
-
-void RenderTarget::Write(const Fragment& inFragment, int inX, int inY)
-{
-	if ((inFragment.mColour & EColour_Alpha0) == 0)
-	{
-		Set(inX, inY, inFragment);
-	}
 }
 
 void RenderTarget::Write(const std::string& inString, int inX, int inY)
