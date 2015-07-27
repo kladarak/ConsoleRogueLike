@@ -78,6 +78,7 @@
     <ClCompile Include="src\StateMachine\StateBase.cpp" />
     <ClCompile Include="src\StateMachine\StateMachine.cpp" />
     <ClCompile Include="src\StateMachine\StateMachineMessageHandler.cpp" />
+    <ClCompile Include="src\UI\Elements\BorderedFrame.cpp" />
     <ClCompile Include="src\UI\EquippedBarUI.cpp" />
     <ClCompile Include="src\UI\HealthBarUI.cpp" />
     <ClCompile Include="src\UI\HUD.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="src\StateMachine\EGameState.h" />
     <ClInclude Include="src\StateMachine\StateMachine.h" />
     <ClInclude Include="src\StateMachine\StateMachineMessageHandler.h" />
+    <ClInclude Include="src\UI\Elements\BorderedFrame.h" />
     <ClInclude Include="src\UI\EquippedBarUI.h" />
     <ClInclude Include="src\UI\HealthBarUI.h" />
     <ClInclude Include="src\UI\HUD.h" />

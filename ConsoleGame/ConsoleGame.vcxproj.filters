@@ -289,6 +289,9 @@
     <ClCompile Include="src\Dungeon\DungeonGeneratorUtils.cpp">
       <Filter>Source Files\Dungeon</Filter>
     </ClCompile>
+    <ClCompile Include="src\UI\Elements\BorderedFrame.cpp">
+      <Filter>Source Files\UI\Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Game.h">
@@ -594,7 +597,7 @@
     <ClInclude Include="src\Dungeon\DungeonGeneratorUtils.h">
       <Filter>Source Files\Dungeon</Filter>
     </ClInclude>
-    <ClInclude Include="src\UI\Elements\Frame.h">
+    <ClInclude Include="src\UI\Elements\BorderedFrame.h">
       <Filter>Source Files\UI\Elements</Filter>
     </ClInclude>
   </ItemGroup>
