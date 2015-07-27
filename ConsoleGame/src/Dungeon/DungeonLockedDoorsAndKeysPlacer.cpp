@@ -104,7 +104,7 @@ void LockedDoorAndKeyPlacer::DoIt(uint32_t inMaxLockedDoors, uint32_t inRoomCoun
 		assert(roomData.mIsValid);
 
 		// Place a key or a locked door from this room.
-		if (rand() % randModulo == 0)
+		if ((rand() % randModulo == 0) && (nodeIndex != 0))
 		{
 			uint32_t	keyNum			= locksPlaced;
 			IVec2		keyRoomIndex	= nodes[(rand() % nodeIndex)]; // pick a room that has already been walked through.

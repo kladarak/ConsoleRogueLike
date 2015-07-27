@@ -13,6 +13,8 @@
 #include <Dungeon/DungeonMap.h>
 #include <Dungeon/RoomEntity.h>
 
+#include <UI/Elements/BorderedFrame.h>
+
 #include "GameData.h"
 #include "ScreenConstants.h"
 
@@ -54,13 +56,19 @@ namespace
 
 	const int	kViewMargin					= 5;
 	const float kPlayerIconFlashDuration	= 0.5f;
+	
+	static const int kWindowWidth	= ScreenConstants::EViewPortWidth;
+	static const int kWindowHeight	= ScreenConstants::EViewPortHeight;
+	static const int kWindowMargin	= 2;
+	static const int kMapViewWidth	= kWindowWidth - (kWindowMargin * 2);
+	static const int kMapViewHeight = kWindowHeight - (kWindowMargin * 2);
 
 	IVec2 sCalculatePlayerIconPosition(const Entity& inPlayer)
 	{
 		auto playerPos = inPlayer.GetComponent<PositionComponent>()->GetPosition();
 		
-		int col = playerPos.mX / ERoomDimensions_Width;
-		int row = playerPos.mY / ERoomDimensions_Height;
+		int col = playerPos.mX / kMapViewWidth;
+		int row = playerPos.mY / kMapViewHeight;
 		int x = (col * 2) + 1;
 		int y = (row * 2) + 1;
 
@@ -120,7 +128,7 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 	mBasicMap = renderTarget;
 
 	IVec2 playerIconPos = sCalculatePlayerIconPosition(mGameData->mPlayer);
-	IVec2 mapCentre(ScreenConstants::EViewPortWidth/2, ScreenConstants::EViewPortHeight/2);
+	IVec2 mapCentre(kMapViewWidth/2, kMapViewHeight/2);
 	mViewOffset = mapCentre - playerIconPos;
 }
 
@@ -154,16 +162,20 @@ void MapScreenState::Update(float inFrameTime, const InputBuffer& inInput)
 
 RenderTarget MapScreenState::GetRenderTarget() const
 {
-	RenderTarget renderTarget(ScreenConstants::EViewPortWidth, ScreenConstants::EViewPortHeight);
+	RenderTarget mapView(kMapViewWidth, kMapViewHeight);
 
-	renderTarget.Write(mBasicMap, mViewOffset.mX, mViewOffset.mY);
+	mapView.Write(mBasicMap, mViewOffset.mX, mViewOffset.mY);
 
 	if (fmodf(mPlayerIconFlashTime / kPlayerIconFlashDuration, 2.0f) < 1.0f)
 	{
 		IVec2 playerIconPos = sCalculatePlayerIconPosition(mGameData->mPlayer);
 		playerIconPos += mViewOffset;
-		renderTarget.Write(PlayerConstants::kSprite, playerIconPos.mX, playerIconPos.mY);
+		mapView.Write(PlayerConstants::kSprite, playerIconPos.mX, playerIconPos.mY);
 	}
+	
+	RenderTarget window = BorderedFrame(kWindowWidth, kWindowHeight).Render();
+	window.Write(" Map ", 3, 0);
+	window.Write(mapView, kWindowMargin, kWindowMargin);
 
-	return renderTarget;
+	return window;
 }
