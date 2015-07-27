@@ -71,6 +71,9 @@
     <Filter Include="Source Files\GameEntities\Other">
       <UniqueIdentifier>{4792975e-7fe6-4ca3-a214-652229c587cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\UI\Elements">
+      <UniqueIdentifier>{bfe04319-d0f3-415d-ba58-4209d950f816}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -138,9 +141,6 @@
     </ClCompile>
     <ClCompile Include="src\GameEntities\HealthEntity.cpp">
       <Filter>Source Files\GameEntities</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\RenderTargetWriter.cpp">
-      <Filter>Source Files\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\EntityComponent\Components\CollisionMesh.cpp">
       <Filter>Source Files\ComponentsSystems\Components</Filter>
@@ -414,9 +414,6 @@
     <ClInclude Include="src\StateMachine\EGameState.h">
       <Filter>Source Files\StateMachine</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\RenderTargetWriter.h">
-      <Filter>Source Files\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Containers\Dynamic2DVectorWithOffset.h">
       <Filter>Source Files\Containers</Filter>
     </ClInclude>
@@ -596,6 +593,9 @@
     </ClInclude>
     <ClInclude Include="src\Dungeon\DungeonGeneratorUtils.h">
       <Filter>Source Files\Dungeon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\Elements\Frame.h">
+      <Filter>Source Files\UI\Elements</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@
 
 #include <Messages/Messages.h>
 
-#include <Renderer/RenderTargetWriter.h>
+
 
 #include "ScreenConstants.h"
 #include "GameData.h"
@@ -56,24 +56,24 @@ void HUD::Update(float inFrameTime)
 
 RenderTarget HUD::GetTopBarRenderTarget() const
 {
-	RenderTargetWriter renderTargetWriter(100, kTopBarHeight);
+	RenderTarget renderTarget(100, kTopBarHeight);
 	
-	renderTargetWriter.Write( mHealthBar.GetRenderTarget(), 0, 0 );
+	renderTarget.Write( mHealthBar.GetRenderTarget(), 0, 0 );
 
 	int equippedBarX = ScreenConstants::EMapCols - 13;
-	renderTargetWriter.Write( mEquippedBar.GetRenderTarget(), equippedBarX, 0 );
+	renderTarget.Write( mEquippedBar.GetRenderTarget(), equippedBarX, 0 );
 
-	return renderTargetWriter.GetRenderTarget();
+	return renderTarget;
 }
 
 RenderTarget HUD::GetBottomBarRenderTarget() const
 {
-	RenderTargetWriter renderTargetWriter(100, kBottomBarHeight);
+	RenderTarget renderTarget(100, kBottomBarHeight);
 	
 	std::string money = "Money: $" + std::to_string(mMoneyCollected) + "\n";
-	renderTargetWriter.Write(money, ETextDarkGreen, 0, 0);
+	renderTarget.Write(money, ETextDarkGreen, 0, 0);
 
-	return renderTargetWriter.GetRenderTarget();
+	return renderTarget;
 }
 
 RenderTarget HUD::GetOverlayRenderTarget() const

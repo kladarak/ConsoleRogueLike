@@ -1,7 +1,7 @@
 #include "YouAreDeadDisplay.h"
 
 #include <Maths/Maths.h>
-#include <Renderer/RenderTargetWriter.h>
+
 
 namespace
 {
@@ -36,7 +36,7 @@ RenderTarget YouAreDeadDisplay::GetRenderTarget() const
 	static const float kKeyFrame2 = 1.5f;
 	static const float kKeyFrame3 = 2.0f;
 
-	RenderTargetWriter writer(kMessage.size(), 1);
+	RenderTarget renderTarget(kMessage.size(), 1);
 
 	if ( gIsBetween(mElapsedTime, kKeyFrame0, kKeyFrame1) )
 	{
@@ -46,12 +46,12 @@ RenderTarget YouAreDeadDisplay::GetRenderTarget() const
 	{
 		float	t				= gFraction(mElapsedTime, kKeyFrame1, kKeyFrame2);
 		size_t	lettersToShow	= (size_t) gLerp2D(t, 0.0f, (float) kMessage.size());
-		writer.Write(kMessage.substr(0, lettersToShow), ETextWhite, 0, 0);
+		renderTarget.Write(kMessage.substr(0, lettersToShow), ETextWhite, 0, 0);
 	}
 	else// if ( mElapsedTime >= kKeyFrame2 )
 	{
-		writer.Write(kMessage, ETextWhite, 0, 0);
+		renderTarget.Write(kMessage, ETextWhite, 0, 0);
 	}
 
-	return writer.GetRenderTarget();
+	return renderTarget;
 }

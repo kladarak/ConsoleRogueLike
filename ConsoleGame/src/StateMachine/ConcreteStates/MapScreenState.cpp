@@ -4,7 +4,7 @@
 
 #include <Maths/Maths.h>
 #include <Input/InputBuffer.h>
-#include <Renderer/RenderTargetWriter.h>
+
 #include <Renderer/AsciiMesh.h>
 
 #include <EntityComponent/Components/PositionComponent.h>
@@ -79,7 +79,7 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 	int		colCount		= roomsVisited.GetColCount();
 	int		rowCount		= roomsVisited.GetRowCount();
 
-	RenderTargetWriter writer(colCount*3, rowCount*3);
+	RenderTarget renderTarget(colCount*3, rowCount*3);
 	
 	auto hasVisitedRoom = [&] (int inCol, int inRow)
 	{
@@ -91,7 +91,7 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 	{
 		if (hasVisitedRoom(inCol, inRow) && !roomDataMap.Get(inCol, inRow).mDoors[inDoorSide])
 		{
-			writer.Write(inWallChar, inX, inY);
+			renderTarget.Write(inWallChar, inX, inY);
 		}
 	};
 
@@ -108,7 +108,7 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 			auto& piece = kCornerPiece[mask];
 			int x = col * 2;
 			int y = row * 2;
-			writer.Write(piece, x, y);
+			renderTarget.Write(piece, x, y);
 
 			ifWallWriteChar(col, row, EDoorSide_Left,	kVerticalWall,		x,		y+1);
 			ifWallWriteChar(col, row, EDoorSide_Right,	kVerticalWall,		x+2,	y+1);
@@ -117,7 +117,7 @@ MapScreenState::MapScreenState(MessageBroadcaster* inStateMachineMsgBroadcaster,
 		}
 	}
 
-	mBasicMap = writer.GetRenderTarget();
+	mBasicMap = renderTarget;
 
 	IVec2 playerIconPos = sCalculatePlayerIconPosition(mGameData->mPlayer);
 	IVec2 mapCentre(ScreenConstants::EViewPortWidth/2, ScreenConstants::EViewPortHeight/2);
@@ -154,16 +154,16 @@ void MapScreenState::Update(float inFrameTime, const InputBuffer& inInput)
 
 RenderTarget MapScreenState::GetRenderTarget() const
 {
-	RenderTargetWriter writer(ScreenConstants::EViewPortWidth, ScreenConstants::EViewPortHeight);
+	RenderTarget renderTarget(ScreenConstants::EViewPortWidth, ScreenConstants::EViewPortHeight);
 
-	writer.Write(mBasicMap, mViewOffset.mX, mViewOffset.mY);
+	renderTarget.Write(mBasicMap, mViewOffset.mX, mViewOffset.mY);
 
 	if (fmodf(mPlayerIconFlashTime / kPlayerIconFlashDuration, 2.0f) < 1.0f)
 	{
 		IVec2 playerIconPos = sCalculatePlayerIconPosition(mGameData->mPlayer);
 		playerIconPos += mViewOffset;
-		writer.Write(PlayerConstants::kSprite, playerIconPos.mX, playerIconPos.mY);
+		renderTarget.Write(PlayerConstants::kSprite, playerIconPos.mX, playerIconPos.mY);
 	}
 
-	return writer.GetRenderTarget();
+	return renderTarget;
 }

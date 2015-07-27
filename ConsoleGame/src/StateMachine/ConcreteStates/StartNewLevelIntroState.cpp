@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <Maths/Maths.h>
 
-#include <Renderer/RenderTargetWriter.h>
+
 #include <Messages/Messages.h>
 
 #include "GameData.h"
@@ -41,10 +41,9 @@ RenderTarget StartNewLevelIntroState::GetRenderTarget() const
 
 	levelMsg = levelMsg.substr(0, lettersToShow);
 
-	// Use a RenderTargetWriter just to position the text somewhere central.
-	RenderTargetWriter renderTargetWriter(20, 10);
+	RenderTarget renderTarget(20, 10);
 	
-	renderTargetWriter.Write( levelMsg, ETextWhite, 10, 5 );
+	renderTarget.Write( levelMsg, ETextWhite, 10, 5 );
 
-	return renderTargetWriter.GetRenderTarget();
+	return renderTarget;
 }

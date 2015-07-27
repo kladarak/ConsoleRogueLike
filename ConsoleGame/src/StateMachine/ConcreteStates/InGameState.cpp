@@ -18,7 +18,7 @@
 #include <GameSystems/ItemDropHandler.h>
 
 #include <Renderer/RenderTarget.h>
-#include <Renderer/RenderTargetWriter.h>
+
 
 #include <Inventory/Items/DoorKey.h>
 
@@ -128,22 +128,24 @@ RenderTarget InGameState::GetRenderTarget() const
 
 	int y = 0;
 
-	RenderTargetWriter renderTargetWriter(screenWidth, screenHeight);
+	RenderTarget mainRenderTarget(screenWidth, screenHeight);
 
-	renderTargetWriter.Write( mHUD.GetTopBarRenderTarget(), 0, y );
+	mainRenderTarget.Write( mHUD.GetTopBarRenderTarget(), 0, y );
 	y += mHUD.GetTopBarHeight();
 	
-	RenderTarget renderTarget(gameWidth, gameHeight);
-	IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
-	RenderSystem::Render( const_cast<InGameState*>(this)->mWorld, cameraPosition, renderTarget ); // Ooh, nasty const_cast... Must improve World's interface...
+	{
+		RenderTarget gameRenderTarget(gameWidth, gameHeight);
+		IVec2 cameraPosition = mCameraSystem.GetCameraPosition();
+		RenderSystem::Render( const_cast<InGameState*>(this)->mWorld, cameraPosition, gameRenderTarget ); // Ooh, nasty const_cast... Must improve World's interface...
 
-	renderTargetWriter.Write( renderTarget, 0, y );
-	y += gameHeight;
-	
-	renderTargetWriter.Write( mHUD.GetBottomBarRenderTarget(), 0, y );
+		mainRenderTarget.Write( gameRenderTarget, 0, y );
+		y += gameHeight;
+	}
+
+	mainRenderTarget.Write( mHUD.GetBottomBarRenderTarget(), 0, y );
 
 	int halfHeight = screenHeight / 2;
-	renderTargetWriter.Write( mHUD.GetOverlayRenderTarget(), 10, halfHeight );
+	mainRenderTarget.Write( mHUD.GetOverlayRenderTarget(), 10, halfHeight );
 
-	return renderTargetWriter.GetRenderTarget();
+	return mainRenderTarget;
 }

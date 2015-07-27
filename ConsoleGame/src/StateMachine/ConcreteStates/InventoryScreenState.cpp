@@ -6,7 +6,7 @@
 #include <Inventory/Items/ItemBase.h>
 
 #include <Input/InputBuffer.h>
-#include <Renderer/RenderTargetWriter.h>
+
 #include "GameData.h"
 
 
@@ -52,7 +52,7 @@ RenderTarget InventoryScreenState::GetRenderTarget() const
 {
 	assert(mPlayer.IsValid());
 	
-	RenderTargetWriter renderTargetWriter(50, 20);
+	RenderTarget renderTarget(50, 20);
 
 	auto	armedItem0	= mGameData->mPlayerData.GetItemInSlot( Player::EItemSlot_Slot0 );
 	auto	armedItem1	= mGameData->mPlayerData.GetItemInSlot( Player::EItemSlot_Slot1 );
@@ -64,7 +64,7 @@ RenderTarget InventoryScreenState::GetRenderTarget() const
 	{
 		if (i == mHighlightedItem)
 		{
-			renderTargetWriter.Write( (char) 26, 2, row );
+			renderTarget.Write( (char) 26, 2, row );
 		}
 
 		auto item = items[i];
@@ -72,14 +72,14 @@ RenderTarget InventoryScreenState::GetRenderTarget() const
 		std::string itemName = item->GetName();
 		itemName += (item == armedItem0) ? " (Spc)" : "";
 		itemName += (item == armedItem1) ? " (E)"	: "";
-		renderTargetWriter.Write(itemName, ETextWhite, col, row++);
+		renderTarget.Write(itemName, ETextWhite, col, row++);
 		
 		const AsciiMesh& icon = item->GetHUDIcon();
-		renderTargetWriter.Write(icon, col, row);
+		renderTarget.Write(icon, col, row);
 	
 		row += icon.GetLocalBounds().mHeight;
 		row++;
 	}
 
-	return renderTargetWriter.GetRenderTarget();
+	return renderTarget;
 }

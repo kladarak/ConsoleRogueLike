@@ -70,7 +70,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Renderer\AsciiMesh.cpp" />
     <ClCompile Include="src\Renderer\RenderTarget.cpp" />
-    <ClCompile Include="src\Renderer\RenderTargetWriter.cpp" />
     <ClCompile Include="src\StateMachine\ConcreteStates\InGameState.cpp" />
     <ClCompile Include="src\StateMachine\ConcreteStates\InventoryScreenState.cpp" />
     <ClCompile Include="src\StateMachine\ConcreteStates\MapScreenState.cpp" />
@@ -172,7 +171,6 @@
     <ClInclude Include="src\Renderer\Colour.h" />
     <ClInclude Include="src\Renderer\Fragment.h" />
     <ClInclude Include="src\Renderer\RenderTarget.h" />
-    <ClInclude Include="src\Renderer\RenderTargetWriter.h" />
     <ClInclude Include="src\ScreenConstants.h" />
     <ClInclude Include="src\StateMachine\ConcreteStates\InGameState.h" />
     <ClInclude Include="src\StateMachine\ConcreteStates\InventoryScreenState.h" />
